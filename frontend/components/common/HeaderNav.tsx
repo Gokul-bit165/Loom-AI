@@ -58,7 +58,7 @@ export function HeaderNav({
 
   return (
     <header className="bg-white border-b border-surface-200 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl 2xl:max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="flex items-center justify-between h-16">
           {/* Brand + Wordmark */}
           <div className="flex items-center space-x-6">
@@ -85,7 +85,7 @@ export function HeaderNav({
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                    className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-medium transition-all ${
                       isActive
                         ? 'bg-brand-50 text-brand-700 font-semibold shadow-xs'
                         : 'text-surface-600 hover:text-surface-900 hover:bg-surface-100'
@@ -129,11 +129,11 @@ export function HeaderNav({
             {/* Provenance Badge */}
             <button
               onClick={() => setShowProvenanceModal(true)}
-              className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-surface-50 hover:bg-surface-100 border border-surface-200 text-surface-700 transition-colors"
+              className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-surface-50 hover:bg-surface-100 border border-surface-200 text-surface-700 transition-colors"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               <span className="hidden lg:inline text-surface-500">Source:</span>
-              <span className="font-semibold text-surface-800 truncate max-w-[130px]">{datasetLabel}</span>
+              <span className="font-semibold text-surface-800 truncate max-w-[150px]">{datasetLabel}</span>
             </button>
 
             {/* Mobile Menu Toggle */}

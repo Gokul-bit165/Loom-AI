@@ -80,13 +80,13 @@ export default function CommercialYieldInvestigationWorkspace() {
         recordsAnalyzed={response?.data_quality?.records_analyzed}
       />
 
-      <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 flex-1">
+      <main className="max-w-7xl 2xl:max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-6 sm:py-8 space-y-6 flex-1">
         {/* Workspace Title */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center space-x-2">
               <IndianRupee className="w-5 h-5 text-emerald-600" />
-              <h1 className="text-xl sm:text-2xl font-bold text-surface-900 tracking-tight">
+              <h1 className="text-xl sm:text-2xl 2xl:text-3xl font-bold text-surface-900 tracking-tight">
                 Commercial Realization & Fabric Style Yield
               </h1>
             </div>
@@ -113,7 +113,7 @@ export default function CommercialYieldInvestigationWorkspace() {
             {/* Fabric Sort Filter Spectrum */}
             <div className="panel-saas space-y-3">
               <div className="flex justify-between items-center pb-2 border-b border-surface-100">
-                <span className="font-semibold text-xs text-surface-900 uppercase tracking-wide">
+                <span className="font-semibold text-xs xl:text-sm text-surface-900 uppercase tracking-wide">
                   Filter Loom Allocation by Fabric Quality
                 </span>
                 {selectedStyle && (
@@ -126,26 +126,26 @@ export default function CommercialYieldInvestigationWorkspace() {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                 {styles.map((s) => {
                   const isSelected = selectedStyle === s.fabric_style;
                   return (
                     <button
                       key={s.fabric_style}
                       onClick={() => setSelectedStyle(isSelected ? null : s.fabric_style)}
-                      className={`p-3 rounded-xl border text-left transition-all ${
+                      className={`p-4 rounded-xl border text-left transition-all ${
                         isSelected
                           ? 'bg-brand-50 border-brand-300 shadow-sm ring-1 ring-brand-400'
                           : 'bg-surface-50 border-surface-200 hover:bg-white'
                       }`}
                     >
                       <div className="flex justify-between items-start">
-                        <span className="font-bold text-xs text-surface-900">{s.fabric_style}</span>
+                        <span className="font-bold text-xs sm:text-sm text-surface-900">{s.fabric_style}</span>
                         <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                           {s.percentage_of_total}% Share
                         </span>
                       </div>
-                      <div className="text-xs text-surface-500 mt-1">
+                      <div className="text-xs text-surface-500 mt-1.5 font-normal">
                         ₹{(s.total_revenue / 100000).toFixed(1)}L across {s.machine_count} looms
                       </div>
                     </button>
@@ -154,11 +154,11 @@ export default function CommercialYieldInvestigationWorkspace() {
               </div>
             </div>
 
-            {/* Loom Yield Grid */}
+            {/* Loom Yield Grid (up to 5 columns on 2xl) */}
             <div className="panel-saas space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-surface-100">
                 <div>
-                  <h3 className="font-semibold text-sm text-surface-900 uppercase tracking-wide">
+                  <h3 className="font-semibold text-sm xl:text-base text-surface-900 uppercase tracking-wide">
                     Loom Commercial Yield ({filteredMachines.length} Looms)
                   </h3>
                   <p className="text-xs text-surface-500 font-normal">
@@ -183,11 +183,11 @@ export default function CommercialYieldInvestigationWorkspace() {
               </div>
 
               {viewMode === 'CARDS' ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3.5">
                   {filteredMachines.map((m, idx) => (
                     <div
                       key={m.machine_id}
-                      className="p-3.5 rounded-xl border border-surface-200 bg-surface-50/50 hover:bg-white hover:shadow-card transition-all flex flex-col justify-between space-y-2.5"
+                      className="p-4 rounded-xl border border-surface-200 bg-surface-50/50 hover:bg-white hover:shadow-card transition-all flex flex-col justify-between space-y-3"
                     >
                       <div>
                         <div className="flex justify-between items-start">
@@ -196,7 +196,7 @@ export default function CommercialYieldInvestigationWorkspace() {
                             {m.percentage_of_total}%
                           </span>
                         </div>
-                        <span className="text-xs text-surface-500 block truncate mt-0.5">
+                        <span className="text-xs text-surface-500 block truncate mt-1">
                           {m.fabric_styles.join(', ')}
                         </span>
                       </div>
@@ -204,7 +204,7 @@ export default function CommercialYieldInvestigationWorkspace() {
                       <div className="pt-2 border-t border-surface-100 flex justify-between items-center text-xs">
                         <div>
                           <span className="text-[10px] text-surface-400 block font-normal">Realized:</span>
-                          <span className="font-bold text-surface-900 font-sans">₹{m.total_revenue.toLocaleString()}</span>
+                          <span className="font-bold text-surface-900 font-sans text-sm">₹{m.total_revenue.toLocaleString()}</span>
                         </div>
                         <button
                           onClick={() => setSelectedMachineId(m.machine_id)}

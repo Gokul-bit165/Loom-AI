@@ -104,7 +104,7 @@ export default function ExecutiveOverviewPage() {
         recordsAnalyzed={recordsAnalyzed}
       />
 
-      <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 flex-1">
+      <main className="max-w-7xl 2xl:max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-6 sm:py-8 space-y-6 sm:space-y-8 flex-1">
         {isLoading ? (
           <SentinelSkeleton />
         ) : error ? (
@@ -123,15 +123,15 @@ export default function ExecutiveOverviewPage() {
               onTriageClick={() => setSelectedMachineId(bottleneckMachines[0]?.machine_id || 'TOY-02')}
             />
 
-            {/* Section 1 & 2: Plant Health Gauge (4 cols) + Production Trend (8 cols) */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <div className="lg:col-span-4">
+            {/* Section 1 & 2: Plant Health Gauge (4 cols on lg, 3 on 2xl) + Production Trend (8 cols on lg, 9 on 2xl) */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 2xl:grid-cols-12 gap-6 sm:gap-8">
+              <div className="lg:col-span-4 2xl:col-span-4">
                 <HealthScoreGauge
                   efficiency={prodRes.data.summary.average_efficiency}
                   downtimeMinutes={bdRes?.data?.total_downtime_minutes || 2698}
                 />
               </div>
-              <div className="lg:col-span-8">
+              <div className="lg:col-span-8 2xl:col-span-8">
                 <ProductionTrendChart />
               </div>
             </div>
@@ -151,15 +151,15 @@ export default function ExecutiveOverviewPage() {
             />
 
             {/* Section 5 & 6: Downtime Loss Map (6 cols) + Machine Performance Matrix (6 cols) */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <div className="lg:col-span-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 2xl:grid-cols-12 gap-6 sm:gap-8">
+              <div className="lg:col-span-6 2xl:col-span-6">
                 <DowntimeLossMap
                   reasons={bdRes?.data?.reason_ranking || []}
                   machines={bdRes?.data?.machine_ranking || []}
                   totalDowntimeMinutes={bdRes?.data?.total_downtime_minutes}
                 />
               </div>
-              <div className="lg:col-span-6">
+              <div className="lg:col-span-6 2xl:col-span-6">
                 <MachinePerformanceMatrix
                   machines={allMachines}
                   onSelectMachine={(id) => setSelectedMachineId(id)}
@@ -168,13 +168,13 @@ export default function ExecutiveOverviewPage() {
             </div>
 
             {/* Section 7 & 8: Shift Comparison (6 cols) + Commercial Performance (6 cols) */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <div className="lg:col-span-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 2xl:grid-cols-12 gap-6 sm:gap-8">
+              <div className="lg:col-span-6 2xl:col-span-6">
                 <ShiftPerformanceComparison
                   shifts={prodRes.data.shift_performance}
                 />
               </div>
-              <div className="lg:col-span-6">
+              <div className="lg:col-span-6 2xl:col-span-6">
                 <CommercialPerformanceView
                   data={revRes?.data}
                 />

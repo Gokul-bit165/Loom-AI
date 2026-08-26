@@ -83,13 +83,13 @@ export default function DowntimeInvestigationWorkspace() {
         recordsAnalyzed={response?.data_quality?.records_analyzed}
       />
 
-      <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 flex-1">
+      <main className="max-w-7xl 2xl:max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-6 sm:py-8 space-y-6 flex-1">
         {/* Workspace Title + Filters */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center space-x-2">
               <Clock className="w-5 h-5 text-amber-600" />
-              <h1 className="text-xl sm:text-2xl font-bold text-surface-900 tracking-tight">
+              <h1 className="text-xl sm:text-2xl 2xl:text-3xl font-bold text-surface-900 tracking-tight">
                 Mechanical Downtime & Stoppage Analysis
               </h1>
             </div>
@@ -151,7 +151,7 @@ export default function DowntimeInvestigationWorkspace() {
                 <span className="text-[11px] font-semibold text-surface-500 uppercase tracking-wide block">
                   Total Lost Operating Time
                 </span>
-                <div className="text-2xl sm:text-3xl font-bold text-rose-600 font-sans">
+                <div className="text-2xl sm:text-3xl 2xl:text-4xl font-bold text-rose-600 font-sans">
                   {bdData.total_downtime_minutes.toLocaleString()}m
                 </div>
                 <span className="text-xs text-surface-500 font-normal block">
@@ -163,7 +163,7 @@ export default function DowntimeInvestigationWorkspace() {
                 <span className="text-[11px] font-semibold text-surface-500 uppercase tracking-wide block">
                   Recorded Stoppage Events
                 </span>
-                <div className="text-2xl sm:text-3xl font-bold text-surface-900 font-sans">
+                <div className="text-2xl sm:text-3xl 2xl:text-4xl font-bold text-surface-900 font-sans">
                   {bdData.total_events} events
                 </div>
                 <span className="text-xs text-surface-500 font-normal block">
@@ -175,7 +175,7 @@ export default function DowntimeInvestigationWorkspace() {
                 <span className="text-[11px] font-semibold text-surface-500 uppercase tracking-wide block">
                   Dominant Stoppage Cause
                 </span>
-                <div className="text-lg font-bold text-surface-900 font-sans truncate">
+                <div className="text-lg 2xl:text-xl font-bold text-surface-900 font-sans truncate">
                   {reasons[0]?.reason || 'N/A'}
                 </div>
                 <span className="text-xs text-amber-600 font-semibold block">
@@ -187,7 +187,7 @@ export default function DowntimeInvestigationWorkspace() {
                 <span className="text-[11px] font-semibold text-surface-500 uppercase tracking-wide block">
                   Worst Machine Stoppage
                 </span>
-                <div className="text-lg font-bold text-rose-600 font-mono truncate">
+                <div className="text-lg 2xl:text-xl font-bold text-rose-600 font-mono truncate">
                   {bdData.highest_downtime_machine?.machine_id || 'None'}
                 </div>
                 <span className="text-xs text-surface-500 font-normal block">
@@ -207,7 +207,7 @@ export default function DowntimeInvestigationWorkspace() {
             <div className="panel-saas space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-surface-100">
                 <div>
-                  <h3 className="font-semibold text-sm text-surface-900 uppercase tracking-wide">
+                  <h3 className="font-semibold text-sm xl:text-base text-surface-900 uppercase tracking-wide">
                     Chronic Machine Stoppage Dossiers ({machines.length} Units Affected)
                   </h3>
                   <p className="text-xs text-surface-500 font-normal">
@@ -232,7 +232,7 @@ export default function DowntimeInvestigationWorkspace() {
               </div>
 
               {viewMode === 'CARDS' ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3.5">
                   {machines.map((m, idx) => (
                     <div
                       key={m.machine_id}

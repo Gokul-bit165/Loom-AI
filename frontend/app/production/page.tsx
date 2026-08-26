@@ -98,13 +98,13 @@ export default function ProductionInvestigationWorkspace() {
         recordsAnalyzed={response?.data_quality?.records_analyzed}
       />
 
-      <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 flex-1">
+      <main className="max-w-7xl 2xl:max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-6 sm:py-8 space-y-6 flex-1">
         {/* Workspace Title + Filters */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center space-x-2">
               <Factory className="w-5 h-5 text-brand-600" />
-              <h1 className="text-xl sm:text-2xl font-bold text-surface-900 tracking-tight">
+              <h1 className="text-xl sm:text-2xl 2xl:text-3xl font-bold text-surface-900 tracking-tight">
                 Production Performance & Capacity Analysis
               </h1>
             </div>
@@ -143,7 +143,7 @@ export default function ProductionInvestigationWorkspace() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-surface-100">
                 <div className="flex items-center space-x-2">
                   <Target className="w-4 h-4 text-brand-600" />
-                  <h3 className="font-semibold text-sm text-surface-900 uppercase tracking-wide">
+                  <h3 className="font-semibold text-sm xl:text-base text-surface-900 uppercase tracking-wide">
                     Plant Capacity Fulfillment
                   </h3>
                 </div>
@@ -157,13 +157,13 @@ export default function ProductionInvestigationWorkspace() {
                 <div className="flex justify-between items-baseline text-xs">
                   <div>
                     <span className="text-surface-500 font-medium">ACTUAL DELIVERED OUTPUT:</span>
-                    <div className="text-2xl sm:text-3xl font-bold text-surface-900 font-sans mt-0.5">
+                    <div className="text-2xl sm:text-3xl 2xl:text-4xl font-bold text-surface-900 font-sans mt-0.5">
                       {summary.total_actual.toLocaleString()} units
                     </div>
                   </div>
                   <div className="text-right">
                     <span className="text-surface-500 font-medium">PLANNED COMMITMENT:</span>
-                    <div className="text-xl sm:text-2xl font-bold text-surface-700 font-sans mt-0.5">
+                    <div className="text-xl sm:text-2xl 2xl:text-3xl font-bold text-surface-700 font-sans mt-0.5">
                       {summary.total_target.toLocaleString()} units
                     </div>
                   </div>
@@ -192,7 +192,7 @@ export default function ProductionInvestigationWorkspace() {
             <div className="panel-saas space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-surface-100">
                 <div>
-                  <h3 className="font-semibold text-sm text-surface-900 uppercase tracking-wide">
+                  <h3 className="font-semibold text-sm xl:text-base text-surface-900 uppercase tracking-wide">
                     Machine Fleet Spectrum ({displayedMachines.length} of {machines.length} Units)
                   </h3>
                   <p className="text-xs text-surface-500 font-normal">
@@ -254,9 +254,9 @@ export default function ProductionInvestigationWorkspace() {
                 </div>
               </div>
 
-              {/* Cards Grid View */}
+              {/* Responsive Cards Grid View (up to 5 columns on 2xl) */}
               {viewMode === 'CARDS' ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3.5">
                   {displayedMachines.map((m) => {
                     const isCrit = m.efficiency < 80;
                     const isW = m.efficiency >= 80 && m.efficiency < 90;

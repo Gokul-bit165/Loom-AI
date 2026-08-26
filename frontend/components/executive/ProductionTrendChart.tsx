@@ -33,10 +33,10 @@ export function ProductionTrendChart() {
 
   const maxVal = 1950000;
   const minVal = 1650000;
-  const svgWidth = 600;
-  const svgHeight = 180;
+  const svgWidth = 800;
+  const svgHeight = 200;
   const paddingX = 40;
-  const paddingY = 20;
+  const paddingY = 24;
 
   const getX = (index: number) =>
     paddingX + (index / (BASELINE_14_DAYS.length - 1)) * (svgWidth - 2 * paddingX);
@@ -53,11 +53,11 @@ export function ProductionTrendChart() {
   const activePoint = hoverIndex !== null ? BASELINE_14_DAYS[hoverIndex] : BASELINE_14_DAYS[BASELINE_14_DAYS.length - 1];
 
   return (
-    <div className="panel-saas flex flex-col justify-between space-y-4">
+    <div className="panel-saas flex flex-col justify-between space-y-4 h-full">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-surface-100">
         <div>
-          <h3 className="font-semibold text-sm text-surface-900 uppercase tracking-wide">
+          <h3 className="font-semibold text-sm xl:text-base text-surface-900 uppercase tracking-wide">
             Production Performance Trajectory
           </h3>
           <p className="text-xs text-surface-500 font-normal">
@@ -79,10 +79,10 @@ export function ProductionTrendChart() {
       </div>
 
       {/* Responsive SVG Chart Surface */}
-      <div className="relative w-full overflow-hidden">
+      <div className="relative w-full overflow-hidden flex-1 flex items-center">
         <svg
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-          className="w-full h-44 sm:h-48 overflow-visible"
+          className="w-full h-44 sm:h-52 xl:h-60 2xl:h-64 overflow-visible"
         >
           {/* Target Line (Dashed) */}
           <line
@@ -120,7 +120,7 @@ export function ProductionTrendChart() {
                 <circle
                   cx={cx}
                   cy={cy}
-                  r={isHovered ? 6 : isToday ? 5 : 3}
+                  r={isHovered ? 7 : isToday ? 5 : 3.5}
                   className={`${
                     isHovered
                       ? 'fill-brand-600 stroke-white stroke-2'
@@ -136,7 +136,7 @@ export function ProductionTrendChart() {
 
         {/* Dynamic Tooltip on Hover */}
         {activePoint && (
-          <div className="absolute top-2 right-4 bg-surface-900 text-white text-[11px] p-2 rounded-lg shadow-lg pointer-events-none space-y-0.5">
+          <div className="absolute top-2 right-4 bg-surface-900 text-white text-[11px] sm:text-xs p-2.5 rounded-xl shadow-xl pointer-events-none space-y-0.5 border border-slate-700">
             <div className="font-semibold text-slate-200">{activePoint.day}</div>
             <div>
               Output: <strong className="text-white font-mono">{activePoint.actual.toLocaleString()} units</strong>
@@ -149,23 +149,23 @@ export function ProductionTrendChart() {
       </div>
 
       {/* Below Chart Metric Badges */}
-      <div className="grid grid-cols-3 gap-2 pt-2 border-t border-surface-100 text-xs">
-        <div className="bg-surface-50 p-2.5 rounded-lg border border-surface-200/70">
+      <div className="grid grid-cols-3 gap-3 pt-2 border-t border-surface-100 text-xs">
+        <div className="bg-surface-50 p-3 rounded-xl border border-surface-200/70">
           <span className="text-[10px] text-surface-500 uppercase block font-medium">Today's Efficiency</span>
-          <span className="text-base font-bold text-surface-900 font-sans">93.5%</span>
+          <span className="text-base sm:text-lg font-bold text-surface-900 font-sans">93.5%</span>
         </div>
 
-        <div className="bg-surface-50 p-2.5 rounded-lg border border-surface-200/70">
+        <div className="bg-surface-50 p-3 rounded-xl border border-surface-200/70">
           <span className="text-[10px] text-surface-500 uppercase block font-medium">vs Yesterday</span>
-          <span className="text-base font-bold text-emerald-600 flex items-center space-x-0.5">
+          <span className="text-base sm:text-lg font-bold text-emerald-600 flex items-center space-x-0.5">
             <TrendingUp className="w-3.5 h-3.5" />
             <span>+0.20%</span>
           </span>
         </div>
 
-        <div className="bg-surface-50 p-2.5 rounded-lg border border-surface-200/70">
+        <div className="bg-surface-50 p-3 rounded-xl border border-surface-200/70">
           <span className="text-[10px] text-surface-500 uppercase block font-medium">Capacity Deficit</span>
-          <span className="text-base font-bold text-rose-600">-6.49%</span>
+          <span className="text-base sm:text-lg font-bold text-rose-600">-6.49%</span>
         </div>
       </div>
     </div>

@@ -120,14 +120,14 @@ export default function GroundedOperationsAnalystPage() {
         recordsAnalyzed={response?.data_quality?.records_analyzed}
       />
 
-      <main className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 flex-1">
+      <main className="max-w-4xl 2xl:max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-6 sm:py-8 space-y-6 flex-1">
         {/* Workspace Title */}
         <div className="text-center space-y-1.5">
           <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-brand-50 text-brand-700 border border-brand-200 text-xs font-semibold">
             <Sparkles className="w-3.5 h-3.5 text-brand-600" />
             <span>GROUNDED DECISION INTELLIGENCE ANALYST</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-surface-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl 2xl:text-4xl font-bold text-surface-900 tracking-tight">
             Operations Decision Workspace
           </h1>
           <p className="text-xs sm:text-sm text-surface-500 font-normal max-w-lg mx-auto">

@@ -23,17 +23,17 @@ export function AttentionQueue({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-surface-100">
         <div className="flex items-center space-x-2">
           <ShieldAlert className="w-5 h-5 text-rose-600" />
-          <h3 className="font-semibold text-sm text-surface-900 uppercase tracking-wide">
-            Priority Attention Queue (Chronic Exceptions)
+          <h3 className="font-semibold text-sm xl:text-base text-surface-900 uppercase tracking-wide">
+            Priority Attention Queue (Chronic Bottlenecks)
           </h3>
         </div>
         <span className="text-xs text-surface-500 font-normal">
-          Ranked by output shortfall • 4 units generate 41.8% of plant deficit
+          Ranked by output shortfall • 4 units generate 41.8% of total plant volume deficit
         </span>
       </div>
 
-      {/* Attention Item List */}
-      <div className="space-y-3">
+      {/* Attention Item Grid (1 col on mobile/tablet, 2 cols on XL/2XL) */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3.5">
         {machines.slice(0, 4).map((m, idx) => {
           const gap = Math.abs(m.variance);
           const share = ((gap / absShortfall) * 100).toFixed(1);
@@ -68,15 +68,15 @@ export function AttentionQueue({
           return (
             <div
               key={m.machine_id}
-              className="p-4 rounded-xl border border-surface-200 bg-surface-50/60 hover:bg-white hover:shadow-card transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+              className="p-4 sm:p-5 rounded-xl border border-surface-200 bg-surface-50/60 hover:bg-white hover:shadow-card transition-all flex flex-col justify-between space-y-3.5"
             >
-              {/* Left Column: ID + Progress Bar */}
-              <div className="space-y-2 md:w-5/12">
+              {/* Top Row: Unit ID + Badges + Action Button */}
+              <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2.5">
                   <span className="w-5 h-5 rounded-full bg-surface-200 text-surface-700 text-xs font-bold flex items-center justify-center">
                     {idx + 1}
                   </span>
-                  <span className="font-mono font-bold text-sm text-surface-900">
+                  <span className="font-mono font-bold text-sm sm:text-base text-surface-900">
                     {m.machine_id}
                   </span>
                   <span className="text-xs text-surface-500 font-normal">
@@ -93,47 +93,44 @@ export function AttentionQueue({
                   </span>
                 </div>
 
-                {/* Progress Visualizer */}
-                <div className="space-y-1">
-                  <div className="h-2 w-full bg-surface-200 rounded-full overflow-hidden flex">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        isCrit ? 'bg-rose-500' : 'bg-amber-500'
-                      }`}
-                      style={{ width: `${Math.min(100, m.efficiency)}%` }}
-                    />
-                  </div>
-                  <div className="flex justify-between text-[11px] text-surface-600">
-                    <span className="font-semibold text-rose-600">
-                      -{gap.toLocaleString()} units gap
-                    </span>
-                    <span className="text-surface-500">
-                      {share}% of total plant deficit
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Middle Column: Root Cause & Action */}
-              <div className="space-y-1 text-xs md:w-5/12">
-                <div className="flex items-center space-x-1.5 text-surface-700">
-                  <Wrench className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                  <span className="font-medium">Cause: {cause}</span>
-                </div>
-                <div className="text-surface-500 font-normal text-[11px] pl-5">
-                  Action: {action}
-                </div>
-              </div>
-
-              {/* Right Column: Action Button */}
-              <div className="md:w-2/12 flex md:justify-end">
                 <button
                   onClick={() => onInvestigateMachine(m.machine_id)}
-                  className="px-3.5 py-1.5 rounded-lg bg-white hover:bg-brand-50 border border-surface-200 hover:border-brand-300 text-brand-700 text-xs font-semibold shadow-xs transition-all flex items-center space-x-1"
+                  className="px-3.5 py-1.5 rounded-lg bg-white hover:bg-brand-50 border border-surface-200 hover:border-brand-300 text-brand-700 text-xs font-semibold shadow-xs transition-all flex items-center space-x-1 shrink-0"
                 >
                   <span>Investigate</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
+              </div>
+
+              {/* Middle Row: Progress Bar & Gap Share */}
+              <div className="space-y-1">
+                <div className="h-2 w-full bg-surface-200 rounded-full overflow-hidden flex">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      isCrit ? 'bg-rose-500' : 'bg-amber-500'
+                    }`}
+                    style={{ width: `${Math.min(100, m.efficiency)}%` }}
+                  />
+                </div>
+                <div className="flex justify-between text-[11px] text-surface-600 pt-0.5">
+                  <span className="font-semibold text-rose-600">
+                    -{gap.toLocaleString()} units gap
+                  </span>
+                  <span className="text-surface-500">
+                    {share}% of total plant deficit
+                  </span>
+                </div>
+              </div>
+
+              {/* Bottom Row: Root Cause & Action */}
+              <div className="p-3 bg-white rounded-lg border border-surface-200/80 space-y-1 text-xs">
+                <div className="flex items-center space-x-1.5 text-surface-800">
+                  <Wrench className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                  <span className="font-semibold">Cause: {cause}</span>
+                </div>
+                <div className="text-surface-600 font-normal text-[11px] pl-5">
+                  Action: {action}
+                </div>
               </div>
             </div>
           );
