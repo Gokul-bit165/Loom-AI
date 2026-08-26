@@ -1,0 +1,53 @@
+# .gitignore for Loom AI
+# ─────────────────────────────────────────────────────────────────────────────
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+*.whl
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env.bak
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+.turbo/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Alembic (keep versions, ignore pyc)
+backend/alembic/versions/__pycache__/
+
+# Logs
+*.log

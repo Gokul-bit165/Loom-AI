@@ -1,0 +1,28 @@
+# Backend — Python dependencies for Loom AI V1
+# Pinned ranges are intentionally loose (minor-compatible) so they stay installable
+# but won't silently accept major breaking changes.
+
+# ── Web framework ─────────────────────────────────────────────────────────────
+fastapi>=0.111,<0.120
+uvicorn[standard]>=0.30,<0.35
+
+# ── Database ──────────────────────────────────────────────────────────────────
+sqlalchemy>=2.0,<3.0
+alembic>=1.16,<2.0
+psycopg2-binary>=2.9,<3.0      # sync driver (used by Alembic + tests)
+asyncpg>=0.31,<1.0             # async driver (used by FastAPI routes)
+
+# ── Analytics  ────────────────────────────────────────────────────────────────
+pandas>=2.3,<3.0
+
+# ── Configuration ─────────────────────────────────────────────────────────────
+python-dotenv>=1.0,<2.0
+pydantic>=2.0,<3.0
+pydantic-settings>=2.0,<3.0
+
+# ── LLM narration (Phase 3 — not used yet) ───────────────────────────────────
+anthropic>=0.34,<1.0
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest>=9.0,<10.0
+pytest-asyncio>=0.23,<1.0

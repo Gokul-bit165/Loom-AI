@@ -1,0 +1,2177 @@
+date,shift,machine_id,unit,department,reason,duration_minutes
+2026-06-01,1,TOY-02,Unit I,Weaving,Loom runout,57
+2026-06-01,1,TOY-03,Unit I,Weaving,Traveller change work,26
+2026-06-01,1,TOY-08,Unit I,Weaving,Full cleaning work,73
+2026-06-01,1,TOY-14,Unit I,Weaving,Traveller change work,19
+2026-06-01,1,TSU-08,Unit I,Weaving,Full cleaning work,111
+2026-06-01,1,RF-01,Unit I,Spinning,Weft break PBM,42
+2026-06-01,1,RF-02,Unit I,Spinning,Sort change work,80
+2026-06-01,1,RF-12,Unit I,Spinning,Voltage fluctuation PBM,15
+2026-06-01,1,VTX-01,Unit I,Spinning,Bobbin shortage,50
+2026-06-01,2,TOY-01,Unit I,Weaving,Full cleaning work,122
+2026-06-01,2,TOY-04,Unit I,Weaving,Maintenance - scheduled,164
+2026-06-01,2,TOY-08,Unit I,Weaving,Traveller change work,19
+2026-06-01,2,TOY-14,Unit I,Weaving,Full cleaning work,69
+2026-06-01,2,RF-11,Unit I,Spinning,Weft break PBM,33
+2026-06-01,2,VTX-01,Unit I,Spinning,Full cleaning work,67
+2026-06-01,2,VTX-02,Unit I,Spinning,Maintenance - scheduled,124
+2026-06-01,2,VTX-05,Unit I,Spinning,Loom runout,31
+2026-06-01,2,VTX-06,Unit I,Spinning,Loom runout,35
+2026-06-01,2,VTX-11,Unit I,Spinning,Loom runout,46
+2026-06-01,3,TOY-02,Unit I,Weaving,Full cleaning work,69
+2026-06-01,3,TSU-05,Unit I,Weaving,Sort change work,64
+2026-06-01,3,TSU-07,Unit I,Weaving,Full cleaning work,65
+2026-06-01,3,SUL-02,Unit I,Weaving,Full cleaning work,112
+2026-06-01,3,RF-09,Unit I,Spinning,Voltage fluctuation PBM,16
+2026-06-01,3,VTX-03,Unit I,Spinning,Voltage fluctuation PBM,10
+2026-06-01,3,VTX-06,Unit I,Spinning,Bobbin shortage,74
+2026-06-01,3,AJ-03,Unit I,Spinning,Traveller change work,21
+2026-06-02,1,TOY-08,Unit I,Weaving,Traveller change work,23
+2026-06-02,1,TOY-12,Unit I,Weaving,Full cleaning work,71
+2026-06-02,1,TOY-14,Unit I,Weaving,Maintenance - scheduled,138
+2026-06-02,1,TSU-05,Unit I,Weaving,Traveller change work,13
+2026-06-02,1,RF-07,Unit I,Spinning,Bobbin shortage,79
+2026-06-02,1,VTX-02,Unit I,Spinning,Full cleaning work,98
+2026-06-02,1,AJ-01,Unit I,Spinning,Full cleaning work,145
+2026-06-02,2,TOY-03,Unit I,Weaving,Bobbin shortage,47
+2026-06-02,2,TOY-07,Unit I,Weaving,Weft break PBM,38
+2026-06-02,2,TOY-10,Unit I,Weaving,Traveller change work,16
+2026-06-02,2,TSU-01,Unit I,Weaving,Weft break PBM,44
+2026-06-02,2,TSU-08,Unit I,Weaving,Full cleaning work,61
+2026-06-02,2,TSU-09,Unit I,Weaving,Full cleaning work,141
+2026-06-02,2,VTX-09,Unit I,Spinning,Voltage fluctuation PBM,12
+2026-06-02,3,TOY-02,Unit I,Weaving,Loom runout,32
+2026-06-02,3,TOY-09,Unit I,Weaving,Voltage fluctuation PBM,9
+2026-06-02,3,TOY-14,Unit I,Weaving,Weft break PBM,19
+2026-06-02,3,TSU-01,Unit I,Weaving,Bobbin shortage,107
+2026-06-02,3,TSU-05,Unit I,Weaving,Loom runout,33
+2026-06-02,3,TSU-09,Unit I,Weaving,Voltage fluctuation PBM,14
+2026-06-02,3,TSU-10,Unit I,Weaving,Traveller change work,18
+2026-06-02,3,RF-11,Unit I,Spinning,Traveller change work,28
+2026-06-02,3,VTX-01,Unit I,Spinning,Voltage fluctuation PBM,6
+2026-06-02,3,VTX-06,Unit I,Spinning,Bobbin shortage,111
+2026-06-02,3,VTX-12,Unit I,Spinning,Sort change work,51
+2026-06-03,1,TOY-01,Unit I,Weaving,Loom runout,40
+2026-06-03,1,TOY-11,Unit I,Weaving,Loom runout,49
+2026-06-03,1,RF-02,Unit I,Spinning,Sort change work,56
+2026-06-03,1,RF-05,Unit I,Spinning,Voltage fluctuation PBM,15
+2026-06-03,1,RF-08,Unit I,Spinning,Full cleaning work,146
+2026-06-03,1,RF-11,Unit I,Spinning,Maintenance - scheduled,171
+2026-06-03,1,VTX-06,Unit I,Spinning,Loom runout,60
+2026-06-03,1,VTX-08,Unit I,Spinning,Sort change work,74
+2026-06-03,1,VTX-10,Unit I,Spinning,Full cleaning work,67
+2026-06-03,2,TOY-01,Unit I,Weaving,Bobbin shortage,109
+2026-06-03,2,TOY-04,Unit I,Weaving,Maintenance - scheduled,175
+2026-06-03,2,TOY-08,Unit I,Weaving,Bobbin shortage,91
+2026-06-03,2,TSU-05,Unit I,Weaving,Full cleaning work,76
+2026-06-03,2,SUL-02,Unit I,Weaving,Traveller change work,22
+2026-06-03,2,VTX-02,Unit I,Spinning,Weft break PBM,45
+2026-06-03,2,VTX-03,Unit I,Spinning,Maintenance - scheduled,74
+2026-06-03,2,VTX-04,Unit I,Spinning,Sort change work,54
+2026-06-03,2,AJ-01,Unit I,Spinning,Maintenance - scheduled,138
+2026-06-03,2,AJ-04,Unit I,Spinning,Full cleaning work,87
+2026-06-03,3,TOY-07,Unit I,Weaving,Full cleaning work,91
+2026-06-03,3,TOY-08,Unit I,Weaving,Traveller change work,28
+2026-06-03,3,TOY-13,Unit I,Weaving,Weft break PBM,26
+2026-06-03,3,TOY-14,Unit I,Weaving,Voltage fluctuation PBM,6
+2026-06-03,3,TSU-02,Unit I,Weaving,Traveller change work,29
+2026-06-03,3,TSU-06,Unit I,Weaving,Maintenance - scheduled,69
+2026-06-03,3,RF-05,Unit I,Spinning,Loom runout,25
+2026-06-03,3,RF-10,Unit I,Spinning,Full cleaning work,145
+2026-06-03,3,RF-11,Unit I,Spinning,Full cleaning work,145
+2026-06-03,3,VTX-03,Unit I,Spinning,Voltage fluctuation PBM,14
+2026-06-03,3,VTX-06,Unit I,Spinning,Maintenance - scheduled,88
+2026-06-03,3,VTX-10,Unit I,Spinning,Voltage fluctuation PBM,12
+2026-06-03,3,AJ-05,Unit I,Spinning,Voltage fluctuation PBM,5
+2026-06-04,1,TOY-04,Unit I,Weaving,Weft break PBM,17
+2026-06-04,1,TOY-08,Unit I,Weaving,Sort change work,78
+2026-06-04,1,TOY-09,Unit I,Weaving,Maintenance - scheduled,144
+2026-06-04,1,TSU-02,Unit I,Weaving,Bobbin shortage,52
+2026-06-04,1,TSU-09,Unit I,Weaving,Full cleaning work,81
+2026-06-04,1,SUL-05,Unit I,Weaving,Traveller change work,21
+2026-06-04,1,VTX-10,Unit I,Spinning,Maintenance - scheduled,140
+2026-06-04,1,AJ-01,Unit I,Spinning,Loom runout,39
+2026-06-04,1,AJ-03,Unit I,Spinning,Full cleaning work,96
+2026-06-04,1,AJ-04,Unit I,Spinning,Loom runout,59
+2026-06-04,2,TOY-05,Unit I,Weaving,Loom runout,41
+2026-06-04,2,TSU-03,Unit I,Weaving,Bobbin shortage,112
+2026-06-04,2,VTX-12,Unit I,Spinning,Maintenance - scheduled,171
+2026-06-04,3,TOY-01,Unit I,Weaving,Sort change work,47
+2026-06-04,3,TOY-02,Unit I,Weaving,Bobbin shortage,41
+2026-06-04,3,TOY-08,Unit I,Weaving,Maintenance - scheduled,149
+2026-06-04,3,TOY-10,Unit I,Weaving,Voltage fluctuation PBM,11
+2026-06-04,3,TOY-13,Unit I,Weaving,Bobbin shortage,111
+2026-06-04,3,TOY-14,Unit I,Weaving,Maintenance - scheduled,136
+2026-06-04,3,TSU-04,Unit I,Weaving,Weft break PBM,27
+2026-06-04,3,TSU-06,Unit I,Weaving,Loom runout,42
+2026-06-04,3,SUL-02,Unit I,Weaving,Maintenance - scheduled,64
+2026-06-04,3,RF-04,Unit I,Spinning,Full cleaning work,94
+2026-06-04,3,VTX-06,Unit I,Spinning,Sort change work,64
+2026-06-04,3,VTX-08,Unit I,Spinning,Full cleaning work,144
+2026-06-05,1,TOY-06,Unit I,Weaving,Full cleaning work,106
+2026-06-05,1,TOY-07,Unit I,Weaving,Sort change work,73
+2026-06-05,1,SUL-03,Unit I,Weaving,Full cleaning work,142
+2026-06-05,1,RF-05,Unit I,Spinning,Loom runout,53
+2026-06-05,1,VTX-06,Unit I,Spinning,Loom runout,52
+2026-06-05,1,AJ-03,Unit I,Spinning,Weft break PBM,17
+2026-06-05,1,AJ-04,Unit I,Spinning,Voltage fluctuation PBM,11
+2026-06-05,2,TOY-05,Unit I,Weaving,Weft break PBM,20
+2026-06-05,2,TOY-10,Unit I,Weaving,Traveller change work,24
+2026-06-05,2,TSU-02,Unit I,Weaving,Bobbin shortage,94
+2026-06-05,2,TSU-06,Unit I,Weaving,Loom runout,47
+2026-06-05,2,RF-01,Unit I,Spinning,Full cleaning work,120
+2026-06-05,2,VTX-05,Unit I,Spinning,Full cleaning work,146
+2026-06-05,2,VTX-06,Unit I,Spinning,Bobbin shortage,104
+2026-06-05,2,AJ-05,Unit I,Spinning,Maintenance - scheduled,81
+2026-06-05,3,TOY-04,Unit I,Weaving,Weft break PBM,29
+2026-06-05,3,SUL-04,Unit I,Weaving,Full cleaning work,120
+2026-06-05,3,RF-09,Unit I,Spinning,Loom runout,56
+2026-06-05,3,VTX-01,Unit I,Spinning,Sort change work,56
+2026-06-05,3,VTX-12,Unit I,Spinning,Loom runout,41
+2026-06-06,1,TOY-04,Unit I,Weaving,Full cleaning work,97
+2026-06-06,1,TOY-07,Unit I,Weaving,Loom runout,31
+2026-06-06,1,TOY-12,Unit I,Weaving,Loom runout,49
+2026-06-06,1,TSU-06,Unit I,Weaving,Maintenance - scheduled,127
+2026-06-06,1,RF-01,Unit I,Spinning,Traveller change work,28
+2026-06-06,1,RF-02,Unit I,Spinning,Bobbin shortage,74
+2026-06-06,1,RF-05,Unit I,Spinning,Loom runout,50
+2026-06-06,1,RF-06,Unit I,Spinning,Bobbin shortage,53
+2026-06-06,1,AJ-03,Unit I,Spinning,Weft break PBM,24
+2026-06-06,2,TOY-02,Unit I,Weaving,Full cleaning work,79
+2026-06-06,2,TOY-06,Unit I,Weaving,Weft break PBM,29
+2026-06-06,2,TSU-02,Unit I,Weaving,Full cleaning work,142
+2026-06-06,2,SUL-01,Unit I,Weaving,Traveller change work,11
+2026-06-06,2,RF-01,Unit I,Spinning,Traveller change work,13
+2026-06-06,2,VTX-11,Unit I,Spinning,Traveller change work,14
+2026-06-06,2,VTX-12,Unit I,Spinning,Bobbin shortage,67
+2026-06-06,3,TOY-13,Unit I,Weaving,Bobbin shortage,31
+2026-06-06,3,TSU-02,Unit I,Weaving,Sort change work,45
+2026-06-06,3,TSU-07,Unit I,Weaving,Weft break PBM,17
+2026-06-06,3,SUL-04,Unit I,Weaving,Loom runout,37
+2026-06-06,3,SUL-05,Unit I,Weaving,Full cleaning work,62
+2026-06-06,3,RF-04,Unit I,Spinning,Sort change work,66
+2026-06-06,3,RF-11,Unit I,Spinning,Loom runout,52
+2026-06-06,3,VTX-02,Unit I,Spinning,Traveller change work,12
+2026-06-06,3,VTX-08,Unit I,Spinning,Voltage fluctuation PBM,19
+2026-06-06,3,AJ-03,Unit I,Spinning,Voltage fluctuation PBM,12
+2026-06-06,3,AJ-05,Unit I,Spinning,Sort change work,54
+2026-06-07,1,TOY-03,Unit I,Weaving,Voltage fluctuation PBM,19
+2026-06-07,1,TOY-04,Unit I,Weaving,Loom runout,31
+2026-06-07,1,TOY-06,Unit I,Weaving,Loom runout,58
+2026-06-07,1,TOY-12,Unit I,Weaving,Bobbin shortage,65
+2026-06-07,1,SUL-02,Unit I,Weaving,Maintenance - scheduled,180
+2026-06-07,1,RF-04,Unit I,Spinning,Maintenance - scheduled,134
+2026-06-07,1,VTX-03,Unit I,Spinning,Traveller change work,21
+2026-06-07,1,VTX-12,Unit I,Spinning,Loom runout,36
+2026-06-07,2,TOY-09,Unit I,Weaving,Loom runout,21
+2026-06-07,2,TOY-15,Unit I,Weaving,Traveller change work,24
+2026-06-07,2,TSU-01,Unit I,Weaving,Traveller change work,16
+2026-06-07,2,SUL-01,Unit I,Weaving,Voltage fluctuation PBM,8
+2026-06-07,2,RF-05,Unit I,Spinning,Full cleaning work,61
+2026-06-07,2,VTX-06,Unit I,Spinning,Weft break PBM,23
+2026-06-07,3,TOY-03,Unit I,Weaving,Traveller change work,19
+2026-06-07,3,RF-02,Unit I,Spinning,Maintenance - scheduled,62
+2026-06-07,3,RF-06,Unit I,Spinning,Bobbin shortage,55
+2026-06-07,3,VTX-01,Unit I,Spinning,Full cleaning work,92
+2026-06-07,3,VTX-02,Unit I,Spinning,Sort change work,33
+2026-06-07,3,VTX-06,Unit I,Spinning,Loom runout,26
+2026-06-07,3,VTX-07,Unit I,Spinning,Maintenance - scheduled,69
+2026-06-07,3,VTX-11,Unit I,Spinning,Full cleaning work,75
+2026-06-07,3,AJ-03,Unit I,Spinning,Bobbin shortage,41
+2026-06-07,3,AJ-05,Unit I,Spinning,Full cleaning work,107
+2026-06-08,1,TOY-04,Unit I,Weaving,Sort change work,58
+2026-06-08,1,TOY-07,Unit I,Weaving,Loom runout,28
+2026-06-08,1,TSU-01,Unit I,Weaving,Maintenance - scheduled,141
+2026-06-08,1,TSU-07,Unit I,Weaving,Traveller change work,11
+2026-06-08,1,SUL-02,Unit I,Weaving,Traveller change work,14
+2026-06-08,1,SUL-04,Unit I,Weaving,Bobbin shortage,60
+2026-06-08,1,RF-05,Unit I,Spinning,Sort change work,74
+2026-06-08,1,RF-06,Unit I,Spinning,Maintenance - scheduled,104
+2026-06-08,1,RF-11,Unit I,Spinning,Voltage fluctuation PBM,8
+2026-06-08,1,VTX-01,Unit I,Spinning,Bobbin shortage,64
+2026-06-08,1,VTX-08,Unit I,Spinning,Sort change work,53
+2026-06-08,1,AJ-01,Unit I,Spinning,Weft break PBM,16
+2026-06-08,1,AJ-03,Unit I,Spinning,Weft break PBM,30
+2026-06-08,2,TOY-08,Unit I,Weaving,Maintenance - scheduled,170
+2026-06-08,2,TOY-10,Unit I,Weaving,Traveller change work,19
+2026-06-08,2,TSU-04,Unit I,Weaving,Traveller change work,23
+2026-06-08,2,TSU-06,Unit I,Weaving,Traveller change work,26
+2026-06-08,2,TSU-08,Unit I,Weaving,Sort change work,70
+2026-06-08,2,RF-07,Unit I,Spinning,Voltage fluctuation PBM,6
+2026-06-08,2,VTX-02,Unit I,Spinning,Voltage fluctuation PBM,13
+2026-06-08,2,VTX-09,Unit I,Spinning,Loom runout,28
+2026-06-08,2,VTX-11,Unit I,Spinning,Traveller change work,14
+2026-06-08,2,AJ-04,Unit I,Spinning,Voltage fluctuation PBM,7
+2026-06-08,2,AJ-05,Unit I,Spinning,Loom runout,32
+2026-06-08,3,TOY-02,Unit I,Weaving,Full cleaning work,75
+2026-06-08,3,TOY-03,Unit I,Weaving,Bobbin shortage,80
+2026-06-08,3,TOY-09,Unit I,Weaving,Bobbin shortage,47
+2026-06-08,3,TSU-01,Unit I,Weaving,Voltage fluctuation PBM,6
+2026-06-08,3,TSU-03,Unit I,Weaving,Traveller change work,18
+2026-06-08,3,RF-07,Unit I,Spinning,Sort change work,79
+2026-06-08,3,RF-08,Unit I,Spinning,Full cleaning work,69
+2026-06-08,3,RF-12,Unit I,Spinning,Voltage fluctuation PBM,15
+2026-06-09,1,TOY-07,Unit I,Weaving,Full cleaning work,117
+2026-06-09,1,TOY-08,Unit I,Weaving,Loom runout,42
+2026-06-09,1,TSU-02,Unit I,Weaving,Loom runout,41
+2026-06-09,1,TSU-09,Unit I,Weaving,Maintenance - scheduled,79
+2026-06-09,1,SUL-02,Unit I,Weaving,Sort change work,70
+2026-06-09,1,RF-09,Unit I,Spinning,Loom runout,25
+2026-06-09,1,VTX-03,Unit I,Spinning,Bobbin shortage,96
+2026-06-09,1,VTX-10,Unit I,Spinning,Weft break PBM,31
+2026-06-09,2,TOY-03,Unit I,Weaving,Bobbin shortage,55
+2026-06-09,2,TOY-08,Unit I,Weaving,Bobbin shortage,44
+2026-06-09,2,TOY-11,Unit I,Weaving,Voltage fluctuation PBM,16
+2026-06-09,2,TOY-13,Unit I,Weaving,Voltage fluctuation PBM,17
+2026-06-09,2,TSU-01,Unit I,Weaving,Maintenance - scheduled,177
+2026-06-09,2,TSU-02,Unit I,Weaving,Voltage fluctuation PBM,14
+2026-06-09,2,RF-11,Unit I,Spinning,Loom runout,38
+2026-06-09,2,RF-12,Unit I,Spinning,Weft break PBM,20
+2026-06-09,2,VTX-06,Unit I,Spinning,Bobbin shortage,95
+2026-06-09,2,VTX-07,Unit I,Spinning,Weft break PBM,30
+2026-06-09,2,VTX-11,Unit I,Spinning,Voltage fluctuation PBM,14
+2026-06-09,3,TOY-03,Unit I,Weaving,Full cleaning work,131
+2026-06-09,3,TOY-05,Unit I,Weaving,Voltage fluctuation PBM,15
+2026-06-09,3,RF-03,Unit I,Spinning,Full cleaning work,140
+2026-06-09,3,RF-06,Unit I,Spinning,Maintenance - scheduled,95
+2026-06-09,3,VTX-06,Unit I,Spinning,Traveller change work,21
+2026-06-09,3,VTX-11,Unit I,Spinning,Weft break PBM,35
+2026-06-09,3,AJ-04,Unit I,Spinning,Voltage fluctuation PBM,10
+2026-06-09,3,AJ-05,Unit I,Spinning,Weft break PBM,24
+2026-06-10,1,TOY-07,Unit I,Weaving,Sort change work,37
+2026-06-10,1,TOY-12,Unit I,Weaving,Maintenance - scheduled,108
+2026-06-10,1,TSU-04,Unit I,Weaving,Traveller change work,29
+2026-06-10,1,SUL-02,Unit I,Weaving,Voltage fluctuation PBM,12
+2026-06-10,1,RF-02,Unit I,Spinning,Weft break PBM,15
+2026-06-10,1,RF-10,Unit I,Spinning,Full cleaning work,83
+2026-06-10,1,RF-11,Unit I,Spinning,Bobbin shortage,88
+2026-06-10,1,VTX-06,Unit I,Spinning,Weft break PBM,45
+2026-06-10,1,VTX-08,Unit I,Spinning,Maintenance - scheduled,162
+2026-06-10,2,TOY-07,Unit I,Weaving,Traveller change work,25
+2026-06-10,2,TOY-12,Unit I,Weaving,Maintenance - scheduled,101
+2026-06-10,2,TOY-15,Unit I,Weaving,Maintenance - scheduled,162
+2026-06-10,2,TSU-03,Unit I,Weaving,Bobbin shortage,34
+2026-06-10,2,SUL-04,Unit I,Weaving,Sort change work,61
+2026-06-10,2,RF-08,Unit I,Spinning,Bobbin shortage,35
+2026-06-10,2,VTX-07,Unit I,Spinning,Bobbin shortage,104
+2026-06-10,3,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,16
+2026-06-10,3,TOY-15,Unit I,Weaving,Sort change work,33
+2026-06-10,3,TSU-05,Unit I,Weaving,Traveller change work,30
+2026-06-10,3,SUL-05,Unit I,Weaving,Sort change work,77
+2026-06-10,3,RF-01,Unit I,Spinning,Voltage fluctuation PBM,13
+2026-06-10,3,RF-10,Unit I,Spinning,Voltage fluctuation PBM,20
+2026-06-10,3,VTX-01,Unit I,Spinning,Full cleaning work,127
+2026-06-10,3,VTX-04,Unit I,Spinning,Sort change work,56
+2026-06-11,1,TOY-01,Unit I,Weaving,Full cleaning work,117
+2026-06-11,1,TOY-03,Unit I,Weaving,Full cleaning work,108
+2026-06-11,1,TOY-08,Unit I,Weaving,Loom runout,30
+2026-06-11,1,TOY-11,Unit I,Weaving,Bobbin shortage,112
+2026-06-11,1,TOY-13,Unit I,Weaving,Loom runout,23
+2026-06-11,1,TSU-05,Unit I,Weaving,Loom runout,38
+2026-06-11,1,TSU-06,Unit I,Weaving,Maintenance - scheduled,108
+2026-06-11,1,TSU-07,Unit I,Weaving,Sort change work,64
+2026-06-11,1,VTX-05,Unit I,Spinning,Loom runout,32
+2026-06-11,1,VTX-11,Unit I,Spinning,Loom runout,32
+2026-06-11,2,TOY-02,Unit I,Weaving,Full cleaning work,91
+2026-06-11,2,TOY-10,Unit I,Weaving,Loom runout,21
+2026-06-11,2,TSU-02,Unit I,Weaving,Full cleaning work,124
+2026-06-11,2,VTX-03,Unit I,Spinning,Voltage fluctuation PBM,11
+2026-06-11,2,VTX-11,Unit I,Spinning,Maintenance - scheduled,121
+2026-06-11,2,AJ-03,Unit I,Spinning,Weft break PBM,19
+2026-06-11,3,TOY-02,Unit I,Weaving,Sort change work,46
+2026-06-11,3,TOY-11,Unit I,Weaving,Bobbin shortage,79
+2026-06-11,3,TSU-01,Unit I,Weaving,Maintenance - scheduled,144
+2026-06-11,3,SUL-01,Unit I,Weaving,Weft break PBM,33
+2026-06-11,3,SUL-02,Unit I,Weaving,Traveller change work,20
+2026-06-11,3,VTX-02,Unit I,Spinning,Traveller change work,24
+2026-06-11,3,VTX-05,Unit I,Spinning,Bobbin shortage,73
+2026-06-11,3,VTX-09,Unit I,Spinning,Bobbin shortage,111
+2026-06-11,3,VTX-10,Unit I,Spinning,Loom runout,29
+2026-06-11,3,AJ-01,Unit I,Spinning,Voltage fluctuation PBM,12
+2026-06-12,1,TOY-06,Unit I,Weaving,Traveller change work,29
+2026-06-12,1,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,17
+2026-06-12,1,TSU-08,Unit I,Weaving,Traveller change work,17
+2026-06-12,1,SUL-02,Unit I,Weaving,Sort change work,60
+2026-06-12,1,RF-07,Unit I,Spinning,Loom runout,51
+2026-06-12,1,RF-11,Unit I,Spinning,Maintenance - scheduled,107
+2026-06-12,1,VTX-11,Unit I,Spinning,Bobbin shortage,91
+2026-06-12,1,AJ-01,Unit I,Spinning,Full cleaning work,110
+2026-06-12,2,TOY-02,Unit I,Weaving,Traveller change work,22
+2026-06-12,2,TOY-08,Unit I,Weaving,Sort change work,66
+2026-06-12,2,TOY-09,Unit I,Weaving,Voltage fluctuation PBM,12
+2026-06-12,2,TSU-01,Unit I,Weaving,Sort change work,33
+2026-06-12,2,TSU-10,Unit I,Weaving,Voltage fluctuation PBM,19
+2026-06-12,2,RF-11,Unit I,Spinning,Voltage fluctuation PBM,7
+2026-06-12,2,VTX-02,Unit I,Spinning,Maintenance - scheduled,130
+2026-06-12,2,VTX-03,Unit I,Spinning,Bobbin shortage,97
+2026-06-12,2,VTX-05,Unit I,Spinning,Voltage fluctuation PBM,9
+2026-06-12,2,VTX-06,Unit I,Spinning,Bobbin shortage,69
+2026-06-12,2,AJ-01,Unit I,Spinning,Full cleaning work,101
+2026-06-12,3,TOY-08,Unit I,Weaving,Sort change work,52
+2026-06-12,3,TOY-09,Unit I,Weaving,Maintenance - scheduled,156
+2026-06-12,3,TOY-15,Unit I,Weaving,Traveller change work,26
+2026-06-12,3,TSU-04,Unit I,Weaving,Maintenance - scheduled,139
+2026-06-12,3,TSU-09,Unit I,Weaving,Weft break PBM,30
+2026-06-12,3,RF-08,Unit I,Spinning,Traveller change work,25
+2026-06-12,3,VTX-06,Unit I,Spinning,Full cleaning work,66
+2026-06-12,3,VTX-09,Unit I,Spinning,Bobbin shortage,71
+2026-06-12,3,VTX-10,Unit I,Spinning,Voltage fluctuation PBM,8
+2026-06-13,1,TOY-02,Unit I,Weaving,Full cleaning work,140
+2026-06-13,1,TOY-04,Unit I,Weaving,Maintenance - scheduled,89
+2026-06-13,1,TSU-07,Unit I,Weaving,Loom runout,22
+2026-06-13,1,TSU-08,Unit I,Weaving,Loom runout,51
+2026-06-13,1,SUL-01,Unit I,Weaving,Traveller change work,29
+2026-06-13,1,RF-02,Unit I,Spinning,Voltage fluctuation PBM,6
+2026-06-13,1,RF-05,Unit I,Spinning,Traveller change work,26
+2026-06-13,1,RF-06,Unit I,Spinning,Traveller change work,27
+2026-06-13,1,VTX-08,Unit I,Spinning,Sort change work,65
+2026-06-13,2,TOY-06,Unit I,Weaving,Voltage fluctuation PBM,5
+2026-06-13,2,TOY-08,Unit I,Weaving,Full cleaning work,62
+2026-06-13,2,TSU-09,Unit I,Weaving,Sort change work,50
+2026-06-13,2,SUL-05,Unit I,Weaving,Bobbin shortage,63
+2026-06-13,2,RF-11,Unit I,Spinning,Voltage fluctuation PBM,18
+2026-06-13,2,VTX-02,Unit I,Spinning,Bobbin shortage,84
+2026-06-13,3,TOY-02,Unit I,Weaving,Sort change work,85
+2026-06-13,3,TOY-10,Unit I,Weaving,Traveller change work,29
+2026-06-13,3,TSU-01,Unit I,Weaving,Full cleaning work,122
+2026-06-13,3,TSU-08,Unit I,Weaving,Voltage fluctuation PBM,17
+2026-06-13,3,VTX-02,Unit I,Spinning,Loom runout,31
+2026-06-13,3,AJ-04,Unit I,Spinning,Sort change work,31
+2026-06-14,1,TOY-14,Unit I,Weaving,Bobbin shortage,70
+2026-06-14,1,SUL-01,Unit I,Weaving,Sort change work,55
+2026-06-14,1,SUL-02,Unit I,Weaving,Maintenance - scheduled,135
+2026-06-14,1,RF-03,Unit I,Spinning,Bobbin shortage,95
+2026-06-14,1,RF-07,Unit I,Spinning,Sort change work,88
+2026-06-14,1,RF-11,Unit I,Spinning,Sort change work,41
+2026-06-14,1,VTX-01,Unit I,Spinning,Voltage fluctuation PBM,14
+2026-06-14,1,VTX-08,Unit I,Spinning,Voltage fluctuation PBM,5
+2026-06-14,1,VTX-12,Unit I,Spinning,Maintenance - scheduled,90
+2026-06-14,2,TOY-01,Unit I,Weaving,Voltage fluctuation PBM,11
+2026-06-14,2,TOY-02,Unit I,Weaving,Full cleaning work,64
+2026-06-14,2,TOY-09,Unit I,Weaving,Voltage fluctuation PBM,15
+2026-06-14,2,TOY-11,Unit I,Weaving,Maintenance - scheduled,77
+2026-06-14,2,TOY-14,Unit I,Weaving,Loom runout,50
+2026-06-14,2,TSU-07,Unit I,Weaving,Loom runout,33
+2026-06-14,2,SUL-01,Unit I,Weaving,Voltage fluctuation PBM,15
+2026-06-14,2,RF-11,Unit I,Spinning,Full cleaning work,131
+2026-06-14,2,VTX-08,Unit I,Spinning,Bobbin shortage,110
+2026-06-14,2,AJ-01,Unit I,Spinning,Voltage fluctuation PBM,15
+2026-06-14,2,AJ-04,Unit I,Spinning,Traveller change work,21
+2026-06-14,3,TOY-02,Unit I,Weaving,Full cleaning work,64
+2026-06-14,3,TOY-08,Unit I,Weaving,Weft break PBM,29
+2026-06-14,3,TOY-10,Unit I,Weaving,Loom runout,41
+2026-06-14,3,TOY-11,Unit I,Weaving,Voltage fluctuation PBM,5
+2026-06-14,3,TSU-06,Unit I,Weaving,Weft break PBM,30
+2026-06-14,3,SUL-02,Unit I,Weaving,Maintenance - scheduled,132
+2026-06-14,3,RF-11,Unit I,Spinning,Maintenance - scheduled,74
+2026-06-14,3,VTX-06,Unit I,Spinning,Loom runout,40
+2026-06-14,3,VTX-08,Unit I,Spinning,Voltage fluctuation PBM,19
+2026-06-15,1,TOY-02,Unit I,Weaving,Traveller change work,15
+2026-06-15,1,TOY-07,Unit I,Weaving,Bobbin shortage,71
+2026-06-15,1,TOY-08,Unit I,Weaving,Traveller change work,14
+2026-06-15,1,SUL-02,Unit I,Weaving,Weft break PBM,19
+2026-06-15,1,RF-11,Unit I,Spinning,Voltage fluctuation PBM,18
+2026-06-15,1,VTX-02,Unit I,Spinning,Weft break PBM,33
+2026-06-15,1,VTX-07,Unit I,Spinning,Voltage fluctuation PBM,19
+2026-06-15,2,TOY-02,Unit I,Weaving,Maintenance - scheduled,125
+2026-06-15,2,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,5
+2026-06-15,2,TOY-12,Unit I,Weaving,Sort change work,88
+2026-06-15,2,SUL-04,Unit I,Weaving,Full cleaning work,115
+2026-06-15,2,VTX-01,Unit I,Spinning,Weft break PBM,41
+2026-06-15,2,VTX-02,Unit I,Spinning,Bobbin shortage,42
+2026-06-15,2,VTX-08,Unit I,Spinning,Loom runout,23
+2026-06-15,2,AJ-03,Unit I,Spinning,Sort change work,54
+2026-06-15,3,TOY-08,Unit I,Weaving,Weft break PBM,23
+2026-06-15,3,TOY-09,Unit I,Weaving,Traveller change work,29
+2026-06-15,3,TOY-13,Unit I,Weaving,Loom runout,56
+2026-06-15,3,RF-05,Unit I,Spinning,Weft break PBM,38
+2026-06-15,3,VTX-03,Unit I,Spinning,Full cleaning work,67
+2026-06-15,3,AJ-03,Unit I,Spinning,Sort change work,61
+2026-06-16,1,TOY-03,Unit I,Weaving,Voltage fluctuation PBM,8
+2026-06-16,1,TOY-05,Unit I,Weaving,Maintenance - scheduled,136
+2026-06-16,1,TOY-08,Unit I,Weaving,Sort change work,50
+2026-06-16,1,TOY-15,Unit I,Weaving,Weft break PBM,20
+2026-06-16,1,TSU-08,Unit I,Weaving,Traveller change work,16
+2026-06-16,1,RF-04,Unit I,Spinning,Weft break PBM,44
+2026-06-16,1,RF-07,Unit I,Spinning,Loom runout,24
+2026-06-16,1,RF-11,Unit I,Spinning,Traveller change work,20
+2026-06-16,1,VTX-01,Unit I,Spinning,Traveller change work,13
+2026-06-16,1,VTX-06,Unit I,Spinning,Maintenance - scheduled,66
+2026-06-16,2,TOY-02,Unit I,Weaving,Maintenance - scheduled,118
+2026-06-16,2,TOY-13,Unit I,Weaving,Maintenance - scheduled,153
+2026-06-16,2,TSU-10,Unit I,Weaving,Full cleaning work,127
+2026-06-16,2,SUL-03,Unit I,Weaving,Full cleaning work,67
+2026-06-16,2,VTX-08,Unit I,Spinning,Full cleaning work,104
+2026-06-16,3,TOY-05,Unit I,Weaving,Sort change work,47
+2026-06-16,3,TSU-03,Unit I,Weaving,Full cleaning work,96
+2026-06-16,3,TSU-10,Unit I,Weaving,Full cleaning work,104
+2026-06-16,3,VTX-08,Unit I,Spinning,Weft break PBM,34
+2026-06-16,3,AJ-02,Unit I,Spinning,Maintenance - scheduled,146
+2026-06-16,3,AJ-04,Unit I,Spinning,Bobbin shortage,54
+2026-06-17,1,TOY-06,Unit I,Weaving,Maintenance - scheduled,154
+2026-06-17,1,TOY-11,Unit I,Weaving,Bobbin shortage,41
+2026-06-17,1,TSU-07,Unit I,Weaving,Voltage fluctuation PBM,20
+2026-06-17,1,RF-03,Unit I,Spinning,Traveller change work,30
+2026-06-17,1,RF-05,Unit I,Spinning,Sort change work,64
+2026-06-17,2,TOY-02,Unit I,Weaving,Maintenance - scheduled,177
+2026-06-17,2,TOY-07,Unit I,Weaving,Loom runout,34
+2026-06-17,2,TOY-08,Unit I,Weaving,Traveller change work,19
+2026-06-17,2,TOY-12,Unit I,Weaving,Weft break PBM,30
+2026-06-17,2,TOY-13,Unit I,Weaving,Voltage fluctuation PBM,5
+2026-06-17,2,TSU-01,Unit I,Weaving,Voltage fluctuation PBM,16
+2026-06-17,2,TSU-07,Unit I,Weaving,Traveller change work,26
+2026-06-17,2,RF-09,Unit I,Spinning,Maintenance - scheduled,180
+2026-06-17,2,RF-11,Unit I,Spinning,Maintenance - scheduled,146
+2026-06-17,2,RF-12,Unit I,Spinning,Maintenance - scheduled,126
+2026-06-17,2,VTX-02,Unit I,Spinning,Sort change work,55
+2026-06-17,2,VTX-05,Unit I,Spinning,Sort change work,34
+2026-06-17,3,TOY-04,Unit I,Weaving,Voltage fluctuation PBM,20
+2026-06-17,3,TOY-06,Unit I,Weaving,Loom runout,51
+2026-06-17,3,TOY-08,Unit I,Weaving,Loom runout,24
+2026-06-17,3,TOY-15,Unit I,Weaving,Sort change work,65
+2026-06-17,3,TSU-09,Unit I,Weaving,Weft break PBM,19
+2026-06-17,3,SUL-03,Unit I,Weaving,Traveller change work,17
+2026-06-17,3,RF-02,Unit I,Spinning,Bobbin shortage,102
+2026-06-17,3,RF-05,Unit I,Spinning,Maintenance - scheduled,135
+2026-06-17,3,RF-06,Unit I,Spinning,Full cleaning work,108
+2026-06-17,3,RF-09,Unit I,Spinning,Maintenance - scheduled,72
+2026-06-17,3,RF-11,Unit I,Spinning,Maintenance - scheduled,124
+2026-06-17,3,VTX-08,Unit I,Spinning,Traveller change work,19
+2026-06-18,1,TOY-03,Unit I,Weaving,Voltage fluctuation PBM,14
+2026-06-18,1,TOY-08,Unit I,Weaving,Maintenance - scheduled,94
+2026-06-18,1,RF-01,Unit I,Spinning,Loom runout,40
+2026-06-18,1,AJ-02,Unit I,Spinning,Weft break PBM,41
+2026-06-18,1,AJ-05,Unit I,Spinning,Traveller change work,18
+2026-06-18,2,TOY-09,Unit I,Weaving,Loom runout,51
+2026-06-18,2,SUL-02,Unit I,Weaving,Traveller change work,12
+2026-06-18,2,SUL-05,Unit I,Weaving,Full cleaning work,81
+2026-06-18,2,RF-06,Unit I,Spinning,Traveller change work,16
+2026-06-18,2,VTX-06,Unit I,Spinning,Sort change work,31
+2026-06-18,2,AJ-02,Unit I,Spinning,Sort change work,85
+2026-06-18,3,TOY-03,Unit I,Weaving,Full cleaning work,90
+2026-06-18,3,TOY-06,Unit I,Weaving,Bobbin shortage,68
+2026-06-18,3,TOY-08,Unit I,Weaving,Sort change work,62
+2026-06-18,3,TOY-11,Unit I,Weaving,Weft break PBM,19
+2026-06-18,3,TSU-03,Unit I,Weaving,Sort change work,33
+2026-06-18,3,RF-05,Unit I,Spinning,Full cleaning work,79
+2026-06-18,3,RF-06,Unit I,Spinning,Maintenance - scheduled,166
+2026-06-18,3,VTX-01,Unit I,Spinning,Maintenance - scheduled,101
+2026-06-18,3,VTX-06,Unit I,Spinning,Weft break PBM,40
+2026-06-18,3,VTX-09,Unit I,Spinning,Loom runout,55
+2026-06-18,3,AJ-04,Unit I,Spinning,Traveller change work,15
+2026-06-19,1,TOY-10,Unit I,Weaving,Full cleaning work,119
+2026-06-19,1,TSU-08,Unit I,Weaving,Bobbin shortage,120
+2026-06-19,1,SUL-02,Unit I,Weaving,Voltage fluctuation PBM,8
+2026-06-19,1,SUL-03,Unit I,Weaving,Loom runout,20
+2026-06-19,1,RF-08,Unit I,Spinning,Sort change work,30
+2026-06-19,1,VTX-01,Unit I,Spinning,Maintenance - scheduled,143
+2026-06-19,1,VTX-07,Unit I,Spinning,Maintenance - scheduled,78
+2026-06-19,1,VTX-09,Unit I,Spinning,Sort change work,87
+2026-06-19,2,TOY-02,Unit I,Weaving,Bobbin shortage,83
+2026-06-19,2,TOY-04,Unit I,Weaving,Bobbin shortage,92
+2026-06-19,2,TSU-09,Unit I,Weaving,Weft break PBM,26
+2026-06-19,2,SUL-01,Unit I,Weaving,Bobbin shortage,44
+2026-06-19,2,RF-02,Unit I,Spinning,Weft break PBM,44
+2026-06-19,2,RF-11,Unit I,Spinning,Weft break PBM,31
+2026-06-19,2,RF-12,Unit I,Spinning,Loom runout,33
+2026-06-19,2,VTX-07,Unit I,Spinning,Full cleaning work,102
+2026-06-19,2,AJ-01,Unit I,Spinning,Maintenance - scheduled,103
+2026-06-19,3,TOY-02,Unit I,Weaving,Bobbin shortage,59
+2026-06-19,3,RF-04,Unit I,Spinning,Full cleaning work,90
+2026-06-19,3,VTX-12,Unit I,Spinning,Bobbin shortage,82
+2026-06-19,3,AJ-01,Unit I,Spinning,Weft break PBM,28
+2026-06-20,1,TOY-08,Unit I,Weaving,Maintenance - scheduled,64
+2026-06-20,1,SUL-01,Unit I,Weaving,Maintenance - scheduled,154
+2026-06-20,1,RF-06,Unit I,Spinning,Sort change work,31
+2026-06-20,1,RF-12,Unit I,Spinning,Full cleaning work,111
+2026-06-20,1,VTX-06,Unit I,Spinning,Full cleaning work,108
+2026-06-20,1,VTX-08,Unit I,Spinning,Loom runout,54
+2026-06-20,1,VTX-12,Unit I,Spinning,Voltage fluctuation PBM,18
+2026-06-20,1,AJ-02,Unit I,Spinning,Full cleaning work,83
+2026-06-20,1,AJ-03,Unit I,Spinning,Weft break PBM,24
+2026-06-20,2,TOY-05,Unit I,Weaving,Weft break PBM,25
+2026-06-20,2,TOY-06,Unit I,Weaving,Weft break PBM,28
+2026-06-20,2,TOY-14,Unit I,Weaving,Maintenance - scheduled,166
+2026-06-20,2,SUL-04,Unit I,Weaving,Maintenance - scheduled,60
+2026-06-20,2,RF-05,Unit I,Spinning,Weft break PBM,43
+2026-06-20,2,VTX-04,Unit I,Spinning,Maintenance - scheduled,107
+2026-06-20,2,VTX-08,Unit I,Spinning,Voltage fluctuation PBM,16
+2026-06-20,2,AJ-04,Unit I,Spinning,Maintenance - scheduled,175
+2026-06-20,3,TOY-06,Unit I,Weaving,Sort change work,77
+2026-06-20,3,SUL-04,Unit I,Weaving,Maintenance - scheduled,134
+2026-06-20,3,SUL-05,Unit I,Weaving,Weft break PBM,27
+2026-06-20,3,RF-03,Unit I,Spinning,Maintenance - scheduled,67
+2026-06-20,3,RF-06,Unit I,Spinning,Weft break PBM,32
+2026-06-20,3,RF-07,Unit I,Spinning,Bobbin shortage,81
+2026-06-20,3,RF-08,Unit I,Spinning,Bobbin shortage,59
+2026-06-20,3,VTX-04,Unit I,Spinning,Weft break PBM,29
+2026-06-20,3,VTX-07,Unit I,Spinning,Weft break PBM,34
+2026-06-21,1,TOY-02,Unit I,Weaving,Bobbin shortage,95
+2026-06-21,1,TSU-01,Unit I,Weaving,Traveller change work,17
+2026-06-21,1,TSU-05,Unit I,Weaving,Weft break PBM,32
+2026-06-21,1,SUL-01,Unit I,Weaving,Voltage fluctuation PBM,8
+2026-06-21,1,SUL-03,Unit I,Weaving,Traveller change work,19
+2026-06-21,1,RF-02,Unit I,Spinning,Sort change work,86
+2026-06-21,1,RF-11,Unit I,Spinning,Traveller change work,27
+2026-06-21,2,TOY-14,Unit I,Weaving,Maintenance - scheduled,89
+2026-06-21,2,TSU-03,Unit I,Weaving,Weft break PBM,32
+2026-06-21,2,VTX-02,Unit I,Spinning,Full cleaning work,103
+2026-06-21,2,VTX-11,Unit I,Spinning,Sort change work,39
+2026-06-21,3,TOY-05,Unit I,Weaving,Sort change work,32
+2026-06-21,3,TOY-06,Unit I,Weaving,Traveller change work,12
+2026-06-21,3,TSU-02,Unit I,Weaving,Sort change work,58
+2026-06-21,3,SUL-02,Unit I,Weaving,Sort change work,47
+2026-06-21,3,RF-08,Unit I,Spinning,Weft break PBM,17
+2026-06-21,3,VTX-03,Unit I,Spinning,Voltage fluctuation PBM,8
+2026-06-21,3,VTX-09,Unit I,Spinning,Traveller change work,24
+2026-06-21,3,AJ-02,Unit I,Spinning,Loom runout,31
+2026-06-22,1,TOY-01,Unit I,Weaving,Weft break PBM,36
+2026-06-22,1,TOY-06,Unit I,Weaving,Voltage fluctuation PBM,19
+2026-06-22,1,TOY-07,Unit I,Weaving,Bobbin shortage,55
+2026-06-22,1,TOY-08,Unit I,Weaving,Loom runout,21
+2026-06-22,1,TOY-09,Unit I,Weaving,Traveller change work,12
+2026-06-22,1,TOY-10,Unit I,Weaving,Sort change work,76
+2026-06-22,1,TOY-15,Unit I,Weaving,Full cleaning work,61
+2026-06-22,1,SUL-01,Unit I,Weaving,Maintenance - scheduled,108
+2026-06-22,1,SUL-03,Unit I,Weaving,Weft break PBM,34
+2026-06-22,1,SUL-05,Unit I,Weaving,Full cleaning work,123
+2026-06-22,1,RF-11,Unit I,Spinning,Bobbin shortage,112
+2026-06-22,1,VTX-06,Unit I,Spinning,Traveller change work,17
+2026-06-22,1,VTX-11,Unit I,Spinning,Maintenance - scheduled,68
+2026-06-22,1,AJ-01,Unit I,Spinning,Sort change work,90
+2026-06-22,1,AJ-03,Unit I,Spinning,Traveller change work,17
+2026-06-22,2,TOY-02,Unit I,Weaving,Sort change work,68
+2026-06-22,2,SUL-01,Unit I,Weaving,Full cleaning work,140
+2026-06-22,2,RF-01,Unit I,Spinning,Bobbin shortage,80
+2026-06-22,2,RF-04,Unit I,Spinning,Traveller change work,23
+2026-06-22,2,VTX-04,Unit I,Spinning,Full cleaning work,78
+2026-06-22,2,VTX-06,Unit I,Spinning,Bobbin shortage,119
+2026-06-22,2,VTX-10,Unit I,Spinning,Loom runout,46
+2026-06-22,3,TSU-04,Unit I,Weaving,Bobbin shortage,47
+2026-06-22,3,VTX-04,Unit I,Spinning,Traveller change work,17
+2026-06-22,3,VTX-08,Unit I,Spinning,Bobbin shortage,33
+2026-06-23,1,TOY-08,Unit I,Weaving,Loom runout,38
+2026-06-23,1,TSU-02,Unit I,Weaving,Maintenance - scheduled,100
+2026-06-23,1,AJ-04,Unit I,Spinning,Loom runout,29
+2026-06-23,2,TOY-08,Unit I,Weaving,Bobbin shortage,118
+2026-06-23,2,TSU-02,Unit I,Weaving,Loom runout,54
+2026-06-23,2,TSU-09,Unit I,Weaving,Maintenance - scheduled,162
+2026-06-23,2,SUL-01,Unit I,Weaving,Voltage fluctuation PBM,6
+2026-06-23,2,RF-08,Unit I,Spinning,Weft break PBM,22
+2026-06-23,2,RF-09,Unit I,Spinning,Sort change work,49
+2026-06-23,2,RF-11,Unit I,Spinning,Sort change work,68
+2026-06-23,2,VTX-06,Unit I,Spinning,Sort change work,55
+2026-06-23,3,TOY-08,Unit I,Weaving,Traveller change work,18
+2026-06-23,3,TOY-10,Unit I,Weaving,Loom runout,31
+2026-06-23,3,TOY-14,Unit I,Weaving,Full cleaning work,109
+2026-06-23,3,SUL-03,Unit I,Weaving,Traveller change work,12
+2026-06-23,3,SUL-04,Unit I,Weaving,Voltage fluctuation PBM,20
+2026-06-23,3,RF-07,Unit I,Spinning,Traveller change work,10
+2026-06-23,3,RF-11,Unit I,Spinning,Weft break PBM,34
+2026-06-23,3,VTX-09,Unit I,Spinning,Maintenance - scheduled,108
+2026-06-24,1,TOY-07,Unit I,Weaving,Full cleaning work,83
+2026-06-24,1,TOY-08,Unit I,Weaving,Maintenance - scheduled,85
+2026-06-24,1,SUL-05,Unit I,Weaving,Bobbin shortage,61
+2026-06-24,1,VTX-06,Unit I,Spinning,Weft break PBM,23
+2026-06-24,1,VTX-11,Unit I,Spinning,Weft break PBM,27
+2026-06-24,2,TOY-02,Unit I,Weaving,Full cleaning work,95
+2026-06-24,2,TOY-04,Unit I,Weaving,Full cleaning work,87
+2026-06-24,2,TOY-12,Unit I,Weaving,Loom runout,28
+2026-06-24,2,TSU-07,Unit I,Weaving,Bobbin shortage,38
+2026-06-24,2,SUL-01,Unit I,Weaving,Traveller change work,22
+2026-06-24,2,RF-02,Unit I,Spinning,Maintenance - scheduled,124
+2026-06-24,2,RF-10,Unit I,Spinning,Traveller change work,19
+2026-06-24,2,RF-11,Unit I,Spinning,Sort change work,90
+2026-06-24,2,VTX-08,Unit I,Spinning,Full cleaning work,140
+2026-06-24,2,VTX-11,Unit I,Spinning,Voltage fluctuation PBM,9
+2026-06-24,2,AJ-03,Unit I,Spinning,Weft break PBM,41
+2026-06-24,3,TOY-08,Unit I,Weaving,Bobbin shortage,77
+2026-06-24,3,TOY-09,Unit I,Weaving,Sort change work,59
+2026-06-24,3,TOY-14,Unit I,Weaving,Traveller change work,24
+2026-06-24,3,TOY-15,Unit I,Weaving,Sort change work,76
+2026-06-24,3,TSU-02,Unit I,Weaving,Weft break PBM,19
+2026-06-24,3,TSU-05,Unit I,Weaving,Full cleaning work,150
+2026-06-24,3,SUL-01,Unit I,Weaving,Bobbin shortage,48
+2026-06-24,3,SUL-02,Unit I,Weaving,Bobbin shortage,79
+2026-06-24,3,RF-04,Unit I,Spinning,Loom runout,22
+2026-06-24,3,VTX-03,Unit I,Spinning,Maintenance - scheduled,144
+2026-06-25,1,TOY-01,Unit I,Weaving,Bobbin shortage,65
+2026-06-25,1,TOY-11,Unit I,Weaving,Full cleaning work,60
+2026-06-25,1,TOY-12,Unit I,Weaving,Maintenance - scheduled,77
+2026-06-25,1,SUL-03,Unit I,Weaving,Weft break PBM,34
+2026-06-25,1,SUL-04,Unit I,Weaving,Bobbin shortage,117
+2026-06-25,1,RF-11,Unit I,Spinning,Loom runout,49
+2026-06-25,1,VTX-04,Unit I,Spinning,Full cleaning work,142
+2026-06-25,1,VTX-06,Unit I,Spinning,Loom runout,24
+2026-06-25,1,VTX-12,Unit I,Spinning,Traveller change work,29
+2026-06-25,1,AJ-01,Unit I,Spinning,Voltage fluctuation PBM,11
+2026-06-25,1,AJ-04,Unit I,Spinning,Voltage fluctuation PBM,7
+2026-06-25,2,TOY-12,Unit I,Weaving,Traveller change work,16
+2026-06-25,2,RF-11,Unit I,Spinning,Weft break PBM,34
+2026-06-25,2,VTX-01,Unit I,Spinning,Traveller change work,27
+2026-06-25,2,VTX-02,Unit I,Spinning,Loom runout,38
+2026-06-25,2,VTX-06,Unit I,Spinning,Maintenance - scheduled,145
+2026-06-25,2,VTX-07,Unit I,Spinning,Maintenance - scheduled,119
+2026-06-25,2,VTX-11,Unit I,Spinning,Loom runout,45
+2026-06-25,3,TOY-05,Unit I,Weaving,Full cleaning work,115
+2026-06-25,3,TOY-08,Unit I,Weaving,Sort change work,34
+2026-06-25,3,TSU-02,Unit I,Weaving,Traveller change work,12
+2026-06-25,3,RF-12,Unit I,Spinning,Sort change work,59
+2026-06-25,3,AJ-03,Unit I,Spinning,Weft break PBM,34
+2026-06-25,3,AJ-05,Unit I,Spinning,Loom runout,60
+2026-06-26,1,TOY-10,Unit I,Weaving,Bobbin shortage,34
+2026-06-26,1,TSU-09,Unit I,Weaving,Sort change work,31
+2026-06-26,1,SUL-01,Unit I,Weaving,Sort change work,59
+2026-06-26,1,RF-02,Unit I,Spinning,Loom runout,27
+2026-06-26,1,RF-05,Unit I,Spinning,Voltage fluctuation PBM,13
+2026-06-26,1,RF-07,Unit I,Spinning,Maintenance - scheduled,168
+2026-06-26,1,RF-12,Unit I,Spinning,Loom runout,51
+2026-06-26,1,VTX-02,Unit I,Spinning,Bobbin shortage,78
+2026-06-26,1,VTX-06,Unit I,Spinning,Voltage fluctuation PBM,5
+2026-06-26,1,VTX-11,Unit I,Spinning,Full cleaning work,104
+2026-06-26,2,SUL-01,Unit I,Weaving,Full cleaning work,87
+2026-06-26,2,RF-11,Unit I,Spinning,Sort change work,68
+2026-06-26,2,AJ-01,Unit I,Spinning,Weft break PBM,17
+2026-06-26,3,TOY-03,Unit I,Weaving,Voltage fluctuation PBM,19
+2026-06-26,3,TOY-06,Unit I,Weaving,Weft break PBM,19
+2026-06-26,3,TOY-08,Unit I,Weaving,Traveller change work,21
+2026-06-26,3,TOY-14,Unit I,Weaving,Full cleaning work,78
+2026-06-26,3,TSU-04,Unit I,Weaving,Voltage fluctuation PBM,7
+2026-06-26,3,RF-05,Unit I,Spinning,Maintenance - scheduled,172
+2026-06-26,3,RF-06,Unit I,Spinning,Loom runout,35
+2026-06-26,3,RF-07,Unit I,Spinning,Maintenance - scheduled,83
+2026-06-26,3,RF-12,Unit I,Spinning,Loom runout,42
+2026-06-26,3,VTX-05,Unit I,Spinning,Voltage fluctuation PBM,16
+2026-06-26,3,VTX-06,Unit I,Spinning,Bobbin shortage,84
+2026-06-26,3,AJ-01,Unit I,Spinning,Weft break PBM,35
+2026-06-26,3,AJ-03,Unit I,Spinning,Loom runout,23
+2026-06-27,1,TOY-02,Unit I,Weaving,Bobbin shortage,80
+2026-06-27,1,TOY-06,Unit I,Weaving,Sort change work,62
+2026-06-27,1,TOY-08,Unit I,Weaving,Loom runout,30
+2026-06-27,1,TSU-03,Unit I,Weaving,Full cleaning work,117
+2026-06-27,1,TSU-10,Unit I,Weaving,Bobbin shortage,58
+2026-06-27,1,RF-11,Unit I,Spinning,Full cleaning work,138
+2026-06-27,1,VTX-05,Unit I,Spinning,Weft break PBM,30
+2026-06-27,1,AJ-02,Unit I,Spinning,Voltage fluctuation PBM,5
+2026-06-27,2,TOY-03,Unit I,Weaving,Sort change work,52
+2026-06-27,2,TOY-05,Unit I,Weaving,Voltage fluctuation PBM,9
+2026-06-27,2,TOY-07,Unit I,Weaving,Full cleaning work,91
+2026-06-27,2,TSU-05,Unit I,Weaving,Bobbin shortage,41
+2026-06-27,2,TSU-10,Unit I,Weaving,Maintenance - scheduled,167
+2026-06-27,2,SUL-05,Unit I,Weaving,Traveller change work,26
+2026-06-27,2,RF-11,Unit I,Spinning,Loom runout,20
+2026-06-27,2,VTX-04,Unit I,Spinning,Weft break PBM,41
+2026-06-27,3,TOY-05,Unit I,Weaving,Maintenance - scheduled,107
+2026-06-27,3,TOY-13,Unit I,Weaving,Sort change work,52
+2026-06-27,3,SUL-01,Unit I,Weaving,Sort change work,44
+2026-06-27,3,SUL-04,Unit I,Weaving,Sort change work,76
+2026-06-27,3,RF-02,Unit I,Spinning,Loom runout,48
+2026-06-28,1,TOY-01,Unit I,Weaving,Sort change work,73
+2026-06-28,1,TOY-07,Unit I,Weaving,Loom runout,28
+2026-06-28,1,TOY-08,Unit I,Weaving,Traveller change work,11
+2026-06-28,1,TOY-09,Unit I,Weaving,Voltage fluctuation PBM,13
+2026-06-28,1,TOY-10,Unit I,Weaving,Sort change work,48
+2026-06-28,1,TOY-15,Unit I,Weaving,Bobbin shortage,63
+2026-06-28,1,TSU-04,Unit I,Weaving,Weft break PBM,26
+2026-06-28,1,SUL-01,Unit I,Weaving,Traveller change work,27
+2026-06-28,1,RF-06,Unit I,Spinning,Traveller change work,12
+2026-06-28,1,VTX-02,Unit I,Spinning,Traveller change work,11
+2026-06-28,1,VTX-03,Unit I,Spinning,Sort change work,58
+2026-06-28,1,VTX-05,Unit I,Spinning,Full cleaning work,137
+2026-06-28,1,VTX-12,Unit I,Spinning,Voltage fluctuation PBM,11
+2026-06-28,2,TOY-02,Unit I,Weaving,Traveller change work,26
+2026-06-28,2,TSU-02,Unit I,Weaving,Full cleaning work,63
+2026-06-28,2,SUL-03,Unit I,Weaving,Voltage fluctuation PBM,7
+2026-06-28,2,RF-04,Unit I,Spinning,Voltage fluctuation PBM,15
+2026-06-28,2,RF-08,Unit I,Spinning,Weft break PBM,29
+2026-06-28,2,RF-09,Unit I,Spinning,Full cleaning work,121
+2026-06-28,2,VTX-02,Unit I,Spinning,Full cleaning work,68
+2026-06-28,2,VTX-06,Unit I,Spinning,Maintenance - scheduled,76
+2026-06-28,3,TOY-04,Unit I,Weaving,Traveller change work,21
+2026-06-28,3,TSU-04,Unit I,Weaving,Traveller change work,28
+2026-06-28,3,RF-11,Unit I,Spinning,Bobbin shortage,83
+2026-06-28,3,VTX-12,Unit I,Spinning,Weft break PBM,41
+2026-06-29,1,TOY-05,Unit I,Weaving,Weft break PBM,17
+2026-06-29,1,TOY-11,Unit I,Weaving,Full cleaning work,146
+2026-06-29,1,TSU-03,Unit I,Weaving,Traveller change work,23
+2026-06-29,1,SUL-03,Unit I,Weaving,Traveller change work,19
+2026-06-29,1,RF-02,Unit I,Spinning,Bobbin shortage,93
+2026-06-29,1,RF-07,Unit I,Spinning,Full cleaning work,70
+2026-06-29,1,RF-10,Unit I,Spinning,Sort change work,62
+2026-06-29,1,RF-11,Unit I,Spinning,Maintenance - scheduled,140
+2026-06-29,1,VTX-02,Unit I,Spinning,Full cleaning work,64
+2026-06-29,1,VTX-06,Unit I,Spinning,Weft break PBM,45
+2026-06-29,1,VTX-08,Unit I,Spinning,Sort change work,67
+2026-06-29,2,TOY-11,Unit I,Weaving,Voltage fluctuation PBM,18
+2026-06-29,2,TSU-07,Unit I,Weaving,Maintenance - scheduled,112
+2026-06-29,2,TSU-09,Unit I,Weaving,Full cleaning work,76
+2026-06-29,2,SUL-01,Unit I,Weaving,Full cleaning work,105
+2026-06-29,2,SUL-02,Unit I,Weaving,Traveller change work,21
+2026-06-29,2,RF-03,Unit I,Spinning,Weft break PBM,39
+2026-06-29,2,RF-05,Unit I,Spinning,Bobbin shortage,92
+2026-06-29,2,RF-06,Unit I,Spinning,Voltage fluctuation PBM,14
+2026-06-29,2,RF-07,Unit I,Spinning,Traveller change work,11
+2026-06-29,2,VTX-03,Unit I,Spinning,Loom runout,52
+2026-06-29,2,VTX-07,Unit I,Spinning,Sort change work,36
+2026-06-29,2,AJ-03,Unit I,Spinning,Voltage fluctuation PBM,19
+2026-06-29,3,TOY-05,Unit I,Weaving,Maintenance - scheduled,153
+2026-06-29,3,TOY-08,Unit I,Weaving,Full cleaning work,121
+2026-06-29,3,TOY-12,Unit I,Weaving,Bobbin shortage,108
+2026-06-29,3,TSU-02,Unit I,Weaving,Traveller change work,27
+2026-06-29,3,TSU-06,Unit I,Weaving,Loom runout,44
+2026-06-29,3,SUL-02,Unit I,Weaving,Voltage fluctuation PBM,13
+2026-06-29,3,RF-11,Unit I,Spinning,Sort change work,39
+2026-06-29,3,VTX-02,Unit I,Spinning,Traveller change work,16
+2026-06-29,3,VTX-06,Unit I,Spinning,Maintenance - scheduled,136
+2026-06-30,1,TOY-03,Unit I,Weaving,Sort change work,36
+2026-06-30,1,SUL-05,Unit I,Weaving,Voltage fluctuation PBM,15
+2026-06-30,1,RF-03,Unit I,Spinning,Voltage fluctuation PBM,6
+2026-06-30,1,RF-10,Unit I,Spinning,Weft break PBM,42
+2026-06-30,1,VTX-07,Unit I,Spinning,Full cleaning work,63
+2026-06-30,1,AJ-01,Unit I,Spinning,Loom runout,23
+2026-06-30,2,TOY-07,Unit I,Weaving,Sort change work,76
+2026-06-30,2,TOY-14,Unit I,Weaving,Loom runout,31
+2026-06-30,2,TSU-09,Unit I,Weaving,Full cleaning work,134
+2026-06-30,2,VTX-06,Unit I,Spinning,Full cleaning work,61
+2026-06-30,3,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,11
+2026-06-30,3,TOY-10,Unit I,Weaving,Loom runout,39
+2026-06-30,3,SUL-03,Unit I,Weaving,Bobbin shortage,39
+2026-06-30,3,RF-11,Unit I,Spinning,Loom runout,42
+2026-06-30,3,VTX-01,Unit I,Spinning,Bobbin shortage,31
+2026-06-30,3,VTX-06,Unit I,Spinning,Bobbin shortage,84
+2026-07-01,1,TOY-03,Unit I,Weaving,Weft break PBM,25
+2026-07-01,1,TOY-06,Unit I,Weaving,Maintenance - scheduled,118
+2026-07-01,1,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,5
+2026-07-01,1,TOY-11,Unit I,Weaving,Weft break PBM,32
+2026-07-01,1,TSU-07,Unit I,Weaving,Voltage fluctuation PBM,7
+2026-07-01,1,SUL-04,Unit I,Weaving,Bobbin shortage,53
+2026-07-01,1,SUL-05,Unit I,Weaving,Traveller change work,10
+2026-07-01,1,RF-05,Unit I,Spinning,Traveller change work,10
+2026-07-01,1,VTX-06,Unit I,Spinning,Maintenance - scheduled,79
+2026-07-01,1,AJ-01,Unit I,Spinning,Loom runout,60
+2026-07-01,1,AJ-04,Unit I,Spinning,Full cleaning work,98
+2026-07-01,2,TOY-02,Unit I,Weaving,Sort change work,69
+2026-07-01,2,TOY-08,Unit I,Weaving,Sort change work,79
+2026-07-01,2,RF-01,Unit I,Spinning,Weft break PBM,21
+2026-07-01,2,VTX-04,Unit I,Spinning,Weft break PBM,36
+2026-07-01,2,VTX-09,Unit I,Spinning,Bobbin shortage,63
+2026-07-01,3,TOY-01,Unit I,Weaving,Bobbin shortage,35
+2026-07-01,3,TOY-05,Unit I,Weaving,Sort change work,53
+2026-07-01,3,TSU-05,Unit I,Weaving,Traveller change work,28
+2026-07-01,3,TSU-06,Unit I,Weaving,Full cleaning work,125
+2026-07-01,3,SUL-03,Unit I,Weaving,Traveller change work,19
+2026-07-01,3,RF-03,Unit I,Spinning,Traveller change work,16
+2026-07-01,3,RF-05,Unit I,Spinning,Loom runout,41
+2026-07-01,3,RF-11,Unit I,Spinning,Weft break PBM,29
+2026-07-01,3,VTX-06,Unit I,Spinning,Maintenance - scheduled,82
+2026-07-01,3,VTX-07,Unit I,Spinning,Voltage fluctuation PBM,13
+2026-07-01,3,VTX-08,Unit I,Spinning,Traveller change work,12
+2026-07-01,3,AJ-04,Unit I,Spinning,Weft break PBM,25
+2026-07-02,1,TOY-01,Unit I,Weaving,Maintenance - scheduled,74
+2026-07-02,1,TOY-02,Unit I,Weaving,Traveller change work,29
+2026-07-02,1,TOY-03,Unit I,Weaving,Bobbin shortage,44
+2026-07-02,1,RF-02,Unit I,Spinning,Bobbin shortage,75
+2026-07-02,1,RF-12,Unit I,Spinning,Bobbin shortage,78
+2026-07-02,1,VTX-07,Unit I,Spinning,Traveller change work,15
+2026-07-02,1,AJ-01,Unit I,Spinning,Bobbin shortage,118
+2026-07-02,2,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,14
+2026-07-02,2,TSU-03,Unit I,Weaving,Full cleaning work,62
+2026-07-02,2,TSU-04,Unit I,Weaving,Full cleaning work,128
+2026-07-02,2,TSU-08,Unit I,Weaving,Maintenance - scheduled,138
+2026-07-02,2,SUL-02,Unit I,Weaving,Full cleaning work,118
+2026-07-02,2,VTX-05,Unit I,Spinning,Weft break PBM,39
+2026-07-02,2,VTX-06,Unit I,Spinning,Full cleaning work,68
+2026-07-02,3,TOY-04,Unit I,Weaving,Maintenance - scheduled,111
+2026-07-02,3,TOY-12,Unit I,Weaving,Bobbin shortage,83
+2026-07-02,3,TOY-13,Unit I,Weaving,Full cleaning work,99
+2026-07-02,3,TSU-06,Unit I,Weaving,Traveller change work,19
+2026-07-02,3,SUL-03,Unit I,Weaving,Weft break PBM,25
+2026-07-02,3,SUL-04,Unit I,Weaving,Sort change work,88
+2026-07-02,3,RF-02,Unit I,Spinning,Full cleaning work,88
+2026-07-02,3,RF-03,Unit I,Spinning,Loom runout,27
+2026-07-02,3,RF-11,Unit I,Spinning,Maintenance - scheduled,120
+2026-07-02,3,VTX-06,Unit I,Spinning,Maintenance - scheduled,155
+2026-07-03,1,TOY-07,Unit I,Weaving,Bobbin shortage,110
+2026-07-03,1,TOY-09,Unit I,Weaving,Traveller change work,15
+2026-07-03,1,VTX-02,Unit I,Spinning,Bobbin shortage,67
+2026-07-03,1,VTX-10,Unit I,Spinning,Voltage fluctuation PBM,11
+2026-07-03,1,AJ-02,Unit I,Spinning,Bobbin shortage,47
+2026-07-03,2,TOY-02,Unit I,Weaving,Bobbin shortage,80
+2026-07-03,2,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,8
+2026-07-03,2,RF-01,Unit I,Spinning,Traveller change work,21
+2026-07-03,2,RF-07,Unit I,Spinning,Maintenance - scheduled,169
+2026-07-03,2,RF-10,Unit I,Spinning,Bobbin shortage,110
+2026-07-03,2,VTX-06,Unit I,Spinning,Bobbin shortage,33
+2026-07-03,2,AJ-03,Unit I,Spinning,Maintenance - scheduled,149
+2026-07-03,3,TSU-05,Unit I,Weaving,Voltage fluctuation PBM,7
+2026-07-03,3,RF-11,Unit I,Spinning,Traveller change work,27
+2026-07-03,3,VTX-01,Unit I,Spinning,Maintenance - scheduled,128
+2026-07-03,3,VTX-12,Unit I,Spinning,Maintenance - scheduled,123
+2026-07-03,3,AJ-02,Unit I,Spinning,Sort change work,31
+2026-07-03,3,AJ-05,Unit I,Spinning,Full cleaning work,121
+2026-07-04,1,TSU-02,Unit I,Weaving,Bobbin shortage,103
+2026-07-04,1,TSU-10,Unit I,Weaving,Weft break PBM,32
+2026-07-04,1,SUL-01,Unit I,Weaving,Weft break PBM,45
+2026-07-04,1,SUL-04,Unit I,Weaving,Sort change work,42
+2026-07-04,1,RF-01,Unit I,Spinning,Sort change work,68
+2026-07-04,1,VTX-05,Unit I,Spinning,Sort change work,67
+2026-07-04,1,AJ-05,Unit I,Spinning,Loom runout,41
+2026-07-04,2,TOY-03,Unit I,Weaving,Weft break PBM,44
+2026-07-04,2,TOY-11,Unit I,Weaving,Weft break PBM,30
+2026-07-04,2,TSU-03,Unit I,Weaving,Voltage fluctuation PBM,17
+2026-07-04,2,TSU-09,Unit I,Weaving,Traveller change work,25
+2026-07-04,2,VTX-01,Unit I,Spinning,Bobbin shortage,78
+2026-07-04,2,AJ-02,Unit I,Spinning,Maintenance - scheduled,68
+2026-07-04,3,TOY-07,Unit I,Weaving,Maintenance - scheduled,73
+2026-07-04,3,TSU-08,Unit I,Weaving,Weft break PBM,34
+2026-07-04,3,RF-11,Unit I,Spinning,Full cleaning work,88
+2026-07-04,3,VTX-07,Unit I,Spinning,Voltage fluctuation PBM,9
+2026-07-04,3,VTX-08,Unit I,Spinning,Bobbin shortage,120
+2026-07-05,1,TOY-02,Unit I,Weaving,Bobbin shortage,47
+2026-07-05,1,TOY-08,Unit I,Weaving,Maintenance - scheduled,98
+2026-07-05,1,TSU-07,Unit I,Weaving,Full cleaning work,85
+2026-07-05,1,SUL-03,Unit I,Weaving,Bobbin shortage,50
+2026-07-05,1,RF-08,Unit I,Spinning,Full cleaning work,116
+2026-07-05,1,VTX-06,Unit I,Spinning,Sort change work,69
+2026-07-05,1,AJ-05,Unit I,Spinning,Maintenance - scheduled,62
+2026-07-05,2,TOY-02,Unit I,Weaving,Voltage fluctuation PBM,11
+2026-07-05,2,TOY-08,Unit I,Weaving,Weft break PBM,19
+2026-07-05,2,TSU-01,Unit I,Weaving,Maintenance - scheduled,177
+2026-07-05,2,TSU-07,Unit I,Weaving,Weft break PBM,38
+2026-07-05,2,RF-10,Unit I,Spinning,Sort change work,62
+2026-07-05,2,RF-11,Unit I,Spinning,Sort change work,42
+2026-07-05,2,VTX-06,Unit I,Spinning,Full cleaning work,89
+2026-07-05,3,TOY-02,Unit I,Weaving,Weft break PBM,17
+2026-07-05,3,TSU-03,Unit I,Weaving,Sort change work,80
+2026-07-05,3,TSU-05,Unit I,Weaving,Sort change work,39
+2026-07-05,3,SUL-03,Unit I,Weaving,Full cleaning work,150
+2026-07-05,3,VTX-03,Unit I,Spinning,Full cleaning work,113
+2026-07-06,1,TOY-02,Unit I,Weaving,Traveller change work,17
+2026-07-06,1,TOY-04,Unit I,Weaving,Sort change work,69
+2026-07-06,1,TOY-08,Unit I,Weaving,Sort change work,53
+2026-07-06,1,TOY-15,Unit I,Weaving,Traveller change work,26
+2026-07-06,1,SUL-03,Unit I,Weaving,Bobbin shortage,112
+2026-07-06,1,RF-07,Unit I,Spinning,Sort change work,90
+2026-07-06,1,RF-09,Unit I,Spinning,Full cleaning work,105
+2026-07-06,1,VTX-06,Unit I,Spinning,Loom runout,33
+2026-07-06,1,VTX-08,Unit I,Spinning,Voltage fluctuation PBM,12
+2026-07-06,1,VTX-12,Unit I,Spinning,Traveller change work,25
+2026-07-06,1,AJ-01,Unit I,Spinning,Traveller change work,17
+2026-07-06,2,TOY-02,Unit I,Weaving,Voltage fluctuation PBM,20
+2026-07-06,2,TOY-06,Unit I,Weaving,Full cleaning work,125
+2026-07-06,2,TOY-15,Unit I,Weaving,Loom runout,33
+2026-07-06,2,TSU-05,Unit I,Weaving,Weft break PBM,21
+2026-07-06,2,SUL-01,Unit I,Weaving,Weft break PBM,34
+2026-07-06,2,SUL-04,Unit I,Weaving,Full cleaning work,87
+2026-07-06,2,RF-02,Unit I,Spinning,Weft break PBM,43
+2026-07-06,2,VTX-04,Unit I,Spinning,Traveller change work,24
+2026-07-06,2,AJ-01,Unit I,Spinning,Bobbin shortage,33
+2026-07-06,2,AJ-02,Unit I,Spinning,Bobbin shortage,89
+2026-07-06,3,TOY-01,Unit I,Weaving,Loom runout,37
+2026-07-06,3,TOY-05,Unit I,Weaving,Bobbin shortage,101
+2026-07-06,3,TSU-10,Unit I,Weaving,Weft break PBM,23
+2026-07-06,3,VTX-06,Unit I,Spinning,Loom runout,32
+2026-07-06,3,VTX-07,Unit I,Spinning,Weft break PBM,24
+2026-07-06,3,VTX-11,Unit I,Spinning,Voltage fluctuation PBM,19
+2026-07-07,1,TOY-04,Unit I,Weaving,Full cleaning work,104
+2026-07-07,1,TSU-05,Unit I,Weaving,Loom runout,53
+2026-07-07,1,RF-02,Unit I,Spinning,Maintenance - scheduled,106
+2026-07-07,1,RF-10,Unit I,Spinning,Bobbin shortage,101
+2026-07-07,1,RF-12,Unit I,Spinning,Loom runout,36
+2026-07-07,1,VTX-08,Unit I,Spinning,Loom runout,56
+2026-07-07,2,TOY-01,Unit I,Weaving,Weft break PBM,22
+2026-07-07,2,TOY-02,Unit I,Weaving,Bobbin shortage,31
+2026-07-07,2,TOY-08,Unit I,Weaving,Sort change work,54
+2026-07-07,2,RF-11,Unit I,Spinning,Voltage fluctuation PBM,13
+2026-07-07,2,VTX-06,Unit I,Spinning,Voltage fluctuation PBM,11
+2026-07-07,3,TOY-08,Unit I,Weaving,Maintenance - scheduled,128
+2026-07-07,3,TOY-11,Unit I,Weaving,Traveller change work,18
+2026-07-07,3,TOY-14,Unit I,Weaving,Bobbin shortage,110
+2026-07-07,3,TSU-03,Unit I,Weaving,Loom runout,55
+2026-07-07,3,TSU-06,Unit I,Weaving,Full cleaning work,139
+2026-07-07,3,RF-04,Unit I,Spinning,Voltage fluctuation PBM,18
+2026-07-07,3,RF-09,Unit I,Spinning,Loom runout,46
+2026-07-08,1,TOY-08,Unit I,Weaving,Bobbin shortage,32
+2026-07-08,1,TSU-01,Unit I,Weaving,Weft break PBM,23
+2026-07-08,1,TSU-10,Unit I,Weaving,Loom runout,37
+2026-07-08,1,SUL-05,Unit I,Weaving,Weft break PBM,27
+2026-07-08,1,RF-11,Unit I,Spinning,Weft break PBM,17
+2026-07-08,2,TOY-02,Unit I,Weaving,Loom runout,58
+2026-07-08,2,TOY-03,Unit I,Weaving,Bobbin shortage,78
+2026-07-08,2,TOY-04,Unit I,Weaving,Maintenance - scheduled,85
+2026-07-08,2,TOY-08,Unit I,Weaving,Traveller change work,24
+2026-07-08,2,TOY-11,Unit I,Weaving,Sort change work,87
+2026-07-08,2,TOY-14,Unit I,Weaving,Voltage fluctuation PBM,16
+2026-07-08,2,TOY-15,Unit I,Weaving,Maintenance - scheduled,68
+2026-07-08,2,RF-01,Unit I,Spinning,Weft break PBM,45
+2026-07-08,2,VTX-01,Unit I,Spinning,Maintenance - scheduled,160
+2026-07-08,2,VTX-02,Unit I,Spinning,Maintenance - scheduled,177
+2026-07-08,2,VTX-06,Unit I,Spinning,Maintenance - scheduled,163
+2026-07-08,3,TOY-04,Unit I,Weaving,Maintenance - scheduled,94
+2026-07-08,3,TOY-06,Unit I,Weaving,Voltage fluctuation PBM,13
+2026-07-08,3,TOY-08,Unit I,Weaving,Sort change work,89
+2026-07-08,3,TSU-01,Unit I,Weaving,Traveller change work,25
+2026-07-08,3,TSU-06,Unit I,Weaving,Loom runout,20
+2026-07-08,3,TSU-10,Unit I,Weaving,Voltage fluctuation PBM,16
+2026-07-08,3,SUL-02,Unit I,Weaving,Sort change work,87
+2026-07-08,3,SUL-03,Unit I,Weaving,Loom runout,22
+2026-07-08,3,RF-06,Unit I,Spinning,Voltage fluctuation PBM,10
+2026-07-08,3,RF-09,Unit I,Spinning,Traveller change work,19
+2026-07-08,3,RF-10,Unit I,Spinning,Full cleaning work,145
+2026-07-08,3,RF-11,Unit I,Spinning,Maintenance - scheduled,163
+2026-07-08,3,AJ-01,Unit I,Spinning,Weft break PBM,33
+2026-07-09,1,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,17
+2026-07-09,1,TSU-05,Unit I,Weaving,Maintenance - scheduled,158
+2026-07-09,1,RF-08,Unit I,Spinning,Traveller change work,28
+2026-07-09,1,RF-12,Unit I,Spinning,Maintenance - scheduled,90
+2026-07-09,1,AJ-03,Unit I,Spinning,Traveller change work,27
+2026-07-09,2,TOY-01,Unit I,Weaving,Traveller change work,22
+2026-07-09,2,TOY-02,Unit I,Weaving,Traveller change work,10
+2026-07-09,2,TOY-04,Unit I,Weaving,Sort change work,89
+2026-07-09,2,TOY-08,Unit I,Weaving,Loom runout,24
+2026-07-09,2,TOY-10,Unit I,Weaving,Voltage fluctuation PBM,10
+2026-07-09,2,TOY-14,Unit I,Weaving,Loom runout,42
+2026-07-09,2,TSU-10,Unit I,Weaving,Traveller change work,25
+2026-07-09,2,SUL-03,Unit I,Weaving,Full cleaning work,62
+2026-07-09,2,SUL-05,Unit I,Weaving,Full cleaning work,119
+2026-07-09,2,RF-01,Unit I,Spinning,Loom runout,57
+2026-07-09,2,RF-08,Unit I,Spinning,Full cleaning work,91
+2026-07-09,2,RF-11,Unit I,Spinning,Loom runout,23
+2026-07-09,2,VTX-06,Unit I,Spinning,Bobbin shortage,39
+2026-07-09,2,VTX-12,Unit I,Spinning,Voltage fluctuation PBM,15
+2026-07-09,2,AJ-02,Unit I,Spinning,Sort change work,89
+2026-07-09,2,AJ-05,Unit I,Spinning,Loom runout,26
+2026-07-09,3,TOY-02,Unit I,Weaving,Traveller change work,28
+2026-07-09,3,TOY-07,Unit I,Weaving,Bobbin shortage,35
+2026-07-09,3,TSU-01,Unit I,Weaving,Weft break PBM,30
+2026-07-09,3,RF-06,Unit I,Spinning,Loom runout,45
+2026-07-09,3,VTX-02,Unit I,Spinning,Loom runout,41
+2026-07-10,1,TOY-04,Unit I,Weaving,Weft break PBM,38
+2026-07-10,1,SUL-01,Unit I,Weaving,Traveller change work,15
+2026-07-10,1,RF-03,Unit I,Spinning,Full cleaning work,105
+2026-07-10,1,RF-09,Unit I,Spinning,Loom runout,26
+2026-07-10,1,RF-11,Unit I,Spinning,Bobbin shortage,35
+2026-07-10,1,VTX-03,Unit I,Spinning,Maintenance - scheduled,151
+2026-07-10,1,VTX-06,Unit I,Spinning,Loom runout,22
+2026-07-10,1,AJ-02,Unit I,Spinning,Traveller change work,29
+2026-07-10,1,AJ-03,Unit I,Spinning,Voltage fluctuation PBM,12
+2026-07-10,1,AJ-04,Unit I,Spinning,Voltage fluctuation PBM,10
+2026-07-10,2,TOY-07,Unit I,Weaving,Loom runout,60
+2026-07-10,2,TOY-08,Unit I,Weaving,Sort change work,82
+2026-07-10,2,TOY-09,Unit I,Weaving,Sort change work,42
+2026-07-10,2,SUL-05,Unit I,Weaving,Loom runout,28
+2026-07-10,2,RF-03,Unit I,Spinning,Maintenance - scheduled,110
+2026-07-10,2,RF-11,Unit I,Spinning,Weft break PBM,31
+2026-07-10,2,VTX-02,Unit I,Spinning,Loom runout,41
+2026-07-10,2,VTX-04,Unit I,Spinning,Voltage fluctuation PBM,15
+2026-07-10,2,VTX-07,Unit I,Spinning,Maintenance - scheduled,168
+2026-07-10,2,VTX-12,Unit I,Spinning,Sort change work,69
+2026-07-10,2,AJ-04,Unit I,Spinning,Full cleaning work,118
+2026-07-10,3,TOY-09,Unit I,Weaving,Sort change work,52
+2026-07-10,3,TOY-10,Unit I,Weaving,Voltage fluctuation PBM,14
+2026-07-10,3,TSU-01,Unit I,Weaving,Bobbin shortage,89
+2026-07-10,3,TSU-02,Unit I,Weaving,Voltage fluctuation PBM,12
+2026-07-10,3,TSU-10,Unit I,Weaving,Maintenance - scheduled,66
+2026-07-10,3,SUL-04,Unit I,Weaving,Voltage fluctuation PBM,6
+2026-07-10,3,RF-03,Unit I,Spinning,Voltage fluctuation PBM,10
+2026-07-10,3,VTX-12,Unit I,Spinning,Bobbin shortage,46
+2026-07-11,1,TOY-02,Unit I,Weaving,Bobbin shortage,67
+2026-07-11,1,TOY-08,Unit I,Weaving,Bobbin shortage,69
+2026-07-11,1,TOY-11,Unit I,Weaving,Traveller change work,13
+2026-07-11,1,TOY-15,Unit I,Weaving,Full cleaning work,64
+2026-07-11,1,TSU-01,Unit I,Weaving,Voltage fluctuation PBM,12
+2026-07-11,1,TSU-09,Unit I,Weaving,Traveller change work,25
+2026-07-11,1,SUL-04,Unit I,Weaving,Bobbin shortage,100
+2026-07-11,1,RF-02,Unit I,Spinning,Weft break PBM,33
+2026-07-11,1,RF-03,Unit I,Spinning,Bobbin shortage,44
+2026-07-11,1,RF-07,Unit I,Spinning,Bobbin shortage,72
+2026-07-11,1,RF-11,Unit I,Spinning,Loom runout,46
+2026-07-11,1,VTX-07,Unit I,Spinning,Loom runout,27
+2026-07-11,1,VTX-11,Unit I,Spinning,Voltage fluctuation PBM,12
+2026-07-11,1,AJ-03,Unit I,Spinning,Sort change work,78
+2026-07-11,2,TOY-05,Unit I,Weaving,Voltage fluctuation PBM,9
+2026-07-11,2,TOY-10,Unit I,Weaving,Sort change work,57
+2026-07-11,2,SUL-02,Unit I,Weaving,Traveller change work,30
+2026-07-11,2,RF-06,Unit I,Spinning,Maintenance - scheduled,92
+2026-07-11,3,RF-11,Unit I,Spinning,Weft break PBM,41
+2026-07-11,3,VTX-03,Unit I,Spinning,Bobbin shortage,106
+2026-07-11,3,VTX-06,Unit I,Spinning,Weft break PBM,18
+2026-07-11,3,VTX-10,Unit I,Spinning,Traveller change work,29
+2026-07-11,3,AJ-02,Unit I,Spinning,Loom runout,44
+2026-07-12,1,TOY-08,Unit I,Weaving,Sort change work,33
+2026-07-12,1,TOY-12,Unit I,Weaving,Maintenance - scheduled,152
+2026-07-12,1,TSU-08,Unit I,Weaving,Sort change work,30
+2026-07-12,1,SUL-03,Unit I,Weaving,Voltage fluctuation PBM,14
+2026-07-12,1,RF-02,Unit I,Spinning,Loom runout,47
+2026-07-12,1,RF-08,Unit I,Spinning,Maintenance - scheduled,128
+2026-07-12,1,RF-09,Unit I,Spinning,Sort change work,87
+2026-07-12,1,VTX-03,Unit I,Spinning,Sort change work,70
+2026-07-12,1,VTX-04,Unit I,Spinning,Maintenance - scheduled,174
+2026-07-12,2,TOY-09,Unit I,Weaving,Maintenance - scheduled,90
+2026-07-12,2,TOY-11,Unit I,Weaving,Sort change work,35
+2026-07-12,2,TSU-10,Unit I,Weaving,Full cleaning work,64
+2026-07-12,2,RF-01,Unit I,Spinning,Loom runout,38
+2026-07-12,2,RF-07,Unit I,Spinning,Maintenance - scheduled,71
+2026-07-12,2,VTX-04,Unit I,Spinning,Maintenance - scheduled,95
+2026-07-12,2,VTX-06,Unit I,Spinning,Loom runout,60
+2026-07-12,3,TOY-04,Unit I,Weaving,Sort change work,73
+2026-07-12,3,TOY-06,Unit I,Weaving,Full cleaning work,109
+2026-07-12,3,TOY-08,Unit I,Weaving,Loom runout,30
+2026-07-12,3,RF-03,Unit I,Spinning,Loom runout,27
+2026-07-12,3,RF-12,Unit I,Spinning,Full cleaning work,86
+2026-07-12,3,VTX-02,Unit I,Spinning,Voltage fluctuation PBM,19
+2026-07-12,3,VTX-03,Unit I,Spinning,Full cleaning work,85
+2026-07-12,3,VTX-04,Unit I,Spinning,Sort change work,53
+2026-07-12,3,VTX-06,Unit I,Spinning,Bobbin shortage,90
+2026-07-12,3,VTX-09,Unit I,Spinning,Bobbin shortage,87
+2026-07-12,3,VTX-11,Unit I,Spinning,Voltage fluctuation PBM,9
+2026-07-12,3,AJ-02,Unit I,Spinning,Loom runout,22
+2026-07-13,1,TOY-04,Unit I,Weaving,Full cleaning work,76
+2026-07-13,1,TSU-04,Unit I,Weaving,Weft break PBM,16
+2026-07-13,1,VTX-02,Unit I,Spinning,Traveller change work,15
+2026-07-13,1,VTX-05,Unit I,Spinning,Sort change work,42
+2026-07-13,1,AJ-01,Unit I,Spinning,Weft break PBM,43
+2026-07-13,1,AJ-02,Unit I,Spinning,Traveller change work,23
+2026-07-13,2,TOY-03,Unit I,Weaving,Maintenance - scheduled,82
+2026-07-13,2,TOY-11,Unit I,Weaving,Weft break PBM,32
+2026-07-13,2,TOY-13,Unit I,Weaving,Traveller change work,16
+2026-07-13,2,TSU-05,Unit I,Weaving,Voltage fluctuation PBM,12
+2026-07-13,2,SUL-03,Unit I,Weaving,Full cleaning work,93
+2026-07-13,2,RF-04,Unit I,Spinning,Sort change work,58
+2026-07-13,2,RF-05,Unit I,Spinning,Weft break PBM,25
+2026-07-13,2,RF-11,Unit I,Spinning,Maintenance - scheduled,150
+2026-07-13,2,VTX-06,Unit I,Spinning,Loom runout,28
+2026-07-13,3,TSU-06,Unit I,Weaving,Bobbin shortage,36
+2026-07-13,3,TSU-10,Unit I,Weaving,Loom runout,27
+2026-07-13,3,SUL-01,Unit I,Weaving,Sort change work,32
+2026-07-13,3,SUL-02,Unit I,Weaving,Sort change work,76
+2026-07-13,3,RF-09,Unit I,Spinning,Voltage fluctuation PBM,10
+2026-07-13,3,RF-10,Unit I,Spinning,Voltage fluctuation PBM,5
+2026-07-13,3,VTX-04,Unit I,Spinning,Full cleaning work,77
+2026-07-13,3,VTX-06,Unit I,Spinning,Sort change work,31
+2026-07-13,3,AJ-02,Unit I,Spinning,Weft break PBM,40
+2026-07-14,1,TSU-05,Unit I,Weaving,Weft break PBM,34
+2026-07-14,1,SUL-04,Unit I,Weaving,Weft break PBM,39
+2026-07-14,1,RF-10,Unit I,Spinning,Weft break PBM,31
+2026-07-14,1,RF-11,Unit I,Spinning,Full cleaning work,117
+2026-07-14,1,RF-12,Unit I,Spinning,Weft break PBM,42
+2026-07-14,1,VTX-06,Unit I,Spinning,Maintenance - scheduled,73
+2026-07-14,1,VTX-10,Unit I,Spinning,Weft break PBM,41
+2026-07-14,2,TOY-05,Unit I,Weaving,Loom runout,55
+2026-07-14,2,TOY-14,Unit I,Weaving,Loom runout,27
+2026-07-14,2,TSU-07,Unit I,Weaving,Sort change work,32
+2026-07-14,2,VTX-03,Unit I,Spinning,Maintenance - scheduled,163
+2026-07-14,2,VTX-04,Unit I,Spinning,Voltage fluctuation PBM,10
+2026-07-14,2,VTX-10,Unit I,Spinning,Maintenance - scheduled,164
+2026-07-14,2,AJ-01,Unit I,Spinning,Bobbin shortage,37
+2026-07-14,3,TSU-04,Unit I,Weaving,Sort change work,83
+2026-07-14,3,TSU-05,Unit I,Weaving,Bobbin shortage,41
+2026-07-14,3,SUL-02,Unit I,Weaving,Weft break PBM,33
+2026-07-14,3,SUL-03,Unit I,Weaving,Loom runout,57
+2026-07-14,3,VTX-02,Unit I,Spinning,Bobbin shortage,119
+2026-07-15,1,TOY-15,Unit I,Weaving,Traveller change work,25
+2026-07-15,1,TSU-01,Unit I,Weaving,Sort change work,45
+2026-07-15,1,TSU-06,Unit I,Weaving,Full cleaning work,143
+2026-07-15,1,VTX-10,Unit I,Spinning,Full cleaning work,135
+2026-07-15,1,AJ-02,Unit I,Spinning,Sort change work,76
+2026-07-15,2,TOY-03,Unit I,Weaving,Maintenance - scheduled,70
+2026-07-15,2,TOY-04,Unit I,Weaving,Bobbin shortage,56
+2026-07-15,2,TOY-06,Unit I,Weaving,Voltage fluctuation PBM,15
+2026-07-15,2,TOY-14,Unit I,Weaving,Bobbin shortage,63
+2026-07-15,2,RF-04,Unit I,Spinning,Weft break PBM,18
+2026-07-15,2,RF-05,Unit I,Spinning,Voltage fluctuation PBM,8
+2026-07-15,2,RF-06,Unit I,Spinning,Voltage fluctuation PBM,17
+2026-07-15,2,RF-08,Unit I,Spinning,Weft break PBM,18
+2026-07-15,2,VTX-09,Unit I,Spinning,Voltage fluctuation PBM,19
+2026-07-15,2,AJ-05,Unit I,Spinning,Sort change work,33
+2026-07-15,3,TSU-10,Unit I,Weaving,Loom runout,58
+2026-07-15,3,RF-02,Unit I,Spinning,Loom runout,52
+2026-07-15,3,RF-03,Unit I,Spinning,Bobbin shortage,86
+2026-07-15,3,VTX-07,Unit I,Spinning,Traveller change work,24
+2026-07-15,3,VTX-10,Unit I,Spinning,Full cleaning work,90
+2026-07-16,1,TOY-13,Unit I,Weaving,Loom runout,55
+2026-07-16,1,SUL-04,Unit I,Weaving,Weft break PBM,40
+2026-07-16,1,RF-07,Unit I,Spinning,Traveller change work,10
+2026-07-16,1,RF-11,Unit I,Spinning,Voltage fluctuation PBM,15
+2026-07-16,1,VTX-03,Unit I,Spinning,Weft break PBM,43
+2026-07-16,1,VTX-09,Unit I,Spinning,Weft break PBM,43
+2026-07-16,1,AJ-01,Unit I,Spinning,Loom runout,34
+2026-07-16,1,AJ-03,Unit I,Spinning,Maintenance - scheduled,129
+2026-07-16,2,TOY-03,Unit I,Weaving,Traveller change work,23
+2026-07-16,2,TOY-07,Unit I,Weaving,Traveller change work,27
+2026-07-16,2,TOY-11,Unit I,Weaving,Bobbin shortage,53
+2026-07-16,2,TOY-12,Unit I,Weaving,Maintenance - scheduled,174
+2026-07-16,2,TOY-14,Unit I,Weaving,Bobbin shortage,119
+2026-07-16,2,TSU-03,Unit I,Weaving,Full cleaning work,77
+2026-07-16,2,RF-03,Unit I,Spinning,Full cleaning work,147
+2026-07-16,2,RF-11,Unit I,Spinning,Full cleaning work,123
+2026-07-16,2,VTX-02,Unit I,Spinning,Weft break PBM,17
+2026-07-16,2,VTX-06,Unit I,Spinning,Voltage fluctuation PBM,6
+2026-07-16,3,TOY-01,Unit I,Weaving,Loom runout,51
+2026-07-16,3,TOY-04,Unit I,Weaving,Bobbin shortage,39
+2026-07-16,3,TOY-06,Unit I,Weaving,Full cleaning work,131
+2026-07-16,3,TOY-11,Unit I,Weaving,Weft break PBM,38
+2026-07-16,3,SUL-04,Unit I,Weaving,Full cleaning work,65
+2026-07-16,3,RF-02,Unit I,Spinning,Voltage fluctuation PBM,11
+2026-07-16,3,RF-11,Unit I,Spinning,Weft break PBM,27
+2026-07-16,3,VTX-06,Unit I,Spinning,Voltage fluctuation PBM,14
+2026-07-17,1,TOY-02,Unit I,Weaving,Maintenance - scheduled,178
+2026-07-17,1,TOY-09,Unit I,Weaving,Loom runout,34
+2026-07-17,1,TOY-14,Unit I,Weaving,Sort change work,40
+2026-07-17,1,TSU-02,Unit I,Weaving,Sort change work,30
+2026-07-17,1,TSU-05,Unit I,Weaving,Sort change work,85
+2026-07-17,1,TSU-07,Unit I,Weaving,Traveller change work,15
+2026-07-17,1,SUL-03,Unit I,Weaving,Full cleaning work,150
+2026-07-17,1,RF-09,Unit I,Spinning,Voltage fluctuation PBM,16
+2026-07-17,1,RF-11,Unit I,Spinning,Traveller change work,23
+2026-07-17,1,RF-12,Unit I,Spinning,Voltage fluctuation PBM,7
+2026-07-17,1,VTX-01,Unit I,Spinning,Voltage fluctuation PBM,8
+2026-07-17,1,AJ-03,Unit I,Spinning,Weft break PBM,28
+2026-07-17,2,TOY-08,Unit I,Weaving,Full cleaning work,88
+2026-07-17,2,TOY-12,Unit I,Weaving,Maintenance - scheduled,87
+2026-07-17,2,TOY-14,Unit I,Weaving,Voltage fluctuation PBM,10
+2026-07-17,2,TSU-05,Unit I,Weaving,Traveller change work,10
+2026-07-17,2,TSU-08,Unit I,Weaving,Bobbin shortage,80
+2026-07-17,2,RF-10,Unit I,Spinning,Maintenance - scheduled,119
+2026-07-17,2,VTX-03,Unit I,Spinning,Full cleaning work,80
+2026-07-17,2,VTX-06,Unit I,Spinning,Traveller change work,23
+2026-07-17,2,VTX-12,Unit I,Spinning,Loom runout,53
+2026-07-17,2,AJ-03,Unit I,Spinning,Full cleaning work,132
+2026-07-17,2,AJ-04,Unit I,Spinning,Loom runout,27
+2026-07-17,3,TOY-05,Unit I,Weaving,Weft break PBM,37
+2026-07-17,3,TOY-08,Unit I,Weaving,Bobbin shortage,107
+2026-07-17,3,TOY-13,Unit I,Weaving,Traveller change work,29
+2026-07-17,3,TSU-04,Unit I,Weaving,Full cleaning work,133
+2026-07-17,3,SUL-01,Unit I,Weaving,Full cleaning work,84
+2026-07-17,3,VTX-01,Unit I,Spinning,Loom runout,50
+2026-07-17,3,VTX-04,Unit I,Spinning,Sort change work,67
+2026-07-17,3,VTX-07,Unit I,Spinning,Weft break PBM,23
+2026-07-17,3,AJ-03,Unit I,Spinning,Traveller change work,13
+2026-07-17,3,AJ-05,Unit I,Spinning,Weft break PBM,26
+2026-07-18,1,TOY-06,Unit I,Weaving,Voltage fluctuation PBM,13
+2026-07-18,1,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,11
+2026-07-18,1,RF-02,Unit I,Spinning,Full cleaning work,145
+2026-07-18,1,VTX-06,Unit I,Spinning,Full cleaning work,85
+2026-07-18,1,AJ-05,Unit I,Spinning,Traveller change work,18
+2026-07-18,2,TOY-03,Unit I,Weaving,Full cleaning work,139
+2026-07-18,2,TSU-02,Unit I,Weaving,Bobbin shortage,58
+2026-07-18,2,TSU-04,Unit I,Weaving,Loom runout,51
+2026-07-18,2,TSU-06,Unit I,Weaving,Maintenance - scheduled,71
+2026-07-18,2,RF-07,Unit I,Spinning,Voltage fluctuation PBM,6
+2026-07-18,2,RF-09,Unit I,Spinning,Full cleaning work,79
+2026-07-18,2,RF-12,Unit I,Spinning,Full cleaning work,101
+2026-07-18,2,VTX-03,Unit I,Spinning,Weft break PBM,44
+2026-07-18,2,VTX-06,Unit I,Spinning,Sort change work,34
+2026-07-18,2,VTX-11,Unit I,Spinning,Weft break PBM,34
+2026-07-18,3,TOY-06,Unit I,Weaving,Sort change work,66
+2026-07-18,3,TSU-02,Unit I,Weaving,Full cleaning work,64
+2026-07-18,3,TSU-04,Unit I,Weaving,Sort change work,54
+2026-07-18,3,TSU-07,Unit I,Weaving,Maintenance - scheduled,75
+2026-07-19,1,TOY-08,Unit I,Weaving,Loom runout,34
+2026-07-19,1,TOY-12,Unit I,Weaving,Voltage fluctuation PBM,20
+2026-07-19,1,TOY-15,Unit I,Weaving,Voltage fluctuation PBM,7
+2026-07-19,1,TSU-03,Unit I,Weaving,Bobbin shortage,105
+2026-07-19,1,TSU-08,Unit I,Weaving,Maintenance - scheduled,72
+2026-07-19,1,TSU-09,Unit I,Weaving,Voltage fluctuation PBM,7
+2026-07-19,1,VTX-12,Unit I,Spinning,Full cleaning work,83
+2026-07-19,2,TOY-01,Unit I,Weaving,Full cleaning work,122
+2026-07-19,2,TOY-02,Unit I,Weaving,Maintenance - scheduled,162
+2026-07-19,2,TOY-08,Unit I,Weaving,Traveller change work,22
+2026-07-19,2,TOY-10,Unit I,Weaving,Bobbin shortage,61
+2026-07-19,2,TOY-14,Unit I,Weaving,Full cleaning work,77
+2026-07-19,2,TSU-05,Unit I,Weaving,Full cleaning work,138
+2026-07-19,2,RF-11,Unit I,Spinning,Full cleaning work,124
+2026-07-19,2,VTX-12,Unit I,Spinning,Weft break PBM,43
+2026-07-19,2,AJ-03,Unit I,Spinning,Sort change work,37
+2026-07-19,3,TOY-06,Unit I,Weaving,Voltage fluctuation PBM,18
+2026-07-19,3,TOY-07,Unit I,Weaving,Traveller change work,28
+2026-07-19,3,TOY-08,Unit I,Weaving,Full cleaning work,73
+2026-07-19,3,TSU-03,Unit I,Weaving,Traveller change work,27
+2026-07-19,3,TSU-09,Unit I,Weaving,Voltage fluctuation PBM,12
+2026-07-19,3,RF-03,Unit I,Spinning,Maintenance - scheduled,116
+2026-07-19,3,RF-05,Unit I,Spinning,Voltage fluctuation PBM,11
+2026-07-19,3,RF-09,Unit I,Spinning,Traveller change work,27
+2026-07-19,3,VTX-06,Unit I,Spinning,Full cleaning work,80
+2026-07-20,1,TOY-05,Unit I,Weaving,Bobbin shortage,48
+2026-07-20,1,TSU-03,Unit I,Weaving,Bobbin shortage,63
+2026-07-20,1,RF-09,Unit I,Spinning,Sort change work,36
+2026-07-20,1,RF-11,Unit I,Spinning,Weft break PBM,18
+2026-07-20,1,VTX-02,Unit I,Spinning,Full cleaning work,148
+2026-07-20,1,VTX-06,Unit I,Spinning,Loom runout,49
+2026-07-20,2,TOY-06,Unit I,Weaving,Voltage fluctuation PBM,9
+2026-07-20,2,TSU-01,Unit I,Weaving,Sort change work,30
+2026-07-20,2,TSU-03,Unit I,Weaving,Full cleaning work,84
+2026-07-20,2,TSU-10,Unit I,Weaving,Loom runout,45
+2026-07-20,2,SUL-04,Unit I,Weaving,Bobbin shortage,57
+2026-07-20,2,RF-11,Unit I,Spinning,Bobbin shortage,39
+2026-07-20,2,VTX-05,Unit I,Spinning,Traveller change work,13
+2026-07-20,2,VTX-06,Unit I,Spinning,Weft break PBM,16
+2026-07-20,2,AJ-01,Unit I,Spinning,Sort change work,36
+2026-07-20,2,AJ-04,Unit I,Spinning,Voltage fluctuation PBM,8
+2026-07-20,3,TOY-03,Unit I,Weaving,Loom runout,53
+2026-07-20,3,TSU-02,Unit I,Weaving,Voltage fluctuation PBM,10
+2026-07-20,3,TSU-06,Unit I,Weaving,Maintenance - scheduled,79
+2026-07-20,3,SUL-03,Unit I,Weaving,Full cleaning work,85
+2026-07-20,3,RF-01,Unit I,Spinning,Sort change work,47
+2026-07-20,3,RF-11,Unit I,Spinning,Weft break PBM,16
+2026-07-21,1,TOY-02,Unit I,Weaving,Bobbin shortage,52
+2026-07-21,1,TOY-12,Unit I,Weaving,Maintenance - scheduled,123
+2026-07-21,1,TOY-13,Unit I,Weaving,Full cleaning work,134
+2026-07-21,1,TSU-01,Unit I,Weaving,Sort change work,59
+2026-07-21,1,SUL-01,Unit I,Weaving,Full cleaning work,117
+2026-07-21,1,SUL-05,Unit I,Weaving,Maintenance - scheduled,154
+2026-07-21,1,VTX-01,Unit I,Spinning,Weft break PBM,32
+2026-07-21,2,TOY-02,Unit I,Weaving,Bobbin shortage,104
+2026-07-21,2,TOY-03,Unit I,Weaving,Bobbin shortage,67
+2026-07-21,2,TOY-08,Unit I,Weaving,Maintenance - scheduled,65
+2026-07-21,2,TSU-06,Unit I,Weaving,Traveller change work,11
+2026-07-21,2,TSU-10,Unit I,Weaving,Voltage fluctuation PBM,11
+2026-07-21,2,RF-05,Unit I,Spinning,Voltage fluctuation PBM,14
+2026-07-21,2,RF-10,Unit I,Spinning,Maintenance - scheduled,95
+2026-07-21,2,VTX-06,Unit I,Spinning,Sort change work,80
+2026-07-21,2,VTX-08,Unit I,Spinning,Full cleaning work,138
+2026-07-21,2,AJ-05,Unit I,Spinning,Traveller change work,16
+2026-07-21,3,TOY-06,Unit I,Weaving,Traveller change work,27
+2026-07-21,3,TOY-08,Unit I,Weaving,Full cleaning work,87
+2026-07-21,3,TOY-12,Unit I,Weaving,Maintenance - scheduled,90
+2026-07-21,3,TSU-05,Unit I,Weaving,Full cleaning work,122
+2026-07-21,3,TSU-07,Unit I,Weaving,Weft break PBM,26
+2026-07-21,3,RF-07,Unit I,Spinning,Loom runout,32
+2026-07-21,3,VTX-01,Unit I,Spinning,Maintenance - scheduled,124
+2026-07-21,3,VTX-05,Unit I,Spinning,Sort change work,60
+2026-07-22,1,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,12
+2026-07-22,1,SUL-03,Unit I,Weaving,Sort change work,34
+2026-07-22,1,RF-07,Unit I,Spinning,Weft break PBM,44
+2026-07-22,1,VTX-10,Unit I,Spinning,Traveller change work,30
+2026-07-22,1,VTX-11,Unit I,Spinning,Full cleaning work,115
+2026-07-22,1,AJ-01,Unit I,Spinning,Loom runout,56
+2026-07-22,2,TOY-10,Unit I,Weaving,Maintenance - scheduled,155
+2026-07-22,2,TOY-14,Unit I,Weaving,Traveller change work,27
+2026-07-22,2,TSU-05,Unit I,Weaving,Full cleaning work,67
+2026-07-22,2,SUL-03,Unit I,Weaving,Full cleaning work,129
+2026-07-22,2,RF-10,Unit I,Spinning,Voltage fluctuation PBM,12
+2026-07-22,2,VTX-01,Unit I,Spinning,Sort change work,83
+2026-07-22,2,VTX-11,Unit I,Spinning,Traveller change work,19
+2026-07-22,2,AJ-01,Unit I,Spinning,Voltage fluctuation PBM,13
+2026-07-22,2,AJ-02,Unit I,Spinning,Bobbin shortage,39
+2026-07-22,2,AJ-03,Unit I,Spinning,Loom runout,59
+2026-07-22,3,TOY-02,Unit I,Weaving,Voltage fluctuation PBM,18
+2026-07-22,3,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,13
+2026-07-22,3,TSU-07,Unit I,Weaving,Bobbin shortage,100
+2026-07-22,3,TSU-10,Unit I,Weaving,Voltage fluctuation PBM,11
+2026-07-22,3,RF-01,Unit I,Spinning,Weft break PBM,34
+2026-07-22,3,RF-02,Unit I,Spinning,Loom runout,42
+2026-07-22,3,RF-11,Unit I,Spinning,Weft break PBM,44
+2026-07-22,3,VTX-09,Unit I,Spinning,Voltage fluctuation PBM,7
+2026-07-22,3,VTX-10,Unit I,Spinning,Maintenance - scheduled,148
+2026-07-22,3,AJ-01,Unit I,Spinning,Traveller change work,15
+2026-07-23,1,TOY-01,Unit I,Weaving,Maintenance - scheduled,151
+2026-07-23,1,TOY-13,Unit I,Weaving,Bobbin shortage,57
+2026-07-23,1,TSU-07,Unit I,Weaving,Maintenance - scheduled,91
+2026-07-23,1,SUL-05,Unit I,Weaving,Voltage fluctuation PBM,15
+2026-07-23,1,RF-04,Unit I,Spinning,Sort change work,65
+2026-07-23,1,RF-08,Unit I,Spinning,Voltage fluctuation PBM,14
+2026-07-23,1,RF-10,Unit I,Spinning,Sort change work,82
+2026-07-23,1,RF-11,Unit I,Spinning,Voltage fluctuation PBM,14
+2026-07-23,1,VTX-04,Unit I,Spinning,Bobbin shortage,31
+2026-07-23,1,VTX-06,Unit I,Spinning,Voltage fluctuation PBM,7
+2026-07-23,2,TOY-09,Unit I,Weaving,Loom runout,40
+2026-07-23,2,TSU-01,Unit I,Weaving,Weft break PBM,31
+2026-07-23,2,TSU-04,Unit I,Weaving,Loom runout,56
+2026-07-23,2,SUL-03,Unit I,Weaving,Bobbin shortage,70
+2026-07-23,2,RF-04,Unit I,Spinning,Full cleaning work,60
+2026-07-23,2,RF-07,Unit I,Spinning,Weft break PBM,15
+2026-07-23,2,VTX-04,Unit I,Spinning,Loom runout,27
+2026-07-23,2,VTX-07,Unit I,Spinning,Loom runout,44
+2026-07-23,3,TOY-07,Unit I,Weaving,Voltage fluctuation PBM,12
+2026-07-23,3,TOY-14,Unit I,Weaving,Voltage fluctuation PBM,5
+2026-07-23,3,TSU-05,Unit I,Weaving,Weft break PBM,32
+2026-07-23,3,RF-05,Unit I,Spinning,Loom runout,30
+2026-07-23,3,RF-11,Unit I,Spinning,Loom runout,46
+2026-07-23,3,VTX-05,Unit I,Spinning,Bobbin shortage,44
+2026-07-23,3,VTX-07,Unit I,Spinning,Sort change work,44
+2026-07-23,3,VTX-08,Unit I,Spinning,Bobbin shortage,82
+2026-07-23,3,VTX-09,Unit I,Spinning,Loom runout,28
+2026-07-23,3,AJ-01,Unit I,Spinning,Sort change work,42
+2026-07-24,1,TOY-02,Unit I,Weaving,Voltage fluctuation PBM,16
+2026-07-24,1,TOY-06,Unit I,Weaving,Voltage fluctuation PBM,10
+2026-07-24,1,TOY-08,Unit I,Weaving,Weft break PBM,18
+2026-07-24,1,RF-04,Unit I,Spinning,Bobbin shortage,78
+2026-07-24,1,VTX-04,Unit I,Spinning,Bobbin shortage,114
+2026-07-24,1,VTX-08,Unit I,Spinning,Loom runout,26
+2026-07-24,1,AJ-01,Unit I,Spinning,Sort change work,59
+2026-07-24,2,TOY-08,Unit I,Weaving,Full cleaning work,99
+2026-07-24,2,TOY-11,Unit I,Weaving,Bobbin shortage,30
+2026-07-24,2,TOY-12,Unit I,Weaving,Bobbin shortage,36
+2026-07-24,2,TOY-13,Unit I,Weaving,Traveller change work,13
+2026-07-24,2,TSU-04,Unit I,Weaving,Maintenance - scheduled,157
+2026-07-24,2,TSU-05,Unit I,Weaving,Loom runout,60
+2026-07-24,2,RF-01,Unit I,Spinning,Sort change work,79
+2026-07-24,2,RF-07,Unit I,Spinning,Weft break PBM,32
+2026-07-24,2,RF-09,Unit I,Spinning,Maintenance - scheduled,166
+2026-07-24,2,VTX-06,Unit I,Spinning,Traveller change work,25
+2026-07-24,2,AJ-01,Unit I,Spinning,Voltage fluctuation PBM,5
+2026-07-24,3,TOY-02,Unit I,Weaving,Voltage fluctuation PBM,14
+2026-07-24,3,TOY-05,Unit I,Weaving,Bobbin shortage,107
+2026-07-24,3,TOY-12,Unit I,Weaving,Loom runout,46
+2026-07-24,3,TOY-14,Unit I,Weaving,Traveller change work,21
+2026-07-24,3,TSU-06,Unit I,Weaving,Bobbin shortage,106
+2026-07-24,3,TSU-08,Unit I,Weaving,Loom runout,44
+2026-07-24,3,SUL-04,Unit I,Weaving,Loom runout,37
+2026-07-24,3,RF-10,Unit I,Spinning,Loom runout,48
+2026-07-24,3,VTX-01,Unit I,Spinning,Traveller change work,28
+2026-07-24,3,VTX-06,Unit I,Spinning,Bobbin shortage,111
+2026-07-24,3,VTX-07,Unit I,Spinning,Maintenance - scheduled,80
+2026-07-25,1,TOY-02,Unit I,Weaving,Maintenance - scheduled,86
+2026-07-25,1,TOY-09,Unit I,Weaving,Voltage fluctuation PBM,15
+2026-07-25,1,TSU-01,Unit I,Weaving,Bobbin shortage,117
+2026-07-25,1,SUL-05,Unit I,Weaving,Full cleaning work,136
+2026-07-25,1,RF-02,Unit I,Spinning,Traveller change work,30
+2026-07-25,1,RF-05,Unit I,Spinning,Maintenance - scheduled,124
+2026-07-25,1,AJ-04,Unit I,Spinning,Loom runout,49
+2026-07-25,2,TOY-02,Unit I,Weaving,Maintenance - scheduled,73
+2026-07-25,2,TOY-07,Unit I,Weaving,Bobbin shortage,104
+2026-07-25,2,TOY-11,Unit I,Weaving,Voltage fluctuation PBM,10
+2026-07-25,2,RF-10,Unit I,Spinning,Bobbin shortage,83
+2026-07-25,2,VTX-06,Unit I,Spinning,Maintenance - scheduled,93
+2026-07-25,2,VTX-11,Unit I,Spinning,Bobbin shortage,68
+2026-07-25,3,TOY-08,Unit I,Weaving,Sort change work,52
+2026-07-25,3,TOY-10,Unit I,Weaving,Sort change work,81
+2026-07-25,3,TOY-12,Unit I,Weaving,Traveller change work,20
+2026-07-25,3,TSU-08,Unit I,Weaving,Weft break PBM,29
+2026-07-25,3,SUL-02,Unit I,Weaving,Maintenance - scheduled,99
+2026-07-25,3,RF-02,Unit I,Spinning,Sort change work,41
+2026-07-25,3,RF-04,Unit I,Spinning,Traveller change work,13
+2026-07-25,3,RF-11,Unit I,Spinning,Bobbin shortage,62
+2026-07-25,3,VTX-03,Unit I,Spinning,Bobbin shortage,45
+2026-07-25,3,VTX-06,Unit I,Spinning,Sort change work,72
+2026-07-25,3,AJ-02,Unit I,Spinning,Traveller change work,20
+2026-07-26,1,VTX-05,Unit I,Spinning,Sort change work,80
+2026-07-26,1,VTX-06,Unit I,Spinning,Voltage fluctuation PBM,7
+2026-07-26,2,TOY-02,Unit I,Weaving,Full cleaning work,115
+2026-07-26,2,TOY-04,Unit I,Weaving,Traveller change work,29
+2026-07-26,2,TSU-02,Unit I,Weaving,Full cleaning work,89
+2026-07-26,2,RF-08,Unit I,Spinning,Maintenance - scheduled,62
+2026-07-26,2,VTX-06,Unit I,Spinning,Voltage fluctuation PBM,13
+2026-07-26,2,VTX-08,Unit I,Spinning,Maintenance - scheduled,81
+2026-07-26,3,TOY-04,Unit I,Weaving,Maintenance - scheduled,82
+2026-07-26,3,TOY-06,Unit I,Weaving,Weft break PBM,34
+2026-07-26,3,TSU-03,Unit I,Weaving,Maintenance - scheduled,167
+2026-07-26,3,RF-04,Unit I,Spinning,Traveller change work,24
+2026-07-26,3,RF-12,Unit I,Spinning,Bobbin shortage,90
+2026-07-26,3,VTX-06,Unit I,Spinning,Bobbin shortage,90
+2026-07-27,1,TOY-07,Unit I,Weaving,Voltage fluctuation PBM,9
+2026-07-27,1,TOY-15,Unit I,Weaving,Traveller change work,28
+2026-07-27,1,TSU-09,Unit I,Weaving,Traveller change work,12
+2026-07-27,1,RF-11,Unit I,Spinning,Sort change work,80
+2026-07-27,2,TOY-01,Unit I,Weaving,Bobbin shortage,113
+2026-07-27,2,TOY-08,Unit I,Weaving,Weft break PBM,31
+2026-07-27,2,TOY-14,Unit I,Weaving,Weft break PBM,29
+2026-07-27,2,TSU-03,Unit I,Weaving,Loom runout,58
+2026-07-27,2,SUL-04,Unit I,Weaving,Voltage fluctuation PBM,9
+2026-07-27,2,RF-01,Unit I,Spinning,Loom runout,29
+2026-07-27,2,RF-11,Unit I,Spinning,Bobbin shortage,113
+2026-07-27,2,VTX-01,Unit I,Spinning,Voltage fluctuation PBM,12
+2026-07-27,2,VTX-06,Unit I,Spinning,Full cleaning work,88
+2026-07-27,2,VTX-10,Unit I,Spinning,Maintenance - scheduled,161
+2026-07-27,3,TOY-02,Unit I,Weaving,Maintenance - scheduled,123
+2026-07-27,3,TOY-08,Unit I,Weaving,Full cleaning work,134
+2026-07-27,3,TOY-14,Unit I,Weaving,Maintenance - scheduled,179
+2026-07-27,3,TSU-09,Unit I,Weaving,Voltage fluctuation PBM,12
+2026-07-27,3,RF-07,Unit I,Spinning,Voltage fluctuation PBM,7
+2026-07-27,3,RF-09,Unit I,Spinning,Traveller change work,26
+2026-07-27,3,AJ-05,Unit I,Spinning,Sort change work,44
+2026-07-28,1,TSU-05,Unit I,Weaving,Weft break PBM,30
+2026-07-28,1,TSU-08,Unit I,Weaving,Sort change work,32
+2026-07-28,1,SUL-02,Unit I,Weaving,Voltage fluctuation PBM,10
+2026-07-28,1,SUL-05,Unit I,Weaving,Bobbin shortage,46
+2026-07-28,1,RF-01,Unit I,Spinning,Weft break PBM,37
+2026-07-28,1,RF-04,Unit I,Spinning,Loom runout,50
+2026-07-28,1,RF-10,Unit I,Spinning,Traveller change work,15
+2026-07-28,1,VTX-01,Unit I,Spinning,Full cleaning work,109
+2026-07-28,1,VTX-05,Unit I,Spinning,Full cleaning work,125
+2026-07-28,1,VTX-06,Unit I,Spinning,Full cleaning work,129
+2026-07-28,2,TOY-03,Unit I,Weaving,Traveller change work,10
+2026-07-28,2,TOY-07,Unit I,Weaving,Weft break PBM,36
+2026-07-28,2,TOY-15,Unit I,Weaving,Bobbin shortage,66
+2026-07-28,2,TSU-03,Unit I,Weaving,Traveller change work,29
+2026-07-28,2,TSU-08,Unit I,Weaving,Loom runout,58
+2026-07-28,2,SUL-01,Unit I,Weaving,Traveller change work,14
+2026-07-28,2,SUL-02,Unit I,Weaving,Voltage fluctuation PBM,15
+2026-07-28,2,RF-04,Unit I,Spinning,Traveller change work,29
+2026-07-28,2,VTX-09,Unit I,Spinning,Bobbin shortage,39
+2026-07-28,3,TOY-02,Unit I,Weaving,Bobbin shortage,30
+2026-07-28,3,TOY-03,Unit I,Weaving,Bobbin shortage,39
+2026-07-28,3,TOY-04,Unit I,Weaving,Full cleaning work,122
+2026-07-28,3,TOY-05,Unit I,Weaving,Bobbin shortage,96
+2026-07-28,3,TOY-07,Unit I,Weaving,Bobbin shortage,60
+2026-07-28,3,TOY-14,Unit I,Weaving,Full cleaning work,77
+2026-07-28,3,TSU-03,Unit I,Weaving,Sort change work,55
+2026-07-28,3,TSU-09,Unit I,Weaving,Voltage fluctuation PBM,14
+2026-07-28,3,RF-06,Unit I,Spinning,Bobbin shortage,78
+2026-07-28,3,RF-07,Unit I,Spinning,Bobbin shortage,43
+2026-07-28,3,VTX-06,Unit I,Spinning,Traveller change work,21
+2026-07-28,3,VTX-08,Unit I,Spinning,Full cleaning work,63
+2026-07-28,3,VTX-09,Unit I,Spinning,Traveller change work,10
+2026-07-28,3,VTX-10,Unit I,Spinning,Traveller change work,30
+2026-07-28,3,AJ-03,Unit I,Spinning,Maintenance - scheduled,133
+2026-07-28,3,AJ-04,Unit I,Spinning,Sort change work,41
+2026-07-29,1,TOY-01,Unit I,Weaving,Traveller change work,28
+2026-07-29,1,TSU-01,Unit I,Weaving,Sort change work,45
+2026-07-29,1,TSU-04,Unit I,Weaving,Sort change work,40
+2026-07-29,1,RF-04,Unit I,Spinning,Traveller change work,15
+2026-07-29,1,RF-05,Unit I,Spinning,Loom runout,36
+2026-07-29,1,RF-07,Unit I,Spinning,Bobbin shortage,108
+2026-07-29,1,RF-11,Unit I,Spinning,Sort change work,43
+2026-07-29,1,VTX-02,Unit I,Spinning,Sort change work,86
+2026-07-29,1,VTX-12,Unit I,Spinning,Maintenance - scheduled,101
+2026-07-29,2,TOY-07,Unit I,Weaving,Weft break PBM,45
+2026-07-29,2,TOY-08,Unit I,Weaving,Maintenance - scheduled,63
+2026-07-29,2,TSU-05,Unit I,Weaving,Weft break PBM,22
+2026-07-29,2,SUL-01,Unit I,Weaving,Traveller change work,28
+2026-07-29,2,VTX-05,Unit I,Spinning,Loom runout,30
+2026-07-29,2,AJ-05,Unit I,Spinning,Loom runout,31
+2026-07-29,3,SUL-01,Unit I,Weaving,Bobbin shortage,71
+2026-07-29,3,RF-06,Unit I,Spinning,Bobbin shortage,97
+2026-07-29,3,VTX-01,Unit I,Spinning,Loom runout,46
+2026-07-29,3,VTX-04,Unit I,Spinning,Sort change work,87
+2026-07-29,3,VTX-06,Unit I,Spinning,Loom runout,52
+2026-07-29,3,AJ-04,Unit I,Spinning,Traveller change work,20
+2026-07-30,1,TOY-02,Unit I,Weaving,Traveller change work,23
+2026-07-30,1,TOY-06,Unit I,Weaving,Traveller change work,10
+2026-07-30,1,TOY-15,Unit I,Weaving,Full cleaning work,65
+2026-07-30,1,TSU-03,Unit I,Weaving,Full cleaning work,123
+2026-07-30,1,SUL-04,Unit I,Weaving,Maintenance - scheduled,145
+2026-07-30,1,RF-04,Unit I,Spinning,Bobbin shortage,64
+2026-07-30,1,RF-11,Unit I,Spinning,Full cleaning work,142
+2026-07-30,1,VTX-04,Unit I,Spinning,Bobbin shortage,50
+2026-07-30,1,VTX-09,Unit I,Spinning,Full cleaning work,130
+2026-07-30,1,AJ-05,Unit I,Spinning,Maintenance - scheduled,84
+2026-07-30,2,TOY-04,Unit I,Weaving,Loom runout,49
+2026-07-30,2,TOY-08,Unit I,Weaving,Bobbin shortage,49
+2026-07-30,2,TOY-10,Unit I,Weaving,Weft break PBM,19
+2026-07-30,2,TSU-04,Unit I,Weaving,Weft break PBM,41
+2026-07-30,2,TSU-06,Unit I,Weaving,Maintenance - scheduled,137
+2026-07-30,2,SUL-03,Unit I,Weaving,Traveller change work,28
+2026-07-30,2,RF-04,Unit I,Spinning,Bobbin shortage,113
+2026-07-30,2,RF-06,Unit I,Spinning,Sort change work,82
+2026-07-30,2,VTX-02,Unit I,Spinning,Loom runout,23
+2026-07-30,2,VTX-06,Unit I,Spinning,Sort change work,54
+2026-07-30,3,TOY-08,Unit I,Weaving,Full cleaning work,102
+2026-07-30,3,TOY-11,Unit I,Weaving,Maintenance - scheduled,139
+2026-07-30,3,TOY-15,Unit I,Weaving,Loom runout,39
+2026-07-30,3,TSU-05,Unit I,Weaving,Bobbin shortage,98
+2026-07-30,3,TSU-06,Unit I,Weaving,Maintenance - scheduled,172
+2026-07-30,3,SUL-01,Unit I,Weaving,Traveller change work,23
+2026-07-30,3,VTX-01,Unit I,Spinning,Loom runout,41
+2026-07-30,3,VTX-09,Unit I,Spinning,Full cleaning work,68
+2026-07-31,1,TOY-07,Unit I,Weaving,Weft break PBM,25
+2026-07-31,1,TOY-09,Unit I,Weaving,Loom runout,38
+2026-07-31,1,RF-08,Unit I,Spinning,Maintenance - scheduled,138
+2026-07-31,1,RF-09,Unit I,Spinning,Sort change work,70
+2026-07-31,1,AJ-01,Unit I,Spinning,Bobbin shortage,61
+2026-07-31,2,TOY-06,Unit I,Weaving,Traveller change work,27
+2026-07-31,2,TOY-14,Unit I,Weaving,Full cleaning work,95
+2026-07-31,2,TSU-02,Unit I,Weaving,Voltage fluctuation PBM,19
+2026-07-31,2,TSU-05,Unit I,Weaving,Full cleaning work,96
+2026-07-31,2,SUL-01,Unit I,Weaving,Loom runout,24
+2026-07-31,2,SUL-03,Unit I,Weaving,Weft break PBM,30
+2026-07-31,2,RF-04,Unit I,Spinning,Weft break PBM,19
+2026-07-31,2,RF-10,Unit I,Spinning,Voltage fluctuation PBM,10
+2026-07-31,2,VTX-02,Unit I,Spinning,Traveller change work,11
+2026-07-31,2,AJ-02,Unit I,Spinning,Voltage fluctuation PBM,9
+2026-07-31,2,AJ-03,Unit I,Spinning,Bobbin shortage,91
+2026-07-31,2,AJ-04,Unit I,Spinning,Full cleaning work,69
+2026-07-31,3,TOY-02,Unit I,Weaving,Bobbin shortage,84
+2026-07-31,3,TOY-07,Unit I,Weaving,Bobbin shortage,47
+2026-07-31,3,TOY-09,Unit I,Weaving,Loom runout,27
+2026-07-31,3,TOY-13,Unit I,Weaving,Traveller change work,15
+2026-07-31,3,TSU-03,Unit I,Weaving,Voltage fluctuation PBM,18
+2026-07-31,3,SUL-03,Unit I,Weaving,Maintenance - scheduled,157
+2026-07-31,3,RF-02,Unit I,Spinning,Maintenance - scheduled,160
+2026-07-31,3,RF-11,Unit I,Spinning,Bobbin shortage,85
+2026-08-01,1,TOY-02,Unit I,Weaving,Maintenance - scheduled,170
+2026-08-01,1,TOY-12,Unit I,Weaving,Loom runout,42
+2026-08-01,1,TSU-06,Unit I,Weaving,Sort change work,54
+2026-08-01,1,RF-04,Unit I,Spinning,Bobbin shortage,103
+2026-08-01,1,RF-07,Unit I,Spinning,Loom runout,31
+2026-08-01,1,RF-11,Unit I,Spinning,Maintenance - scheduled,71
+2026-08-01,1,VTX-06,Unit I,Spinning,Loom runout,22
+2026-08-01,1,VTX-07,Unit I,Spinning,Bobbin shortage,43
+2026-08-01,1,VTX-11,Unit I,Spinning,Traveller change work,28
+2026-08-01,1,AJ-02,Unit I,Spinning,Loom runout,32
+2026-08-01,2,TOY-06,Unit I,Weaving,Bobbin shortage,93
+2026-08-01,2,TOY-07,Unit I,Weaving,Voltage fluctuation PBM,7
+2026-08-01,2,TOY-10,Unit I,Weaving,Voltage fluctuation PBM,10
+2026-08-01,2,TSU-05,Unit I,Weaving,Maintenance - scheduled,132
+2026-08-01,2,TSU-10,Unit I,Weaving,Sort change work,80
+2026-08-01,2,SUL-03,Unit I,Weaving,Loom runout,38
+2026-08-01,2,RF-02,Unit I,Spinning,Traveller change work,23
+2026-08-01,2,RF-11,Unit I,Spinning,Maintenance - scheduled,98
+2026-08-01,2,VTX-01,Unit I,Spinning,Bobbin shortage,45
+2026-08-01,2,VTX-06,Unit I,Spinning,Voltage fluctuation PBM,6
+2026-08-01,2,VTX-07,Unit I,Spinning,Traveller change work,12
+2026-08-01,2,VTX-10,Unit I,Spinning,Bobbin shortage,114
+2026-08-01,2,VTX-12,Unit I,Spinning,Voltage fluctuation PBM,16
+2026-08-01,3,TOY-03,Unit I,Weaving,Maintenance - scheduled,134
+2026-08-01,3,TOY-08,Unit I,Weaving,Full cleaning work,115
+2026-08-01,3,TOY-15,Unit I,Weaving,Weft break PBM,36
+2026-08-01,3,TSU-02,Unit I,Weaving,Traveller change work,10
+2026-08-01,3,TSU-06,Unit I,Weaving,Bobbin shortage,82
+2026-08-01,3,RF-01,Unit I,Spinning,Loom runout,22
+2026-08-01,3,RF-08,Unit I,Spinning,Loom runout,35
+2026-08-01,3,RF-10,Unit I,Spinning,Full cleaning work,84
+2026-08-01,3,RF-11,Unit I,Spinning,Maintenance - scheduled,178
+2026-08-01,3,VTX-07,Unit I,Spinning,Full cleaning work,122
+2026-08-01,3,VTX-09,Unit I,Spinning,Maintenance - scheduled,127
+2026-08-01,3,AJ-02,Unit I,Spinning,Voltage fluctuation PBM,8
+2026-08-02,1,TOY-02,Unit I,Weaving,Sort change work,80
+2026-08-02,1,TOY-03,Unit I,Weaving,Voltage fluctuation PBM,14
+2026-08-02,1,TOY-06,Unit I,Weaving,Traveller change work,10
+2026-08-02,1,TSU-02,Unit I,Weaving,Voltage fluctuation PBM,10
+2026-08-02,1,TSU-03,Unit I,Weaving,Bobbin shortage,107
+2026-08-02,1,TSU-04,Unit I,Weaving,Voltage fluctuation PBM,16
+2026-08-02,1,TSU-06,Unit I,Weaving,Weft break PBM,27
+2026-08-02,1,SUL-01,Unit I,Weaving,Weft break PBM,19
+2026-08-02,1,SUL-02,Unit I,Weaving,Voltage fluctuation PBM,11
+2026-08-02,1,VTX-03,Unit I,Spinning,Full cleaning work,103
+2026-08-02,1,VTX-12,Unit I,Spinning,Sort change work,83
+2026-08-02,1,AJ-03,Unit I,Spinning,Voltage fluctuation PBM,10
+2026-08-02,1,AJ-05,Unit I,Spinning,Traveller change work,17
+2026-08-02,2,TOY-08,Unit I,Weaving,Sort change work,36
+2026-08-02,2,TOY-10,Unit I,Weaving,Loom runout,46
+2026-08-02,2,TSU-09,Unit I,Weaving,Full cleaning work,115
+2026-08-02,2,SUL-02,Unit I,Weaving,Full cleaning work,105
+2026-08-02,2,RF-09,Unit I,Spinning,Full cleaning work,108
+2026-08-02,2,VTX-03,Unit I,Spinning,Voltage fluctuation PBM,16
+2026-08-02,2,AJ-01,Unit I,Spinning,Sort change work,72
+2026-08-02,3,TSU-10,Unit I,Weaving,Traveller change work,25
+2026-08-02,3,SUL-01,Unit I,Weaving,Full cleaning work,86
+2026-08-02,3,SUL-02,Unit I,Weaving,Voltage fluctuation PBM,5
+2026-08-02,3,VTX-06,Unit I,Spinning,Voltage fluctuation PBM,14
+2026-08-02,3,VTX-09,Unit I,Spinning,Bobbin shortage,110
+2026-08-02,3,VTX-11,Unit I,Spinning,Bobbin shortage,104
+2026-08-02,3,AJ-05,Unit I,Spinning,Weft break PBM,42
+2026-08-03,1,TSU-01,Unit I,Weaving,Weft break PBM,21
+2026-08-03,1,SUL-01,Unit I,Weaving,Loom runout,28
+2026-08-03,1,VTX-01,Unit I,Spinning,Traveller change work,22
+2026-08-03,1,VTX-02,Unit I,Spinning,Full cleaning work,141
+2026-08-03,1,AJ-02,Unit I,Spinning,Traveller change work,14
+2026-08-03,2,TSU-01,Unit I,Weaving,Weft break PBM,18
+2026-08-03,2,TSU-04,Unit I,Weaving,Weft break PBM,19
+2026-08-03,2,TSU-08,Unit I,Weaving,Full cleaning work,126
+2026-08-03,2,SUL-04,Unit I,Weaving,Full cleaning work,63
+2026-08-03,2,VTX-05,Unit I,Spinning,Maintenance - scheduled,102
+2026-08-03,2,VTX-07,Unit I,Spinning,Full cleaning work,129
+2026-08-03,2,AJ-01,Unit I,Spinning,Traveller change work,10
+2026-08-03,3,TOY-09,Unit I,Weaving,Maintenance - scheduled,76
+2026-08-03,3,SUL-02,Unit I,Weaving,Full cleaning work,150
+2026-08-03,3,RF-04,Unit I,Spinning,Full cleaning work,79
+2026-08-03,3,VTX-09,Unit I,Spinning,Weft break PBM,26
+2026-08-03,3,AJ-01,Unit I,Spinning,Loom runout,41
+2026-08-03,3,AJ-04,Unit I,Spinning,Full cleaning work,64
+2026-08-04,1,TOY-01,Unit I,Weaving,Loom runout,45
+2026-08-04,1,TOY-02,Unit I,Weaving,Weft break PBM,15
+2026-08-04,1,TOY-09,Unit I,Weaving,Bobbin shortage,90
+2026-08-04,1,TSU-05,Unit I,Weaving,Weft break PBM,37
+2026-08-04,1,TSU-07,Unit I,Weaving,Voltage fluctuation PBM,17
+2026-08-04,1,TSU-10,Unit I,Weaving,Traveller change work,11
+2026-08-04,1,SUL-05,Unit I,Weaving,Weft break PBM,33
+2026-08-04,1,VTX-03,Unit I,Spinning,Sort change work,69
+2026-08-04,1,VTX-06,Unit I,Spinning,Voltage fluctuation PBM,12
+2026-08-04,1,VTX-09,Unit I,Spinning,Bobbin shortage,80
+2026-08-04,1,VTX-12,Unit I,Spinning,Loom runout,28
+2026-08-04,1,AJ-04,Unit I,Spinning,Voltage fluctuation PBM,19
+2026-08-04,2,TOY-08,Unit I,Weaving,Sort change work,36
+2026-08-04,2,TOY-14,Unit I,Weaving,Maintenance - scheduled,121
+2026-08-04,2,SUL-03,Unit I,Weaving,Voltage fluctuation PBM,12
+2026-08-04,2,SUL-04,Unit I,Weaving,Full cleaning work,103
+2026-08-04,2,VTX-03,Unit I,Spinning,Bobbin shortage,72
+2026-08-04,2,AJ-01,Unit I,Spinning,Maintenance - scheduled,70
+2026-08-04,3,TOY-01,Unit I,Weaving,Full cleaning work,65
+2026-08-04,3,TOY-02,Unit I,Weaving,Voltage fluctuation PBM,10
+2026-08-04,3,TOY-06,Unit I,Weaving,Loom runout,29
+2026-08-04,3,TOY-07,Unit I,Weaving,Bobbin shortage,110
+2026-08-04,3,TOY-08,Unit I,Weaving,Weft break PBM,27
+2026-08-04,3,TSU-04,Unit I,Weaving,Full cleaning work,123
+2026-08-04,3,VTX-08,Unit I,Spinning,Voltage fluctuation PBM,12
+2026-08-05,1,TOY-04,Unit I,Weaving,Weft break PBM,34
+2026-08-05,1,TOY-06,Unit I,Weaving,Maintenance - scheduled,85
+2026-08-05,1,TOY-15,Unit I,Weaving,Sort change work,74
+2026-08-05,1,TSU-09,Unit I,Weaving,Traveller change work,21
+2026-08-05,1,RF-05,Unit I,Spinning,Bobbin shortage,35
+2026-08-05,1,RF-11,Unit I,Spinning,Voltage fluctuation PBM,16
+2026-08-05,1,VTX-09,Unit I,Spinning,Maintenance - scheduled,85
+2026-08-05,1,VTX-12,Unit I,Spinning,Sort change work,84
+2026-08-05,1,AJ-01,Unit I,Spinning,Full cleaning work,120
+2026-08-05,2,TOY-02,Unit I,Weaving,Bobbin shortage,33
+2026-08-05,2,TOY-03,Unit I,Weaving,Maintenance - scheduled,110
+2026-08-05,2,TOY-09,Unit I,Weaving,Full cleaning work,138
+2026-08-05,2,RF-02,Unit I,Spinning,Loom runout,40
+2026-08-05,2,RF-03,Unit I,Spinning,Sort change work,73
+2026-08-05,2,RF-11,Unit I,Spinning,Maintenance - scheduled,87
+2026-08-05,2,VTX-10,Unit I,Spinning,Traveller change work,22
+2026-08-05,2,VTX-12,Unit I,Spinning,Full cleaning work,116
+2026-08-05,2,AJ-04,Unit I,Spinning,Weft break PBM,26
+2026-08-05,3,TOY-04,Unit I,Weaving,Traveller change work,11
+2026-08-05,3,TOY-05,Unit I,Weaving,Sort change work,30
+2026-08-05,3,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,16
+2026-08-05,3,TOY-11,Unit I,Weaving,Weft break PBM,34
+2026-08-05,3,TSU-01,Unit I,Weaving,Traveller change work,27
+2026-08-05,3,TSU-09,Unit I,Weaving,Bobbin shortage,96
+2026-08-05,3,SUL-01,Unit I,Weaving,Loom runout,50
+2026-08-05,3,SUL-05,Unit I,Weaving,Sort change work,35
+2026-08-05,3,RF-01,Unit I,Spinning,Weft break PBM,45
+2026-08-05,3,RF-03,Unit I,Spinning,Loom runout,47
+2026-08-05,3,RF-07,Unit I,Spinning,Full cleaning work,73
+2026-08-05,3,RF-11,Unit I,Spinning,Loom runout,57
+2026-08-05,3,AJ-05,Unit I,Spinning,Bobbin shortage,48
+2026-08-06,1,TOY-06,Unit I,Weaving,Maintenance - scheduled,155
+2026-08-06,1,TOY-07,Unit I,Weaving,Sort change work,43
+2026-08-06,1,TOY-15,Unit I,Weaving,Sort change work,48
+2026-08-06,1,TSU-03,Unit I,Weaving,Voltage fluctuation PBM,17
+2026-08-06,1,SUL-05,Unit I,Weaving,Voltage fluctuation PBM,6
+2026-08-06,1,RF-03,Unit I,Spinning,Maintenance - scheduled,81
+2026-08-06,1,RF-08,Unit I,Spinning,Loom runout,48
+2026-08-06,2,TOY-01,Unit I,Weaving,Bobbin shortage,72
+2026-08-06,2,TSU-02,Unit I,Weaving,Traveller change work,30
+2026-08-06,2,VTX-11,Unit I,Spinning,Sort change work,75
+2026-08-06,3,TOY-11,Unit I,Weaving,Sort change work,74
+2026-08-06,3,RF-05,Unit I,Spinning,Bobbin shortage,114
+2026-08-06,3,RF-06,Unit I,Spinning,Full cleaning work,113
+2026-08-06,3,RF-08,Unit I,Spinning,Voltage fluctuation PBM,8
+2026-08-06,3,VTX-01,Unit I,Spinning,Traveller change work,24
+2026-08-06,3,VTX-02,Unit I,Spinning,Voltage fluctuation PBM,9
+2026-08-06,3,VTX-05,Unit I,Spinning,Weft break PBM,31
+2026-08-06,3,VTX-11,Unit I,Spinning,Traveller change work,20
+2026-08-06,3,AJ-05,Unit I,Spinning,Sort change work,45
+2026-08-07,1,TOY-07,Unit I,Weaving,Traveller change work,19
+2026-08-07,1,TSU-01,Unit I,Weaving,Bobbin shortage,76
+2026-08-07,1,SUL-03,Unit I,Weaving,Maintenance - scheduled,75
+2026-08-07,1,SUL-04,Unit I,Weaving,Full cleaning work,95
+2026-08-07,1,RF-11,Unit I,Spinning,Loom runout,49
+2026-08-07,1,VTX-02,Unit I,Spinning,Bobbin shortage,104
+2026-08-07,1,VTX-03,Unit I,Spinning,Voltage fluctuation PBM,19
+2026-08-07,1,VTX-05,Unit I,Spinning,Traveller change work,26
+2026-08-07,1,VTX-06,Unit I,Spinning,Maintenance - scheduled,73
+2026-08-07,1,AJ-01,Unit I,Spinning,Bobbin shortage,32
+2026-08-07,2,TOY-02,Unit I,Weaving,Traveller change work,21
+2026-08-07,2,TOY-04,Unit I,Weaving,Voltage fluctuation PBM,15
+2026-08-07,2,TSU-07,Unit I,Weaving,Loom runout,21
+2026-08-07,2,SUL-04,Unit I,Weaving,Traveller change work,22
+2026-08-07,2,SUL-05,Unit I,Weaving,Traveller change work,23
+2026-08-07,2,RF-09,Unit I,Spinning,Loom runout,29
+2026-08-07,2,VTX-01,Unit I,Spinning,Weft break PBM,29
+2026-08-07,3,TOY-10,Unit I,Weaving,Sort change work,31
+2026-08-07,3,TSU-01,Unit I,Weaving,Voltage fluctuation PBM,6
+2026-08-07,3,TSU-08,Unit I,Weaving,Weft break PBM,42
+2026-08-07,3,TSU-09,Unit I,Weaving,Loom runout,24
+2026-08-07,3,RF-05,Unit I,Spinning,Voltage fluctuation PBM,20
+2026-08-07,3,RF-12,Unit I,Spinning,Maintenance - scheduled,153
+2026-08-07,3,VTX-08,Unit I,Spinning,Full cleaning work,77
+2026-08-08,1,TOY-06,Unit I,Weaving,Weft break PBM,26
+2026-08-08,1,TOY-07,Unit I,Weaving,Bobbin shortage,78
+2026-08-08,1,TOY-08,Unit I,Weaving,Traveller change work,16
+2026-08-08,1,TOY-09,Unit I,Weaving,Maintenance - scheduled,153
+2026-08-08,1,TOY-13,Unit I,Weaving,Sort change work,88
+2026-08-08,1,TSU-05,Unit I,Weaving,Traveller change work,10
+2026-08-08,1,TSU-08,Unit I,Weaving,Traveller change work,29
+2026-08-08,1,RF-02,Unit I,Spinning,Maintenance - scheduled,104
+2026-08-08,1,RF-07,Unit I,Spinning,Traveller change work,19
+2026-08-08,1,RF-10,Unit I,Spinning,Weft break PBM,38
+2026-08-08,1,RF-11,Unit I,Spinning,Traveller change work,27
+2026-08-08,1,RF-12,Unit I,Spinning,Voltage fluctuation PBM,17
+2026-08-08,1,VTX-06,Unit I,Spinning,Full cleaning work,133
+2026-08-08,1,AJ-01,Unit I,Spinning,Loom runout,52
+2026-08-08,1,AJ-05,Unit I,Spinning,Loom runout,38
+2026-08-08,2,TOY-02,Unit I,Weaving,Full cleaning work,106
+2026-08-08,2,TOY-13,Unit I,Weaving,Bobbin shortage,108
+2026-08-08,2,TOY-15,Unit I,Weaving,Loom runout,21
+2026-08-08,2,TSU-03,Unit I,Weaving,Sort change work,40
+2026-08-08,2,TSU-10,Unit I,Weaving,Traveller change work,30
+2026-08-08,2,SUL-02,Unit I,Weaving,Full cleaning work,132
+2026-08-08,2,RF-01,Unit I,Spinning,Traveller change work,15
+2026-08-08,2,RF-03,Unit I,Spinning,Maintenance - scheduled,176
+2026-08-08,2,RF-11,Unit I,Spinning,Full cleaning work,71
+2026-08-08,2,VTX-03,Unit I,Spinning,Weft break PBM,37
+2026-08-08,2,VTX-09,Unit I,Spinning,Weft break PBM,20
+2026-08-08,3,TOY-03,Unit I,Weaving,Loom runout,60
+2026-08-08,3,TOY-06,Unit I,Weaving,Bobbin shortage,72
+2026-08-08,3,TOY-12,Unit I,Weaving,Bobbin shortage,114
+2026-08-08,3,TOY-14,Unit I,Weaving,Loom runout,26
+2026-08-08,3,RF-01,Unit I,Spinning,Voltage fluctuation PBM,17
+2026-08-08,3,VTX-08,Unit I,Spinning,Traveller change work,14
+2026-08-09,1,TOY-02,Unit I,Weaving,Bobbin shortage,65
+2026-08-09,1,TOY-11,Unit I,Weaving,Voltage fluctuation PBM,17
+2026-08-09,1,RF-10,Unit I,Spinning,Full cleaning work,88
+2026-08-09,1,VTX-05,Unit I,Spinning,Full cleaning work,101
+2026-08-09,1,VTX-06,Unit I,Spinning,Bobbin shortage,32
+2026-08-09,1,VTX-10,Unit I,Spinning,Bobbin shortage,92
+2026-08-09,1,AJ-05,Unit I,Spinning,Full cleaning work,86
+2026-08-09,2,TOY-02,Unit I,Weaving,Loom runout,26
+2026-08-09,2,TOY-08,Unit I,Weaving,Traveller change work,10
+2026-08-09,2,TOY-10,Unit I,Weaving,Sort change work,54
+2026-08-09,2,TSU-02,Unit I,Weaving,Loom runout,49
+2026-08-09,2,TSU-03,Unit I,Weaving,Voltage fluctuation PBM,14
+2026-08-09,2,SUL-01,Unit I,Weaving,Weft break PBM,26
+2026-08-09,2,RF-04,Unit I,Spinning,Voltage fluctuation PBM,6
+2026-08-09,2,RF-09,Unit I,Spinning,Traveller change work,21
+2026-08-09,2,VTX-02,Unit I,Spinning,Full cleaning work,142
+2026-08-09,2,VTX-06,Unit I,Spinning,Voltage fluctuation PBM,12
+2026-08-09,2,AJ-05,Unit I,Spinning,Full cleaning work,94
+2026-08-09,3,TOY-02,Unit I,Weaving,Bobbin shortage,98
+2026-08-09,3,TOY-06,Unit I,Weaving,Full cleaning work,122
+2026-08-09,3,TOY-08,Unit I,Weaving,Bobbin shortage,81
+2026-08-09,3,TOY-14,Unit I,Weaving,Loom runout,36
+2026-08-09,3,TSU-01,Unit I,Weaving,Maintenance - scheduled,145
+2026-08-09,3,TSU-07,Unit I,Weaving,Maintenance - scheduled,63
+2026-08-09,3,SUL-01,Unit I,Weaving,Bobbin shortage,88
+2026-08-09,3,RF-11,Unit I,Spinning,Bobbin shortage,92
+2026-08-09,3,VTX-11,Unit I,Spinning,Traveller change work,17
+2026-08-09,3,AJ-04,Unit I,Spinning,Traveller change work,11
+2026-08-10,1,TOY-09,Unit I,Weaving,Maintenance - scheduled,146
+2026-08-10,1,TOY-12,Unit I,Weaving,Sort change work,84
+2026-08-10,1,TSU-07,Unit I,Weaving,Maintenance - scheduled,161
+2026-08-10,1,VTX-01,Unit I,Spinning,Traveller change work,24
+2026-08-10,2,TOY-08,Unit I,Weaving,Maintenance - scheduled,108
+2026-08-10,2,TOY-12,Unit I,Weaving,Bobbin shortage,101
+2026-08-10,2,TOY-13,Unit I,Weaving,Bobbin shortage,103
+2026-08-10,2,TSU-05,Unit I,Weaving,Voltage fluctuation PBM,6
+2026-08-10,2,TSU-10,Unit I,Weaving,Full cleaning work,131
+2026-08-10,2,SUL-04,Unit I,Weaving,Traveller change work,30
+2026-08-10,2,RF-02,Unit I,Spinning,Sort change work,37
+2026-08-10,2,RF-10,Unit I,Spinning,Traveller change work,16
+2026-08-10,2,VTX-06,Unit I,Spinning,Bobbin shortage,76
+2026-08-10,2,VTX-10,Unit I,Spinning,Voltage fluctuation PBM,15
+2026-08-10,2,AJ-04,Unit I,Spinning,Sort change work,77
+2026-08-10,2,AJ-05,Unit I,Spinning,Weft break PBM,44
+2026-08-10,3,TOY-05,Unit I,Weaving,Traveller change work,20
+2026-08-10,3,TOY-08,Unit I,Weaving,Maintenance - scheduled,176
+2026-08-10,3,TOY-11,Unit I,Weaving,Bobbin shortage,62
+2026-08-10,3,TSU-02,Unit I,Weaving,Voltage fluctuation PBM,12
+2026-08-10,3,TSU-07,Unit I,Weaving,Traveller change work,15
+2026-08-10,3,SUL-01,Unit I,Weaving,Voltage fluctuation PBM,6
+2026-08-10,3,RF-01,Unit I,Spinning,Full cleaning work,134
+2026-08-10,3,RF-06,Unit I,Spinning,Weft break PBM,30
+2026-08-10,3,VTX-06,Unit I,Spinning,Traveller change work,19
+2026-08-10,3,VTX-10,Unit I,Spinning,Traveller change work,28
+2026-08-10,3,VTX-11,Unit I,Spinning,Voltage fluctuation PBM,17
+2026-08-11,1,TOY-08,Unit I,Weaving,Maintenance - scheduled,135
+2026-08-11,1,RF-01,Unit I,Spinning,Weft break PBM,23
+2026-08-11,1,VTX-10,Unit I,Spinning,Sort change work,40
+2026-08-11,1,AJ-02,Unit I,Spinning,Loom runout,59
+2026-08-11,2,TOY-08,Unit I,Weaving,Bobbin shortage,69
+2026-08-11,2,TOY-09,Unit I,Weaving,Traveller change work,15
+2026-08-11,2,TOY-10,Unit I,Weaving,Weft break PBM,15
+2026-08-11,2,TOY-11,Unit I,Weaving,Maintenance - scheduled,99
+2026-08-11,2,TOY-14,Unit I,Weaving,Maintenance - scheduled,106
+2026-08-11,2,SUL-04,Unit I,Weaving,Weft break PBM,40
+2026-08-11,2,RF-09,Unit I,Spinning,Weft break PBM,38
+2026-08-11,2,RF-10,Unit I,Spinning,Bobbin shortage,93
+2026-08-11,2,VTX-06,Unit I,Spinning,Sort change work,65
+2026-08-11,2,AJ-01,Unit I,Spinning,Voltage fluctuation PBM,11
+2026-08-11,3,TOY-01,Unit I,Weaving,Full cleaning work,101
+2026-08-11,3,TOY-03,Unit I,Weaving,Sort change work,31
+2026-08-11,3,TOY-05,Unit I,Weaving,Voltage fluctuation PBM,10
+2026-08-11,3,TOY-08,Unit I,Weaving,Traveller change work,12
+2026-08-11,3,TSU-10,Unit I,Weaving,Voltage fluctuation PBM,5
+2026-08-11,3,RF-05,Unit I,Spinning,Voltage fluctuation PBM,6
+2026-08-11,3,RF-11,Unit I,Spinning,Maintenance - scheduled,83
+2026-08-12,1,TOY-06,Unit I,Weaving,Full cleaning work,91
+2026-08-12,1,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,19
+2026-08-12,1,TOY-12,Unit I,Weaving,Voltage fluctuation PBM,19
+2026-08-12,1,RF-03,Unit I,Spinning,Traveller change work,23
+2026-08-12,1,RF-09,Unit I,Spinning,Full cleaning work,84
+2026-08-12,1,RF-12,Unit I,Spinning,Traveller change work,21
+2026-08-12,1,VTX-01,Unit I,Spinning,Loom runout,45
+2026-08-12,1,VTX-02,Unit I,Spinning,Traveller change work,14
+2026-08-12,1,VTX-06,Unit I,Spinning,Full cleaning work,101
+2026-08-12,1,AJ-01,Unit I,Spinning,Sort change work,39
+2026-08-12,2,TSU-01,Unit I,Weaving,Bobbin shortage,45
+2026-08-12,2,SUL-02,Unit I,Weaving,Weft break PBM,38
+2026-08-12,2,SUL-03,Unit I,Weaving,Voltage fluctuation PBM,18
+2026-08-12,2,SUL-04,Unit I,Weaving,Traveller change work,29
+2026-08-12,2,RF-06,Unit I,Spinning,Traveller change work,27
+2026-08-12,2,RF-12,Unit I,Spinning,Full cleaning work,113
+2026-08-12,2,VTX-02,Unit I,Spinning,Full cleaning work,140
+2026-08-12,2,VTX-03,Unit I,Spinning,Bobbin shortage,72
+2026-08-12,2,VTX-10,Unit I,Spinning,Sort change work,75
+2026-08-12,2,AJ-03,Unit I,Spinning,Voltage fluctuation PBM,19
+2026-08-12,3,TOY-14,Unit I,Weaving,Voltage fluctuation PBM,16
+2026-08-12,3,SUL-03,Unit I,Weaving,Loom runout,29
+2026-08-12,3,RF-01,Unit I,Spinning,Full cleaning work,97
+2026-08-12,3,RF-03,Unit I,Spinning,Weft break PBM,36
+2026-08-12,3,VTX-03,Unit I,Spinning,Voltage fluctuation PBM,12
+2026-08-12,3,VTX-06,Unit I,Spinning,Weft break PBM,33
+2026-08-12,3,VTX-07,Unit I,Spinning,Traveller change work,20
+2026-08-13,1,TOY-11,Unit I,Weaving,Full cleaning work,126
+2026-08-13,1,SUL-05,Unit I,Weaving,Sort change work,54
+2026-08-13,1,RF-09,Unit I,Spinning,Maintenance - scheduled,179
+2026-08-13,1,RF-11,Unit I,Spinning,Loom runout,26
+2026-08-13,1,AJ-04,Unit I,Spinning,Loom runout,32
+2026-08-13,2,TOY-07,Unit I,Weaving,Full cleaning work,113
+2026-08-13,2,TOY-08,Unit I,Weaving,Weft break PBM,40
+2026-08-13,2,TSU-01,Unit I,Weaving,Traveller change work,24
+2026-08-13,2,SUL-01,Unit I,Weaving,Maintenance - scheduled,178
+2026-08-13,2,RF-03,Unit I,Spinning,Maintenance - scheduled,97
+2026-08-13,2,VTX-02,Unit I,Spinning,Weft break PBM,43
+2026-08-13,2,VTX-05,Unit I,Spinning,Weft break PBM,44
+2026-08-13,2,VTX-08,Unit I,Spinning,Loom runout,48
+2026-08-13,3,TOY-02,Unit I,Weaving,Loom runout,48
+2026-08-13,3,TOY-05,Unit I,Weaving,Voltage fluctuation PBM,14
+2026-08-13,3,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,18
+2026-08-13,3,TOY-11,Unit I,Weaving,Traveller change work,17
+2026-08-13,3,TOY-12,Unit I,Weaving,Weft break PBM,24
+2026-08-13,3,RF-05,Unit I,Spinning,Loom runout,44
+2026-08-13,3,RF-07,Unit I,Spinning,Traveller change work,21
+2026-08-13,3,VTX-02,Unit I,Spinning,Voltage fluctuation PBM,15
+2026-08-13,3,VTX-04,Unit I,Spinning,Traveller change work,29
+2026-08-13,3,VTX-06,Unit I,Spinning,Sort change work,60
+2026-08-14,1,TSU-06,Unit I,Weaving,Sort change work,38
+2026-08-14,1,TSU-08,Unit I,Weaving,Traveller change work,12
+2026-08-14,1,SUL-03,Unit I,Weaving,Bobbin shortage,107
+2026-08-14,1,SUL-05,Unit I,Weaving,Maintenance - scheduled,115
+2026-08-14,1,RF-04,Unit I,Spinning,Traveller change work,15
+2026-08-14,2,TOY-03,Unit I,Weaving,Loom runout,24
+2026-08-14,2,TOY-05,Unit I,Weaving,Weft break PBM,25
+2026-08-14,2,TOY-06,Unit I,Weaving,Full cleaning work,100
+2026-08-14,2,TOY-12,Unit I,Weaving,Voltage fluctuation PBM,17
+2026-08-14,2,TOY-13,Unit I,Weaving,Sort change work,86
+2026-08-14,2,TSU-10,Unit I,Weaving,Traveller change work,22
+2026-08-14,2,RF-01,Unit I,Spinning,Weft break PBM,26
+2026-08-14,2,VTX-04,Unit I,Spinning,Maintenance - scheduled,147
+2026-08-14,2,VTX-07,Unit I,Spinning,Maintenance - scheduled,89
+2026-08-14,2,AJ-03,Unit I,Spinning,Maintenance - scheduled,168
+2026-08-14,2,AJ-04,Unit I,Spinning,Voltage fluctuation PBM,9
+2026-08-14,3,TOY-08,Unit I,Weaving,Voltage fluctuation PBM,13
+2026-08-14,3,TOY-10,Unit I,Weaving,Traveller change work,23
+2026-08-14,3,TOY-13,Unit I,Weaving,Traveller change work,18
+2026-08-14,3,TSU-03,Unit I,Weaving,Bobbin shortage,120
+2026-08-14,3,TSU-07,Unit I,Weaving,Full cleaning work,95
+2026-08-14,3,TSU-08,Unit I,Weaving,Loom runout,47
+2026-08-14,3,SUL-01,Unit I,Weaving,Full cleaning work,143
+2026-08-14,3,RF-06,Unit I,Spinning,Traveller change work,13
+2026-08-14,3,RF-11,Unit I,Spinning,Sort change work,38
+2026-08-14,3,VTX-11,Unit I,Spinning,Voltage fluctuation PBM,20
+2026-08-15,1,TOY-02,Unit I,Weaving,Sort change work,82
+2026-08-15,1,SUL-02,Unit I,Weaving,Full cleaning work,144
+2026-08-15,1,RF-11,Unit I,Spinning,Loom runout,27
+2026-08-15,1,VTX-08,Unit I,Spinning,Full cleaning work,149
+2026-08-15,1,VTX-10,Unit I,Spinning,Traveller change work,16
+2026-08-15,2,TSU-03,Unit I,Weaving,Bobbin shortage,33
+2026-08-15,2,RF-09,Unit I,Spinning,Weft break PBM,30
+2026-08-15,2,RF-11,Unit I,Spinning,Sort change work,39
+2026-08-15,2,VTX-11,Unit I,Spinning,Sort change work,44
+2026-08-15,2,VTX-12,Unit I,Spinning,Sort change work,89
+2026-08-15,3,TOY-02,Unit I,Weaving,Maintenance - scheduled,79
+2026-08-15,3,TOY-03,Unit I,Weaving,Sort change work,38
+2026-08-15,3,TOY-08,Unit I,Weaving,Weft break PBM,28
+2026-08-15,3,TOY-09,Unit I,Weaving,Bobbin shortage,69
+2026-08-15,3,TSU-02,Unit I,Weaving,Sort change work,40
+2026-08-15,3,VTX-06,Unit I,Spinning,Loom runout,49
+2026-08-15,3,VTX-08,Unit I,Spinning,Maintenance - scheduled,63
+2026-08-15,3,VTX-10,Unit I,Spinning,Full cleaning work,146
+2026-08-15,3,VTX-11,Unit I,Spinning,Weft break PBM,16
+2026-08-16,1,TOY-05,Unit I,Weaving,Sort change work,66
+2026-08-16,1,TOY-08,Unit I,Weaving,Bobbin shortage,35
+2026-08-16,1,TSU-02,Unit I,Weaving,Loom runout,30
+2026-08-16,1,RF-02,Unit I,Spinning,Bobbin shortage,41
+2026-08-16,1,VTX-09,Unit I,Spinning,Traveller change work,25
+2026-08-16,1,VTX-10,Unit I,Spinning,Bobbin shortage,34
+2026-08-16,1,AJ-04,Unit I,Spinning,Bobbin shortage,78
+2026-08-16,2,TOY-10,Unit I,Weaving,Loom runout,50
+2026-08-16,2,TOY-13,Unit I,Weaving,Maintenance - scheduled,143
+2026-08-16,2,TOY-14,Unit I,Weaving,Voltage fluctuation PBM,6
+2026-08-16,2,TSU-08,Unit I,Weaving,Weft break PBM,19
+2026-08-16,2,RF-11,Unit I,Spinning,Bobbin shortage,114
+2026-08-16,2,VTX-07,Unit I,Spinning,Traveller change work,24
+2026-08-16,2,VTX-12,Unit I,Spinning,Traveller change work,17
+2026-08-16,3,TOY-09,Unit I,Weaving,Voltage fluctuation PBM,6
+2026-08-16,3,TOY-13,Unit I,Weaving,Bobbin shortage,56
+2026-08-16,3,TSU-02,Unit I,Weaving,Full cleaning work,148
+2026-08-16,3,RF-08,Unit I,Spinning,Voltage fluctuation PBM,20
+2026-08-16,3,VTX-02,Unit I,Spinning,Sort change work,67
+2026-08-16,3,VTX-05,Unit I,Spinning,Voltage fluctuation PBM,20
+2026-08-16,3,VTX-08,Unit I,Spinning,Bobbin shortage,40
+2026-08-17,1,TOY-07,Unit I,Weaving,Sort change work,76
+2026-08-17,1,TSU-03,Unit I,Weaving,Full cleaning work,112
+2026-08-17,1,TSU-09,Unit I,Weaving,Sort change work,58
+2026-08-17,1,RF-03,Unit I,Spinning,Loom runout,33
+2026-08-17,1,RF-05,Unit I,Spinning,Sort change work,65
+2026-08-17,1,RF-11,Unit I,Spinning,Voltage fluctuation PBM,16
+2026-08-17,1,VTX-07,Unit I,Spinning,Weft break PBM,20
+2026-08-17,1,VTX-12,Unit I,Spinning,Sort change work,88
+2026-08-17,2,TOY-11,Unit I,Weaving,Bobbin shortage,78
+2026-08-17,2,TSU-02,Unit I,Weaving,Traveller change work,14
+2026-08-17,2,VTX-12,Unit I,Spinning,Loom runout,26
+2026-08-17,3,TOY-02,Unit I,Weaving,Maintenance - scheduled,89
+2026-08-17,3,TOY-04,Unit I,Weaving,Voltage fluctuation PBM,13
+2026-08-17,3,TOY-14,Unit I,Weaving,Bobbin shortage,33
+2026-08-17,3,TSU-08,Unit I,Weaving,Weft break PBM,45
+2026-08-17,3,SUL-01,Unit I,Weaving,Maintenance - scheduled,122
+2026-08-18,1,TOY-02,Unit I,Weaving,Loom runout,45
+2026-08-18,1,TOY-07,Unit I,Weaving,Sort change work,60
+2026-08-18,1,TOY-09,Unit I,Weaving,Sort change work,49
+2026-08-18,1,TSU-01,Unit I,Weaving,Loom runout,55
+2026-08-18,1,TSU-08,Unit I,Weaving,Loom runout,27
+2026-08-18,1,RF-01,Unit I,Spinning,Weft break PBM,39
+2026-08-18,1,RF-03,Unit I,Spinning,Traveller change work,26
+2026-08-18,1,RF-04,Unit I,Spinning,Traveller change work,11
+2026-08-18,1,RF-05,Unit I,Spinning,Voltage fluctuation PBM,6
+2026-08-18,1,VTX-06,Unit I,Spinning,Weft break PBM,31
+2026-08-18,2,TOY-02,Unit I,Weaving,Loom runout,50
+2026-08-18,2,TOY-10,Unit I,Weaving,Maintenance - scheduled,69
+2026-08-18,2,TOY-15,Unit I,Weaving,Bobbin shortage,56
+2026-08-18,2,SUL-04,Unit I,Weaving,Maintenance - scheduled,73
+2026-08-18,2,RF-03,Unit I,Spinning,Weft break PBM,32
+2026-08-18,2,RF-08,Unit I,Spinning,Bobbin shortage,73
+2026-08-18,2,RF-11,Unit I,Spinning,Traveller change work,29
+2026-08-18,2,VTX-04,Unit I,Spinning,Maintenance - scheduled,83
+2026-08-18,3,TSU-02,Unit I,Weaving,Loom runout,27
+2026-08-18,3,TSU-06,Unit I,Weaving,Bobbin shortage,98
+2026-08-18,3,TSU-10,Unit I,Weaving,Full cleaning work,103
+2026-08-18,3,SUL-05,Unit I,Weaving,Voltage fluctuation PBM,5
+2026-08-18,3,RF-09,Unit I,Spinning,Traveller change work,10
+2026-08-18,3,RF-11,Unit I,Spinning,Bobbin shortage,112
+2026-08-19,1,TOY-02,Unit I,Weaving,Maintenance - scheduled,62
+2026-08-19,1,TOY-03,Unit I,Weaving,Loom runout,46
+2026-08-19,1,TOY-08,Unit I,Weaving,Maintenance - scheduled,164
+2026-08-19,1,TSU-04,Unit I,Weaving,Bobbin shortage,38
+2026-08-19,1,SUL-03,Unit I,Weaving,Loom runout,28
+2026-08-19,2,TOY-02,Unit I,Weaving,Voltage fluctuation PBM,19
+2026-08-19,2,TOY-05,Unit I,Weaving,Maintenance - scheduled,64
+2026-08-19,2,TOY-09,Unit I,Weaving,Voltage fluctuation PBM,17
+2026-08-19,2,RF-11,Unit I,Spinning,Weft break PBM,21
+2026-08-19,2,VTX-02,Unit I,Spinning,Weft break PBM,29
+2026-08-19,2,VTX-03,Unit I,Spinning,Traveller change work,25
+2026-08-19,2,VTX-05,Unit I,Spinning,Bobbin shortage,120
+2026-08-19,2,VTX-10,Unit I,Spinning,Weft break PBM,33
+2026-08-19,3,TSU-06,Unit I,Weaving,Bobbin shortage,59
+2026-08-19,3,VTX-03,Unit I,Spinning,Traveller change work,25
+2026-08-19,3,VTX-07,Unit I,Spinning,Voltage fluctuation PBM,9
+2026-08-20,1,TOY-02,Unit I,Weaving,Bobbin shortage,111
+2026-08-20,1,TOY-04,Unit I,Weaving,Maintenance - scheduled,88
+2026-08-20,1,TSU-10,Unit I,Weaving,Full cleaning work,134
+2026-08-20,1,VTX-03,Unit I,Spinning,Full cleaning work,83
+2026-08-20,2,TOY-02,Unit I,Weaving,Full cleaning work,101
+2026-08-20,2,TOY-15,Unit I,Weaving,Loom runout,57
+2026-08-20,2,TSU-01,Unit I,Weaving,Bobbin shortage,80
+2026-08-20,2,TSU-02,Unit I,Weaving,Maintenance - scheduled,86
+2026-08-20,2,TSU-07,Unit I,Weaving,Bobbin shortage,37
+2026-08-20,2,RF-02,Unit I,Spinning,Full cleaning work,76
+2026-08-20,2,VTX-02,Unit I,Spinning,Traveller change work,24
+2026-08-20,2,VTX-10,Unit I,Spinning,Sort change work,77
+2026-08-20,2,AJ-01,Unit I,Spinning,Bobbin shortage,65
+2026-08-20,3,TOY-14,Unit I,Weaving,Traveller change work,28
+2026-08-20,3,TSU-09,Unit I,Weaving,Weft break PBM,20
+2026-08-20,3,SUL-01,Unit I,Weaving,Weft break PBM,17
+2026-08-20,3,VTX-03,Unit I,Spinning,Bobbin shortage,114
+2026-08-21,1,TOY-03,Unit I,Weaving,Traveller change work,16
+2026-08-21,1,TOY-07,Unit I,Weaving,Traveller change work,25
+2026-08-21,1,TOY-14,Unit I,Weaving,Traveller change work,11
+2026-08-21,1,TSU-02,Unit I,Weaving,Bobbin shortage,36
+2026-08-21,1,TSU-03,Unit I,Weaving,Loom runout,28
+2026-08-21,1,SUL-04,Unit I,Weaving,Bobbin shortage,100
+2026-08-21,1,RF-01,Unit I,Spinning,Weft break PBM,41
+2026-08-21,1,RF-07,Unit I,Spinning,Weft break PBM,23
+2026-08-21,1,RF-11,Unit I,Spinning,Loom runout,59
+2026-08-21,1,VTX-01,Unit I,Spinning,Weft break PBM,40
+2026-08-21,1,VTX-06,Unit I,Spinning,Full cleaning work,63
+2026-08-21,1,VTX-08,Unit I,Spinning,Full cleaning work,124
+2026-08-21,1,VTX-09,Unit I,Spinning,Sort change work,74
+2026-08-21,2,TOY-02,Unit I,Weaving,Voltage fluctuation PBM,7
+2026-08-21,2,TOY-09,Unit I,Weaving,Voltage fluctuation PBM,20
+2026-08-21,2,TOY-15,Unit I,Weaving,Bobbin shortage,79
+2026-08-21,2,RF-02,Unit I,Spinning,Weft break PBM,25
+2026-08-21,2,RF-04,Unit I,Spinning,Full cleaning work,89
+2026-08-21,2,RF-08,Unit I,Spinning,Voltage fluctuation PBM,16
+2026-08-21,2,RF-10,Unit I,Spinning,Traveller change work,19
+2026-08-21,2,VTX-11,Unit I,Spinning,Voltage fluctuation PBM,7
+2026-08-21,2,AJ-01,Unit I,Spinning,Maintenance - scheduled,125
+2026-08-21,3,TOY-04,Unit I,Weaving,Loom runout,47
+2026-08-21,3,TOY-05,Unit I,Weaving,Maintenance - scheduled,139
+2026-08-21,3,TOY-07,Unit I,Weaving,Weft break PBM,45
+2026-08-21,3,RF-02,Unit I,Spinning,Traveller change work,22
+2026-08-21,3,RF-05,Unit I,Spinning,Sort change work,55
+2026-08-21,3,RF-08,Unit I,Spinning,Voltage fluctuation PBM,7
+2026-08-21,3,RF-11,Unit I,Spinning,Loom runout,20
+2026-08-21,3,VTX-01,Unit I,Spinning,Voltage fluctuation PBM,16
+2026-08-21,3,VTX-10,Unit I,Spinning,Maintenance - scheduled,72
+2026-08-22,1,TOY-10,Unit I,Weaving,Sort change work,37
+2026-08-22,1,TOY-14,Unit I,Weaving,Traveller change work,16
+2026-08-22,1,TSU-09,Unit I,Weaving,Maintenance - scheduled,108
+2026-08-22,1,RF-06,Unit I,Spinning,Voltage fluctuation PBM,16
+2026-08-22,1,VTX-03,Unit I,Spinning,Voltage fluctuation PBM,16
+2026-08-22,1,VTX-05,Unit I,Spinning,Traveller change work,18
+2026-08-22,1,AJ-01,Unit I,Spinning,Voltage fluctuation PBM,18
+2026-08-22,1,AJ-05,Unit I,Spinning,Bobbin shortage,60
+2026-08-22,2,TSU-08,Unit I,Weaving,Weft break PBM,16
+2026-08-22,2,SUL-03,Unit I,Weaving,Weft break PBM,17
+2026-08-22,2,RF-02,Unit I,Spinning,Loom runout,41
+2026-08-22,2,RF-11,Unit I,Spinning,Maintenance - scheduled,83
+2026-08-22,2,VTX-03,Unit I,Spinning,Sort change work,78
+2026-08-22,2,VTX-06,Unit I,Spinning,Sort change work,33
+2026-08-22,2,AJ-03,Unit I,Spinning,Full cleaning work,106
+2026-08-22,3,TOY-02,Unit I,Weaving,Full cleaning work,99
+2026-08-22,3,TOY-09,Unit I,Weaving,Full cleaning work,146
+2026-08-22,3,RF-07,Unit I,Spinning,Traveller change work,27
+2026-08-22,3,VTX-12,Unit I,Spinning,Voltage fluctuation PBM,7
+2026-08-23,1,TOY-02,Unit I,Weaving,Sort change work,56
+2026-08-23,1,TOY-14,Unit I,Weaving,Sort change work,70
+2026-08-23,1,SUL-02,Unit I,Weaving,Maintenance - scheduled,63
+2026-08-23,1,RF-11,Unit I,Spinning,Voltage fluctuation PBM,8
+2026-08-23,1,VTX-06,Unit I,Spinning,Weft break PBM,30
+2026-08-23,2,TOY-02,Unit I,Weaving,Voltage fluctuation PBM,11
+2026-08-23,2,TOY-08,Unit I,Weaving,Maintenance - scheduled,130
+2026-08-23,2,TSU-01,Unit I,Weaving,Sort change work,70
+2026-08-23,2,SUL-05,Unit I,Weaving,Sort change work,85
+2026-08-23,2,RF-04,Unit I,Spinning,Voltage fluctuation PBM,9
+2026-08-23,2,VTX-02,Unit I,Spinning,Loom runout,22
+2026-08-23,2,VTX-05,Unit I,Spinning,Full cleaning work,98
+2026-08-23,3,TOY-02,Unit I,Weaving,Loom runout,43
+2026-08-23,3,SUL-01,Unit I,Weaving,Sort change work,72
+2026-08-23,3,RF-01,Unit I,Spinning,Traveller change work,26
+2026-08-23,3,RF-09,Unit I,Spinning,Weft break PBM,37
+2026-08-23,3,RF-11,Unit I,Spinning,Full cleaning work,136
+2026-08-23,3,VTX-08,Unit I,Spinning,Bobbin shortage,46
+2026-08-24,1,TOY-02,Unit I,Weaving,Weft break PBM,27
+2026-08-24,1,TSU-02,Unit I,Weaving,Full cleaning work,60
+2026-08-24,1,TSU-10,Unit I,Weaving,Traveller change work,12
+2026-08-24,1,SUL-01,Unit I,Weaving,Full cleaning work,142
+2026-08-24,1,SUL-02,Unit I,Weaving,Full cleaning work,107
+2026-08-24,1,SUL-03,Unit I,Weaving,Loom runout,43
+2026-08-24,1,RF-06,Unit I,Spinning,Weft break PBM,36
+2026-08-24,1,RF-11,Unit I,Spinning,Loom runout,55
+2026-08-24,1,VTX-05,Unit I,Spinning,Bobbin shortage,87
+2026-08-24,2,SUL-05,Unit I,Weaving,Bobbin shortage,92
+2026-08-24,2,VTX-09,Unit I,Spinning,Full cleaning work,103
+2026-08-24,2,VTX-10,Unit I,Spinning,Sort change work,88
+2026-08-24,3,TOY-02,Unit I,Weaving,Bobbin shortage,43
+2026-08-24,3,TOY-05,Unit I,Weaving,Bobbin shortage,86
+2026-08-24,3,TOY-06,Unit I,Weaving,Full cleaning work,77
+2026-08-24,3,TOY-07,Unit I,Weaving,Loom runout,56
+2026-08-24,3,SUL-05,Unit I,Weaving,Weft break PBM,35
+2026-08-24,3,RF-04,Unit I,Spinning,Loom runout,20
+2026-08-24,3,RF-11,Unit I,Spinning,Traveller change work,24
+2026-08-24,3,RF-12,Unit I,Spinning,Maintenance - scheduled,90
+2026-08-24,3,VTX-04,Unit I,Spinning,Sort change work,58
+2026-08-24,3,AJ-01,Unit I,Spinning,Bobbin shortage,75
+2026-08-24,3,AJ-03,Unit I,Spinning,Sort change work,46
+2026-08-25,1,TOY-05,Unit I,Weaving,Full cleaning work,147
+2026-08-25,1,TOY-06,Unit I,Weaving,Weft break PBM,25
+2026-08-25,1,TSU-07,Unit I,Weaving,Weft break PBM,24
+2026-08-25,1,RF-01,Unit I,Spinning,Voltage fluctuation PBM,8
+2026-08-25,1,RF-06,Unit I,Spinning,Sort change work,36
+2026-08-25,1,RF-08,Unit I,Spinning,Voltage fluctuation PBM,19
+2026-08-25,1,RF-09,Unit I,Spinning,Sort change work,51
+2026-08-25,1,VTX-08,Unit I,Spinning,Full cleaning work,108
+2026-08-25,1,AJ-02,Unit I,Spinning,Traveller change work,28
+2026-08-25,1,AJ-05,Unit I,Spinning,Weft break PBM,36
+2026-08-25,2,TOY-04,Unit I,Weaving,Traveller change work,22
+2026-08-25,2,TOY-05,Unit I,Weaving,Voltage fluctuation PBM,14
+2026-08-25,2,TOY-11,Unit I,Weaving,Voltage fluctuation PBM,17
+2026-08-25,2,TOY-14,Unit I,Weaving,Sort change work,56
+2026-08-25,2,TSU-03,Unit I,Weaving,Traveller change work,23
+2026-08-25,2,TSU-04,Unit I,Weaving,Voltage fluctuation PBM,5
+2026-08-25,2,SUL-03,Unit I,Weaving,Full cleaning work,114
+2026-08-25,2,SUL-05,Unit I,Weaving,Maintenance - scheduled,117
+2026-08-25,2,RF-05,Unit I,Spinning,Sort change work,39
+2026-08-25,2,RF-06,Unit I,Spinning,Loom runout,33
+2026-08-25,2,VTX-06,Unit I,Spinning,Full cleaning work,73
+2026-08-25,2,AJ-04,Unit I,Spinning,Maintenance - scheduled,93
+2026-08-25,3,TOY-08,Unit I,Weaving,Loom runout,59
+2026-08-25,3,RF-05,Unit I,Spinning,Full cleaning work,121
+2026-08-25,3,RF-10,Unit I,Spinning,Voltage fluctuation PBM,11
+2026-08-25,3,RF-11,Unit I,Spinning,Sort change work,72
+2026-08-25,3,VTX-06,Unit I,Spinning,Full cleaning work,123
+2026-08-26,1,TOY-02,Unit I,Weaving,Voltage fluctuation PBM,11
+2026-08-26,1,TOY-08,Unit I,Weaving,Loom runout,23
+2026-08-26,1,TSU-05,Unit I,Weaving,Loom runout,40
+2026-08-26,1,RF-08,Unit I,Spinning,Full cleaning work,93
+2026-08-26,1,RF-10,Unit I,Spinning,Weft break PBM,28
+2026-08-26,1,RF-11,Unit I,Spinning,Traveller change work,28
+2026-08-26,1,VTX-02,Unit I,Spinning,Full cleaning work,73
+2026-08-26,1,VTX-05,Unit I,Spinning,Loom runout,31
+2026-08-26,1,VTX-06,Unit I,Spinning,Sort change work,40
+2026-08-26,1,VTX-08,Unit I,Spinning,Full cleaning work,111
+2026-08-26,1,VTX-09,Unit I,Spinning,Weft break PBM,43
+2026-08-26,1,AJ-01,Unit I,Spinning,Full cleaning work,94
+2026-08-26,2,TOY-02,Unit I,Weaving,Loom runout,41
+2026-08-26,2,TOY-06,Unit I,Weaving,Full cleaning work,82
+2026-08-26,2,TOY-09,Unit I,Weaving,Voltage fluctuation PBM,10
+2026-08-26,2,TOY-11,Unit I,Weaving,Weft break PBM,39
+2026-08-26,2,TSU-02,Unit I,Weaving,Maintenance - scheduled,98
+2026-08-26,2,SUL-05,Unit I,Weaving,Loom runout,26
+2026-08-26,2,RF-03,Unit I,Spinning,Bobbin shortage,98
+2026-08-26,2,RF-10,Unit I,Spinning,Sort change work,39
+2026-08-26,2,VTX-05,Unit I,Spinning,Traveller change work,15
+2026-08-26,2,VTX-06,Unit I,Spinning,Sort change work,50
+2026-08-26,2,AJ-04,Unit I,Spinning,Sort change work,69
+2026-08-26,3,TOY-08,Unit I,Weaving,Traveller change work,16
+2026-08-26,3,TOY-14,Unit I,Weaving,Traveller change work,28
+2026-08-26,3,SUL-04,Unit I,Weaving,Traveller change work,20
+2026-08-26,3,RF-04,Unit I,Spinning,Maintenance - scheduled,107
+2026-08-26,3,RF-05,Unit I,Spinning,Voltage fluctuation PBM,14
+2026-08-27,1,SUL-04,Unit I,Weaving,Bobbin shortage,72
+2026-08-27,1,RF-04,Unit I,Spinning,Bobbin shortage,68
+2026-08-27,1,RF-07,Unit I,Spinning,Weft break PBM,44
+2026-08-27,1,RF-08,Unit I,Spinning,Loom runout,52
+2026-08-27,1,RF-10,Unit I,Spinning,Voltage fluctuation PBM,5
+2026-08-27,1,VTX-10,Unit I,Spinning,Maintenance - scheduled,170
+2026-08-27,1,VTX-12,Unit I,Spinning,Sort change work,31
+2026-08-27,2,TOY-04,Unit I,Weaving,Weft break PBM,35
+2026-08-27,2,SUL-02,Unit I,Weaving,Weft break PBM,30
+2026-08-27,2,RF-04,Unit I,Spinning,Full cleaning work,90
+2026-08-27,2,RF-07,Unit I,Spinning,Voltage fluctuation PBM,14
+2026-08-27,2,VTX-02,Unit I,Spinning,Bobbin shortage,59
+2026-08-27,2,VTX-06,Unit I,Spinning,Weft break PBM,38
+2026-08-27,2,AJ-01,Unit I,Spinning,Full cleaning work,105
+2026-08-27,3,TOY-10,Unit I,Weaving,Voltage fluctuation PBM,5
+2026-08-27,3,TSU-07,Unit I,Weaving,Weft break PBM,18
+2026-08-27,3,SUL-01,Unit I,Weaving,Traveller change work,14
+2026-08-27,3,RF-03,Unit I,Spinning,Maintenance - scheduled,116
+2026-08-27,3,RF-11,Unit I,Spinning,Weft break PBM,24
+2026-08-27,3,VTX-04,Unit I,Spinning,Bobbin shortage,66
+2026-08-27,3,VTX-06,Unit I,Spinning,Voltage fluctuation PBM,16
+2026-08-27,3,VTX-09,Unit I,Spinning,Loom runout,30
+2026-08-27,3,AJ-02,Unit I,Spinning,Voltage fluctuation PBM,12
+2026-08-28,1,TOY-06,Unit I,Weaving,Full cleaning work,93
+2026-08-28,1,TOY-07,Unit I,Weaving,Weft break PBM,35
+2026-08-28,1,TOY-08,Unit I,Weaving,Loom runout,35
+2026-08-28,1,TSU-01,Unit I,Weaving,Bobbin shortage,43
+2026-08-28,1,TSU-09,Unit I,Weaving,Voltage fluctuation PBM,6
+2026-08-28,1,RF-03,Unit I,Spinning,Maintenance - scheduled,163
+2026-08-28,1,VTX-06,Unit I,Spinning,Voltage fluctuation PBM,18
+2026-08-28,1,VTX-08,Unit I,Spinning,Bobbin shortage,31
+2026-08-28,2,TOY-09,Unit I,Weaving,Traveller change work,14
+2026-08-28,2,TOY-15,Unit I,Weaving,Traveller change work,28
+2026-08-28,2,SUL-04,Unit I,Weaving,Traveller change work,14
+2026-08-28,2,RF-06,Unit I,Spinning,Bobbin shortage,64
+2026-08-28,2,RF-10,Unit I,Spinning,Bobbin shortage,73
+2026-08-28,2,RF-12,Unit I,Spinning,Sort change work,65
+2026-08-28,2,VTX-11,Unit I,Spinning,Voltage fluctuation PBM,15
+2026-08-28,3,RF-01,Unit I,Spinning,Weft break PBM,30
+2026-08-28,3,RF-03,Unit I,Spinning,Maintenance - scheduled,70
+2026-08-28,3,VTX-03,Unit I,Spinning,Traveller change work,16
+2026-08-28,3,VTX-04,Unit I,Spinning,Full cleaning work,139
+2026-08-29,1,TOY-02,Unit I,Weaving,Loom runout,49
+2026-08-29,1,TOY-08,Unit I,Weaving,Weft break PBM,33
+2026-08-29,1,TOY-09,Unit I,Weaving,Full cleaning work,65
+2026-08-29,1,SUL-05,Unit I,Weaving,Bobbin shortage,112
+2026-08-29,1,RF-11,Unit I,Spinning,Sort change work,47
+2026-08-29,1,VTX-02,Unit I,Spinning,Voltage fluctuation PBM,16
+2026-08-29,1,VTX-12,Unit I,Spinning,Weft break PBM,30
+2026-08-29,2,TOY-07,Unit I,Weaving,Full cleaning work,109
+2026-08-29,2,TOY-09,Unit I,Weaving,Full cleaning work,118
+2026-08-29,2,TOY-13,Unit I,Weaving,Weft break PBM,43
+2026-08-29,2,TSU-01,Unit I,Weaving,Voltage fluctuation PBM,7
+2026-08-29,2,SUL-04,Unit I,Weaving,Bobbin shortage,60
+2026-08-29,2,VTX-03,Unit I,Spinning,Sort change work,61
+2026-08-29,2,AJ-03,Unit I,Spinning,Sort change work,38
+2026-08-29,3,SUL-04,Unit I,Weaving,Full cleaning work,148
+2026-08-29,3,RF-06,Unit I,Spinning,Bobbin shortage,91
+2026-08-29,3,RF-11,Unit I,Spinning,Sort change work,81
+2026-08-29,3,VTX-02,Unit I,Spinning,Loom runout,54
+2026-08-29,3,VTX-06,Unit I,Spinning,Weft break PBM,43
+2026-08-29,3,VTX-07,Unit I,Spinning,Loom runout,52
+2026-08-29,3,VTX-09,Unit I,Spinning,Full cleaning work,92

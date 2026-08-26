@@ -1,0 +1,51 @@
+"""Quick data inspection — read-only, does not modify any CSV."""
+import pandas as pd
+
+pl = pd.read_csv("production_log.csv")
+bd = pd.read_csv("breakdown_events.csv")
+rv = pd.read_csv("revenue_log.csv")
+mc = pd.read_csv("machines.csv")
+
+print("=== PRODUCTION LOG ===")
+print(f"Rows: {len(pl)}")
+print(f"Columns: {list(pl.columns)}")
+print(f"Date range: {pl['date'].min()} to {pl['date'].max()}")
+print(f"Unique machines: {pl['machine_id'].nunique()}")
+print(f"Shifts: {sorted(pl['shift'].unique())}")
+print(f"Null count:\n{pl.isnull().sum().to_string()}")
+print(f"efficiency_pct stats:\n{pl['efficiency_pct'].describe()}")
+print()
+
+print("=== BREAKDOWN EVENTS ===")
+print(f"Rows: {len(bd)}")
+print(f"Columns: {list(bd.columns)}")
+print(f"Date range: {bd['date'].min()} to {bd['date'].max()}")
+print(f"Breakdown reasons: {bd['reason'].unique().tolist()}")
+print(f"duration_minutes stats:\n{bd['duration_minutes'].describe()}")
+print(f"Null count:\n{bd.isnull().sum().to_string()}")
+print()
+
+print("=== REVENUE LOG ===")
+print(f"Rows: {len(rv)}")
+print(f"Columns: {list(rv.columns)}")
+print(f"Date range: {rv['date'].min()} to {rv['date'].max()}")
+print(f"Fabric styles: {rv['fabric_style'].unique().tolist()}")
+print(f"revenue stats:\n{rv['revenue'].describe()}")
+print(f"Only weaving machines?: {set(rv['machine_id']).issubset(set(mc[mc['department']=='Weaving']['machine_id']))}")
+print(f"Null count:\n{rv.isnull().sum().to_string()}")
+print()
+
+print("=== MACHINES ===")
+print(f"Rows: {len(mc)}")
+print(f"Columns: {list(mc.columns)}")
+print(mc.groupby(["department", "machine_type"]).size().rename("count").to_string())
+print()
+
+print("=== GRANULARITY BREAKDOWN ===")
+print(mc.groupby(["granularity", "department"]).size().rename("count").to_string())
+print()
+
+print("=== LATEST DATE IN EACH TABLE ===")
+print(f"production_log latest: {pl['date'].max()}")
+print(f"breakdown_events latest: {bd['date'].max()}")
+print(f"revenue_log latest: {rv['date'].max()}")
