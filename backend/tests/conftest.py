@@ -28,7 +28,7 @@ from sqlalchemy.orm import Session, sessionmaker
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from app.config import settings
-from app.models import Base, Machine, ProductionLog, BreakdownEvent, RevenueLog
+from app.db_models import Base, Machine, ProductionLog, BreakdownEvent, RevenueLog
 
 # ── Test database URL ─────────────────────────────────────────────────────────
 

@@ -18,7 +18,7 @@ backend_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(backend_dir))
 
 from app.config import settings  # noqa: E402
-from app.models import Base  # noqa: E402
+from app.db_models import Base  # noqa: E402
 
 # ── Alembic config object ─────────────────────────────────────────────────────
 config = context.config

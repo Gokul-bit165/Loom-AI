@@ -74,7 +74,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from app.config import settings
 from app.database import engine, get_session
-from app.models import Base, BreakdownEvent, Machine, ProductionLog, RevenueLog
+from app.db_models import Base, BreakdownEvent, Machine, ProductionLog, RevenueLog
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Validation result types

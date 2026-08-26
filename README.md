@@ -193,36 +193,40 @@ Expected output:
 INFO  [alembic.runtime.migration] Running upgrade  -> 0001, Initial schema - Loom AI V1
 ```
 
-### Step 5 — Import CSV data
+### Step 5 — Ingest Data & Generate Data Quality Report
+
+Run the extensible ingestion pipeline:
 
 ```bash
 cd backend
-python -m app.data.import_csv
+python -m app.ingestion.run
 ```
 
-Expected output:
-```
-IMPORTING
-  machines        : 59 inserted
-  production_logs : 15930 inserted, 0 skipped
-  breakdown_events: 2176 inserted
-  revenue_logs    : 8100 inserted
+This runs:
+1. `CSVParser` to extract raw string rows without default coercion.
+2. `ValidationLayer` applying domain rules:
+   - Date format & presence
+   - Shift in {1, 2, 3}
+   - Machine ID registration & foreign key validation
+   - Non-negative target / actual / revenue checks
+   - Efficiency range checks [0, 100]
+   - Batch & database duplicate detection
+   - Required fabric styles for weaving revenue
+3. `Repositories` for transactional database persistence.
+4. `ImportBatch` provenance recording (`is_demo=True`, timestamp, source file).
+5. Comprehensive `DataQualityReport` output detailing:
+   - Records received, accepted, rejected
+   - Counts of duplicates, missing values, invalid values, unknown machines
+   - Specific row-level rejection details
 
-POST-IMPORT VERIFICATION
-  machines             expected >=     59   actual     59   OK
-  production_logs      expected >= 15930   actual  15930   OK
-  breakdown_events     expected >=  2176   actual   2176   OK
-  revenue_logs         expected >=  8100   actual   8100   OK
-```
-
-### Step 6 — Run tests
+### Step 6 — Run Full Test Suite
 
 ```bash
 cd backend
-python -m pytest tests/test_db_constraints.py -v
+python -m pytest tests/ -v
 ```
 
-Expected: **35 passed**
+Expected: **59 passed** (35 DB constraint tests, 4 parser tests, 18 validator tests, 2 pipeline integration tests).
 
 ---
 

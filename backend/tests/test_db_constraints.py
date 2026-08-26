@@ -42,7 +42,7 @@ import pytest
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.models import Machine, ProductionLog, BreakdownEvent, RevenueLog
+from app.db_models import Machine, ProductionLog, BreakdownEvent, RevenueLog
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Helpers
@@ -239,18 +239,30 @@ class TestProductionLog:
         with pytest.raises(IntegrityError, match="ck_production_actual_nonneg"):
             db_session.flush()
 
-    def test_zero_target_qty_rejected(
+    def test_negative_target_qty_rejected(
         self, db_session: Session, sample_machine: Machine
     ) -> None:
         p = ProductionLog(
             date=TODAY, shift=1,
             machine_id=sample_machine.machine_id,
-            target_qty=0,  # invalid — must be > 0
+            target_qty=-100,  # invalid — must be >= 0
             actual_qty=0, efficiency_pct=0,
         )
         db_session.add(p)
-        with pytest.raises(IntegrityError, match="ck_production_target_positive"):
+        with pytest.raises(IntegrityError, match="ck_production_target_nonneg"):
             db_session.flush()
+
+    def test_zero_target_qty_allowed(
+        self, db_session: Session, sample_machine: Machine
+    ) -> None:
+        """Target qty of 0 is valid (e.g. planned holiday/off shift)."""
+        p = ProductionLog(
+            date=TODAY, shift=1,
+            machine_id=sample_machine.machine_id,
+            target_qty=0, actual_qty=0, efficiency_pct=0,
+        )
+        db_session.add(p)
+        db_session.flush()  # must not raise
 
     def test_efficiency_over_110_rejected(
         self, db_session: Session, sample_machine: Machine

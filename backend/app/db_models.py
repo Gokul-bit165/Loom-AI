@@ -1,25 +1,26 @@
 """
 Loom AI — SQLAlchemy ORM models (V1).
 
+NOTE: This file was renamed from app/models.py to app/db_models.py
+in Phase 2 when the app/models/ package was created for Pydantic schemas.
+All imports should reference app.db_models, not app.models.
+
 Design principles
 -----------------
-1. PROVENANCE FIRST: every fact table carries source_type so the UI can
-   always tell a manager whether a number came from real data, derived
-   calculation, or synthetic generation.
+1. PROVENANCE FIRST: every fact table carries source_type and import_batch_id
+   so the UI can always tell a manager whether a number came from real data,
+   derived calculation, or synthetic generation.
 
-2. EXTENSIBILITY: every future table (AttendanceLog, QualityLog, etc.)
-   hangs off Machine using the same machine_id + date + shift grain.
-   Nothing here needs to change to add Q2–Q23.
+2. EXTENSIBILITY: every future table hangs off Machine using the same
+   machine_id + date + shift grain.
 
-3. CONSTRAINTS IN THE DB: uniqueness, range checks, and foreign keys are
-   enforced at the database level, not just at the application level.
-   This means a bulk INSERT from any tool will still fail on bad data.
+3. CONSTRAINTS IN THE DB: enforced at the PostgreSQL level, not only in app code.
 
 4. NUMERIC PRECISION: revenue and quantities use Numeric (fixed-point),
    not Float, to avoid floating-point rounding surprises in financial totals.
 
-Granularity values (preserved from source CSV)
-----------------------------------------------
+Granularity values
+------------------
   real_grounded          - machine number corresponds to a real physical machine
   synthetic_loom_number  - loom number was invented; real reports show brand totals only
 
@@ -43,6 +44,7 @@ from sqlalchemy import (
     Numeric,
     SmallInteger,
     String,
+    Text,
     UniqueConstraint,
     func,
 )
@@ -54,15 +56,78 @@ class Base(DeclarativeBase):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Import Batch — provenance anchor for every import
+# ─────────────────────────────────────────────────────────────────────────────
+
+class ImportBatch(Base):
+    """
+    One record per CSV import run.
+
+    Every imported fact row carries an import_batch_id so it is always
+    traceable back to its source file and import timestamp.
+
+    The is_demo flag is the key field for the UI's data-provenance badge:
+      is_demo=True  → UI shows "Demo / Synthetic Data — values are not live measurements"
+      is_demo=False → UI shows "Production Data — imported from company reports"
+
+    The dataset_label is the human-readable string shown in the UI badge.
+    """
+
+    __tablename__ = "import_batches"
+
+    id: int = Column(Integer, primary_key=True, autoincrement=True)
+    import_timestamp: datetime = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+    source_file: str = Column(String(500), nullable=False, comment="Filename of the imported CSV/Excel")
+    source_type: str = Column(
+        String(20),
+        nullable=False,
+        comment="synthetic | real | derived",
+    )
+    is_demo: bool = Column(
+        Boolean,
+        nullable=False,
+        default=True,
+        comment="True = synthetic/demo data. UI must display a clear warning.",
+    )
+    dataset_label: str = Column(
+        String(100),
+        nullable=True,
+        comment="Human-readable label shown in the UI data-provenance badge",
+    )
+    notes: str = Column(Text, nullable=True)
+    imported_by: str = Column(String(100), nullable=True)
+
+    # Denormalized stats for fast UI display
+    production_accepted: int = Column(Integer, nullable=False, default=0)
+    production_rejected: int = Column(Integer, nullable=False, default=0)
+    breakdown_accepted: int = Column(Integer, nullable=False, default=0)
+    breakdown_rejected: int = Column(Integer, nullable=False, default=0)
+    revenue_accepted: int = Column(Integer, nullable=False, default=0)
+    revenue_rejected: int = Column(Integer, nullable=False, default=0)
+
+    __table_args__ = (
+        CheckConstraint(
+            "source_type IN ('synthetic', 'real', 'derived')",
+            name="ck_import_batch_source_type_valid",
+        ),
+    )
+
+    def __repr__(self) -> str:
+        label = "DEMO" if self.is_demo else "REAL"
+        return f"<ImportBatch {self.id} [{label}] {self.source_file} @ {self.import_timestamp}>"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Machine master
 # ─────────────────────────────────────────────────────────────────────────────
 
 class Machine(Base):
     """
     One row per physical (or synthetic) machine.
-
-    This is the anchor entity.  Every fact table (ProductionLog,
-    BreakdownEvent, RevenueLog, and future tables) references machine_id.
 
     The granularity column is the key provenance marker:
       - real_grounded: the machine number exists in the real daily reports.
@@ -75,7 +140,7 @@ class Machine(Base):
     machine_id: str = Column(String(20), primary_key=True, comment="e.g. TOY-01, RF-06, VTX-12")
     unit: str = Column(String(50), nullable=False, comment="e.g. Unit I")
     department: str = Column(String(50), nullable=False, comment="Weaving | Spinning | Preparatory")
-    machine_type: str = Column(String(50), nullable=False, comment="Toyota | Tsudakoma | RingFrame | Vortex | Airjet | Sulzer")
+    machine_type: str = Column(String(50), nullable=False)
     granularity: str = Column(
         String(50),
         nullable=False,
@@ -87,14 +152,13 @@ class Machine(Base):
         default="synthetic",
         comment="synthetic | real | derived",
     )
-    active: bool = Column(Boolean, nullable=False, default=True, comment="False = decommissioned")
+    active: bool = Column(Boolean, nullable=False, default=True)
     created_at: datetime = Column(
         DateTime(timezone=True),
         nullable=False,
         server_default=func.now(),
     )
 
-    # Relationships — back-populated for ORM convenience
     production_logs = relationship("ProductionLog", back_populates="machine", lazy="dynamic")
     breakdown_events = relationship("BreakdownEvent", back_populates="machine", lazy="dynamic")
     revenue_logs = relationship("RevenueLog", back_populates="machine", lazy="dynamic")
@@ -124,9 +188,6 @@ class ProductionLog(Base):
 
     Unique constraint on (machine_id, date, shift) enforces that there can
     never be two conflicting production entries for the same machine-shift.
-
-    Quantities are stored as Numeric(14, 2) to support both grams/metres
-    (small numbers) and total-mill-day figures (large numbers) without loss.
     """
 
     __tablename__ = "production_logs"
@@ -142,6 +203,12 @@ class ProductionLog(Base):
     target_qty = Column(Numeric(14, 2), nullable=False, comment="Target quantity for this shift")
     actual_qty = Column(Numeric(14, 2), nullable=False, comment="Actual quantity produced")
     efficiency_pct = Column(Numeric(6, 2), nullable=False, comment="actual / target × 100")
+    import_batch_id: int = Column(
+        Integer,
+        ForeignKey("import_batches.id", ondelete="SET NULL"),
+        nullable=True,
+        comment="NULL for rows imported before Phase 2",
+    )
     created_at: datetime = Column(
         DateTime(timezone=True),
         nullable=False,
@@ -149,22 +216,20 @@ class ProductionLog(Base):
     )
 
     machine = relationship("Machine", back_populates="production_logs")
+    import_batch = relationship("ImportBatch")
 
     __table_args__ = (
-        # Core business constraint: one row per machine-date-shift.
         UniqueConstraint(
             "machine_id", "date", "shift",
             name="uq_production_machine_date_shift",
         ),
-        # Database-enforced range checks.
         CheckConstraint("shift IN (1, 2, 3)", name="ck_production_shift_valid"),
-        CheckConstraint("target_qty > 0", name="ck_production_target_positive"),
+        CheckConstraint("target_qty >= 0", name="ck_production_target_nonneg"),
         CheckConstraint("actual_qty >= 0", name="ck_production_actual_nonneg"),
         CheckConstraint(
             "efficiency_pct >= 0 AND efficiency_pct <= 110",
             name="ck_production_efficiency_range",
         ),
-        # Query-path indexes.
         Index("ix_production_date", "date"),
         Index("ix_production_machine_id", "machine_id"),
         Index("ix_production_date_machine", "date", "machine_id"),
@@ -184,34 +249,25 @@ class BreakdownEvent(Base):
 
     IMPORTANT: There is NO unique constraint on (machine_id, date, shift).
     A machine can have multiple breakdown events in a single shift.
-    E.g. a loom might stop for a weft break and then for a voltage fluctuation
-    in the same 8-hour shift.
-
-    The reason column is kept as free text to match the verbatim vocabulary
-    from the real daily reports' remarks columns.
     """
 
     __tablename__ = "breakdown_events"
 
     id: int = Column(Integer, primary_key=True, autoincrement=True)
-    date = Column(Date, nullable=False, comment="Date of breakdown")
+    date = Column(Date, nullable=False)
     shift: int = Column(SmallInteger, nullable=False, comment="1 | 2 | 3")
     machine_id: str = Column(
         String(20),
         ForeignKey("machines.machine_id", ondelete="RESTRICT"),
         nullable=False,
     )
-    reason: str = Column(
-        String(200),
-        nullable=False,
-        comment="Verbatim-in-spirit from actual report remarks columns",
-    )
+    reason: str = Column(String(200), nullable=False)
     duration_minutes: int = Column(Integer, nullable=False, comment="Downtime in minutes (> 0)")
-    source_type: str = Column(
-        String(20),
-        nullable=False,
-        default="synthetic",
-        comment="synthetic | real | derived",
+    source_type: str = Column(String(20), nullable=False, default="synthetic")
+    import_batch_id: int = Column(
+        Integer,
+        ForeignKey("import_batches.id", ondelete="SET NULL"),
+        nullable=True,
     )
     created_at: datetime = Column(
         DateTime(timezone=True),
@@ -220,6 +276,7 @@ class BreakdownEvent(Base):
     )
 
     machine = relationship("Machine", back_populates="breakdown_events")
+    import_batch = relationship("ImportBatch")
 
     __table_args__ = (
         CheckConstraint("shift IN (1, 2, 3)", name="ck_breakdown_shift_valid"),
@@ -244,48 +301,30 @@ class BreakdownEvent(Base):
 
 class RevenueLog(Base):
     """
-    One record = one fabric-style's revenue contribution from one machine on
-    one shift.
+    One record = one fabric-style revenue contribution from one machine on one shift.
 
-    Design notes
-    ------------
-    - Revenue is only available for Weaving machines in V1. The department
-      filter is applied in the analytics layer, not here, to keep the model
-      general.
-    - Multiple fabric styles can appear for the same machine-date-shift
-      (a loom can switch styles mid-shift, or run a blend). No unique
-      constraint is applied on (machine_id, date, shift).
-    - source_type defaults to 'derived' because V1 revenue is computed from
-      actual_qty × fabric_rate, not read from a real revenue report.
-    - Numeric(14, 4) allows up to Rs 9,999,999,999.9999 with 4 decimal
-      places — appropriate for per-shift contributions and cumulative MTD.
+    Revenue is only available for Weaving machines in V1.
+    source_type defaults to 'derived' because V1 revenue is computed from
+    actual_qty × fabric_rate, not read from a real revenue report.
     """
 
     __tablename__ = "revenue_logs"
 
     id: int = Column(Integer, primary_key=True, autoincrement=True)
-    date = Column(Date, nullable=False, comment="Revenue date")
+    date = Column(Date, nullable=False)
     shift: int = Column(SmallInteger, nullable=False, comment="1 | 2 | 3")
     machine_id: str = Column(
         String(20),
         ForeignKey("machines.machine_id", ondelete="RESTRICT"),
         nullable=False,
     )
-    fabric_style: str = Column(
-        String(100),
-        nullable=False,
-        comment="e.g. Excel Slub, Liveaco Compact, VSF Export",
-    )
-    revenue = Column(
-        Numeric(14, 4),
-        nullable=False,
-        comment="Revenue in Indian Rupees (Rs)",
-    )
-    source_type: str = Column(
-        String(20),
-        nullable=False,
-        default="derived",
-        comment="derived = computed from actual_qty × fabric_rate; real = actual invoice",
+    fabric_style: str = Column(String(100), nullable=False)
+    revenue = Column(Numeric(14, 4), nullable=False, comment="Revenue in Indian Rupees (Rs)")
+    source_type: str = Column(String(20), nullable=False, default="derived")
+    import_batch_id: int = Column(
+        Integer,
+        ForeignKey("import_batches.id", ondelete="SET NULL"),
+        nullable=True,
     )
     created_at: datetime = Column(
         DateTime(timezone=True),
@@ -294,6 +333,7 @@ class RevenueLog(Base):
     )
 
     machine = relationship("Machine", back_populates="revenue_logs")
+    import_batch = relationship("ImportBatch")
 
     __table_args__ = (
         CheckConstraint("shift IN (1, 2, 3)", name="ck_revenue_shift_valid"),
