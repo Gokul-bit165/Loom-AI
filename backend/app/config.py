@@ -47,6 +47,7 @@ class Settings(BaseSettings):
 
     # ── LLM (Phase 3) ────────────────────────────────────────────────────────
     anthropic_api_key: str = ""
+    anthropic_model: str = "claude-3-5-sonnet-20241022"
 
     # ── App behaviour ────────────────────────────────────────────────────────
     app_env: str = "development"
