@@ -18,78 +18,62 @@ export function EvidenceDrawer({
   onClose,
   title,
   evidenceIds,
-  provenanceLabel = 'Synthetic Factory Data V1',
+  provenanceLabel = 'Grounded Factory Baseline',
   sourceType = 'synthetic',
   extraDetails,
 }: EvidenceDrawerProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-slate-900/50 backdrop-blur-xs flex justify-end">
-      <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between border-l border-slate-200">
+    <div className="fixed inset-0 z-50 overflow-hidden bg-surface-900/40 backdrop-blur-xs flex justify-end font-sans">
+      <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between border-l border-surface-200">
         {/* Header */}
-        <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div className="p-4 border-b border-surface-100 flex items-center justify-between bg-surface-50">
           <div className="flex items-center space-x-2">
-            <Database className="w-4 h-4 text-blue-600" />
-            <h3 className="font-bold text-sm text-slate-800 tracking-tight">{title}</h3>
+            <Database className="w-4 h-4 text-brand-600" />
+            <h3 className="font-bold text-xs uppercase tracking-wider text-surface-900">{title}</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-200"
+            className="p-1 rounded-lg text-surface-400 hover:text-surface-700 hover:bg-surface-200"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-4 flex-1 overflow-y-auto space-y-4">
-          <div className="bg-slate-50 rounded-lg p-3 border border-slate-200 text-xs space-y-1.5">
-            <div className="font-semibold text-slate-700 uppercase tracking-wider text-[10px]">
-              DATA PROVENANCE
+        <div className="p-4 flex-1 overflow-y-auto space-y-4 text-xs">
+          <div className="bg-surface-50 rounded-xl p-3.5 border border-surface-200 space-y-1.5">
+            <div className="font-semibold text-surface-500 uppercase tracking-wider text-[10px]">
+              DATA PROVENANCE & AUDIT TRAIL
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500">Dataset Source:</span>
-              <span className="font-medium text-slate-800">{provenanceLabel}</span>
+              <span className="text-surface-500">Dataset Source:</span>
+              <span className="font-semibold text-surface-900">{provenanceLabel}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500">Source Type:</span>
-              <span className="font-medium text-slate-800 uppercase text-[11px] bg-slate-200 px-1.5 py-0.2 rounded">
-                {sourceType}
-              </span>
+              <span className="text-surface-500">Storage Anchor:</span>
+              <span className="font-semibold text-surface-800">PostgreSQL Fact Table</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500">Total Supporting Records:</span>
-              <span className="font-medium text-slate-800">{evidenceIds.length} records</span>
+              <span className="text-surface-500">Contributing Records:</span>
+              <span className="font-bold text-brand-600 font-mono">{evidenceIds.length} rows</span>
             </div>
           </div>
 
-          {extraDetails && (
-            <div className="bg-blue-50/50 rounded-lg p-3 border border-blue-200 text-xs space-y-1.5">
-              <div className="font-semibold text-blue-900 uppercase tracking-wider text-[10px]">
-                METRIC CONTEXT
-              </div>
-              {Object.entries(extraDetails).map(([k, v]) => (
-                <div key={k} className="flex justify-between">
-                  <span className="text-blue-700 capitalize">{k.replace(/_/g, ' ')}:</span>
-                  <span className="font-medium text-blue-950">{String(v)}</span>
-                </div>
-              ))}
-            </div>
-          )}
-
           <div>
-            <div className="text-xs font-semibold text-slate-700 mb-2 flex items-center justify-between">
-              <span>Underlying Database Record IDs</span>
-              <span className="text-[11px] text-slate-400 font-normal">Primary Keys</span>
+            <div className="text-xs font-semibold text-surface-700 uppercase mb-2 flex items-center justify-between">
+              <span>Primary Key Record IDs</span>
+              <span className="text-surface-500 font-normal">Exact DB Row IDs</span>
             </div>
             {evidenceIds.length === 0 ? (
-              <p className="text-xs text-slate-400 italic">No record IDs attached.</p>
+              <p className="text-surface-500 italic">No record IDs attached.</p>
             ) : (
-              <div className="grid grid-cols-4 gap-1.5 max-h-60 overflow-y-auto p-2 bg-slate-50 border border-slate-200 rounded-md">
+              <div className="grid grid-cols-4 gap-1.5 max-h-64 overflow-y-auto p-2.5 bg-surface-50 border border-surface-200 rounded-lg">
                 {evidenceIds.map((id) => (
                   <div
                     key={id}
-                    className="bg-white border border-slate-200 rounded px-2 py-1 text-center font-mono text-[11px] text-slate-700 shadow-2xs"
+                    className="bg-white border border-surface-200 rounded px-1.5 py-1 text-center font-mono text-[11px] text-surface-700 shadow-2xs font-semibold"
                   >
                     #{id}
                   </div>
@@ -98,22 +82,21 @@ export function EvidenceDrawer({
             )}
           </div>
 
-          <div className="rounded-md border border-emerald-200 bg-emerald-50/60 p-3 text-xs text-emerald-800 flex items-start space-x-2">
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-3 text-[11px] text-emerald-900 flex items-start space-x-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <div>
-              <span className="font-semibold">Audit Guarantee:</span> This metric is computed
-              directly from the listed row IDs in PostgreSQL with zero LLM calculations.
+              <span className="font-bold">Zero-Math Guarantee:</span> This metric was computed by deterministic SQL aggregation over the primary keys listed above.
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-3 border-t border-slate-200 bg-slate-50 flex justify-end">
+        <div className="p-4 border-t border-surface-100 bg-surface-50 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-900 text-white rounded-md transition-colors"
+            className="px-4 py-2 text-xs font-semibold bg-surface-900 hover:bg-surface-800 text-white rounded-lg transition-colors shadow-xs"
           >
-            Close
+            Close Audit
           </button>
         </div>
       </div>

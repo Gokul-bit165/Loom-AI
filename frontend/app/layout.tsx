@@ -1,12 +1,11 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import './globals.css';
-import { Navbar } from '@/components/Navbar';
 
 export const metadata: Metadata = {
-  title: 'Loom AI — Textile Manufacturing Management Intelligence',
+  title: 'Loom AI — Textile Manufacturing Operations Command Center',
   description:
-    'V1 Management reporting system for plant managers. Deterministic decision-support for Production, Downtime, and Revenue.',
+    'Operations intelligence and decision support system for plant superintendents and manufacturing leadership. Grounded in deterministic factory analytics.',
 };
 
 export default function RootLayout({
@@ -15,17 +14,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-slate-100 flex flex-col text-slate-900">
-        <Navbar />
-        <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+    <html lang="en" className="dark">
+      <body className="min-h-screen bg-command-950 flex flex-col text-command-100 font-sans selection:bg-blue-600 selection:text-white">
+        <main className="flex-1 w-full">
           {children}
         </main>
-        <footer className="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-500">
-          <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between">
-            <span>Loom AI V1 • Plant Management Decision Support</span>
-            <span className="text-[11px] text-slate-400 mt-1 sm:mt-0">
-              Deterministic Analytics Engine • PostgreSQL Grounded
+        <footer className="bg-command-950 border-t border-command-700/60 py-3 text-center text-xs font-mono text-command-500">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between">
+            <span>LOOM AI • Operations Command Center V1</span>
+            <span className="text-[11px] text-command-600 mt-1 sm:mt-0">
+              Deterministic Analytics Engine • PostgreSQL Grounded • Zero LLM Calculations
             </span>
           </div>
         </footer>
