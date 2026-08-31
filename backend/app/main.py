@@ -17,6 +17,7 @@ from app.routers import (
     ask_router,
     breakdown_router,
     health_router,
+    import_router,
     production_router,
     revenue_router,
 )
@@ -123,3 +124,4 @@ app.include_router(production_router)
 app.include_router(breakdown_router)
 app.include_router(revenue_router)
 app.include_router(ask_router)
+app.include_router(import_router)

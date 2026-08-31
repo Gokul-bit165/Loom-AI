@@ -1,5 +1,6 @@
 """
-Anthropic Claude API client wrapper with robust failure handling.
+Loom AI — LLM Client wrapper with Groq & Anthropic support.
+Guarantees robust failure handling without crashing or fabricating numbers.
 """
 from __future__ import annotations
 
@@ -16,52 +17,103 @@ logger = logging.getLogger("loom_ai.assistant")
 
 class LLMClient:
     """
-    Handles communication with Anthropic Claude API.
+    Handles communication with Groq or Anthropic Claude API.
     Guarantees safe failure handling without crashing or fabricating numbers.
     """
 
-    def __init__(self, api_key: str | None = None, model: str | None = None):
-        self.api_key = api_key or getattr(settings, "anthropic_api_key", "")
-        self.model = model or getattr(settings, "anthropic_model", "claude-3-5-sonnet-20241022")
-        self._client = None
+    def __init__(
+        self,
+        api_key: str | None = None,
+        model: str | None = None,
+        provider: str | None = None,
+    ):
+        self.groq_api_key = getattr(settings, "groq_api_key", "").strip()
+        self.groq_model = getattr(settings, "groq_model", "llama-3.3-70b-versatile").strip()
+        self.anthropic_api_key = getattr(settings, "anthropic_api_key", "").strip()
+        self.anthropic_model = getattr(settings, "anthropic_model", "claude-3-5-sonnet-20241022").strip()
 
-        if self.api_key and self.api_key.strip():
+        self._groq_client = None
+        self._anthropic_client = None
+
+        # 1. Try initializing Groq client
+        if self.groq_api_key:
+            try:
+                from groq import Groq
+                self._groq_client = Groq(api_key=self.groq_api_key)
+                logger.info(f"Initialized Groq LLM client with model {self.groq_model}")
+            except Exception as e:
+                logger.warning(f"Could not initialize Groq client: {e}")
+
+        # 2. Try initializing Anthropic client as fallback/alternative
+        if self.anthropic_api_key:
             try:
                 import anthropic
-                self._client = anthropic.Anthropic(api_key=self.api_key)
+                self._anthropic_client = anthropic.Anthropic(api_key=self.anthropic_api_key)
+                logger.info(f"Initialized Anthropic LLM client with model {self.anthropic_model}")
             except Exception as e:
                 logger.warning(f"Could not initialize Anthropic client: {e}")
-                self._client = None
 
     @property
     def is_available(self) -> bool:
-        return self._client is not None
+        return (self._groq_client is not None) or (self._anthropic_client is not None)
 
     def generate_explanation(self, user_prompt: str) -> dict[str, Any] | None:
         """
-        Sends prompt to Claude and parses the JSON response.
+        Sends prompt to available LLM provider (Groq or Anthropic) and parses JSON.
         Returns None on any network, authentication, or parsing failure.
         """
-        if not self._client:
-            logger.info("Anthropic client not available; falling back to deterministic response.")
+        if not self.is_available:
+            logger.info("No LLM client available; falling back to deterministic response.")
             return None
 
+        # Prefer Groq if configured, else Anthropic
+        if self._groq_client:
+            result = self._call_groq(user_prompt)
+            if result is not None:
+                return result
+
+        if self._anthropic_client:
+            result = self._call_anthropic(user_prompt)
+            if result is not None:
+                return result
+
+        return None
+
+    def _call_groq(self, user_prompt: str) -> dict[str, Any] | None:
+        """Call Groq API using JSON mode."""
         try:
-            response = self._client.messages.create(
-                model=self.model,
+            chat_completion = self._groq_client.chat.completions.create(
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": user_prompt},
+                ],
+                model=self.groq_model,
+                temperature=0.0,
+                response_format={"type": "json_object"},
                 max_tokens=1500,
-                temperature=0.0,  # Zero temperature for maximum determinism and consistency
+            )
+            content_text = chat_completion.choices[0].message.content or ""
+            return self._parse_json_response(content_text)
+        except Exception as exc:
+            logger.error(f"Groq API call failed: {exc}")
+            return None
+
+    def _call_anthropic(self, user_prompt: str) -> dict[str, Any] | None:
+        """Call Anthropic API."""
+        try:
+            response = self._anthropic_client.messages.create(
+                model=self.anthropic_model,
+                max_tokens=1500,
+                temperature=0.0,
                 system=SYSTEM_PROMPT,
                 messages=[
                     {"role": "user", "content": user_prompt},
                 ],
             )
-
             content_text = ""
             for block in response.content:
                 if block.type == "text":
                     content_text += block.text
-
             return self._parse_json_response(content_text)
         except Exception as exc:
             logger.error(f"Anthropic API call failed: {exc}")
@@ -72,7 +124,6 @@ class LLMClient:
         Extracts and parses JSON object from model output.
         """
         text = text.strip()
-        # Remove markdown code block fences if present
         if text.startswith("```json"):
             text = text[7:]
         elif text.startswith("```"):
@@ -85,7 +136,6 @@ class LLMClient:
         try:
             return json.loads(text)
         except json.JSONDecodeError:
-            # Try regex extraction for {...}
             match = re.search(r"(\{.*\})", text, re.DOTALL)
             if match:
                 try:

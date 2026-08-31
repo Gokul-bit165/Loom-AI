@@ -1,287 +1,194 @@
 'use client';
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { api } from '@/lib/api';
-import { RevenueSummaryData, StandardApiResponse } from '@/lib/types';
-import { HeaderNav } from '@/components/common/HeaderNav';
-import { CommercialPerformanceView } from '@/components/executive/CommercialPerformanceView';
-import { MachineDossier } from '@/components/investigation/MachineDossier';
-import { EvidenceDrawer } from '@/components/EvidenceDrawer';
-import { SentinelSkeleton } from '@/components/states/SentinelSkeleton';
-import { EmptyDayState } from '@/components/states/EmptyDayState';
-import { SystemErrorState } from '@/components/states/SystemErrorState';
-import {
-  IndianRupee,
-  LayoutGrid,
-  Table as TableIcon,
-  ArrowRight,
-  TrendingUp,
-  ShieldCheck,
-  Layers,
-} from 'lucide-react';
+import { rupee, pct, deltaPct, inr, fmtDate } from '@/lib/utils';
+import { DataStamp } from '@/components/DataStamp';
+import { StatusDot } from '@/components/StatusBadge';
+import { RupeeWithHint } from '@/components/FormulaHint';
+import type { RevenueSummaryData } from '@/lib/types';
 
-export default function CommercialYieldInvestigationWorkspace() {
-  const [currentDate, setCurrentDate] = useState<string>('2026-08-29');
-  const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'CARDS' | 'TABLE'>('CARDS');
+export default function RevenuePage() {
+  const [data, setData]             = useState<RevenueSummaryData | null>(null);
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState<string | null>(null);
+  const [generatedAt, setGeneratedAt] = useState<string | null>(null);
+  const [isDemo, setIsDemo]         = useState(false);
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [response, setResponse] = useState<StandardApiResponse<RevenueSummaryData> | null>(null);
-
-  const [selectedMachineId, setSelectedMachineId] = useState<string | null>(null);
-  const [evidenceModal, setEvidenceModal] = useState<{
-    isOpen: boolean;
-    title: string;
-    ids: number[];
-  }>({
-    isOpen: false,
-    title: '',
-    ids: [],
-  });
-
-  const fetchData = async (date: string) => {
-    setIsLoading(true);
+  const load = useCallback(async () => {
+    setLoading(true);
     setError(null);
     try {
-      const res = await api.getRevenueSummary({ date });
-      setResponse(res);
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch commercial revenue data');
+      const res = await api.getRevenueSummary();
+      setData(res.data);
+      setGeneratedAt(res.metadata.generated_at);
+      setIsDemo(res.data_quality.is_demo);
+    } catch (e: any) {
+      setError(e.message);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
-  };
+  }, []);
 
-  useEffect(() => {
-    fetchData(currentDate);
-  }, [currentDate]);
+  useEffect(() => { load(); }, [load]);
 
-  const revData = response?.data;
-  const summary = revData?.summary;
-  const machines = revData?.machine_ranking || [];
-  const styles = revData?.fabric_style_ranking || [];
-  const hasData = revData?.has_data && summary;
+  if (loading) return <div style={{ padding: '48px 16px', textAlign: 'center', color: 'var(--ink-500)', fontSize: '0.875rem' }}>Loading revenue data…</div>;
+  if (error)   return (
+    <div style={{ padding: '24px 16px', maxWidth: 900, margin: '0 auto' }}>
+      <div className="no-data-state">
+        <div style={{ fontWeight: 600 }}>Could not load revenue data</div>
+        <div className="reason">{error}</div>
+        <button className="btn btn-outline" style={{ marginTop: 12 }} onClick={load}>↻ Retry</button>
+      </div>
+    </div>
+  );
 
-  const isDemo = response?.data_quality?.is_demo ?? true;
-  const datasetLabel = response?.data_quality?.dataset_label ?? 'Grounded Factory Baseline';
-
-  const filteredMachines = selectedStyle
-    ? machines.filter((m) => m.fabric_styles.includes(selectedStyle))
-    : machines;
+  const summary     = data?.summary;
+  const revLoss     = data?.revenue_loss?.estimated_revenue_loss ?? 0;
+  const machines    = data?.machine_ranking ?? [];
+  const styles      = data?.fabric_style_ranking ?? [];
+  const changePct   = summary?.change_vs_previous_day_pct;
 
   return (
-    <div className="min-h-screen bg-surface-50 flex flex-col font-sans">
-      <HeaderNav
-        currentDate={currentDate}
-        onDateChange={setCurrentDate}
-        isDemo={isDemo}
-        datasetLabel={datasetLabel}
-        recordsAnalyzed={response?.data_quality?.records_analyzed}
-      />
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 0 60px' }}>
 
-      <main className="max-w-7xl 2xl:max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-6 sm:py-8 space-y-6 flex-1">
-        {/* Workspace Title */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center space-x-2">
-              <IndianRupee className="w-5 h-5 text-emerald-600" />
-              <h1 className="text-xl sm:text-2xl 2xl:text-3xl font-bold text-surface-900 tracking-tight">
-                Commercial Realization & Fabric Style Yield
-              </h1>
-            </div>
-            <p className="text-xs sm:text-sm text-surface-500 font-normal mt-0.5">
-              Realized turnover run-rate, fabric sort contribution, and loom yield distribution
-            </p>
+      {/* Provenance */}
+      <div style={{ padding: '8px 16px', background: 'var(--ink-100)', borderBottom: '1px solid var(--atm-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+        <DataStamp asOf={generatedAt} isDemo={isDemo} source="CSV import" />
+        <span style={{ fontSize: '0.6875rem', color: 'var(--critical)', fontWeight: 600 }}>
+          ⚠ Owner / PM access only · Financial data
+        </span>
+        <button className="btn btn-ghost" style={{ fontSize: '0.75rem', minHeight: 28, padding: '0 8px' }} onClick={load}>↻</button>
+      </div>
+
+      {/* Hero revenue numbers */}
+      {summary && (
+        <div style={{ padding: '20px 16px', borderBottom: '1px solid var(--atm-border)' }}>
+          <div style={{ fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.07em', color: 'var(--ink-500)', marginBottom: 8, textTransform: 'uppercase' }}>
+            Revenue · {summary.date ? fmtDate(summary.date) : '—'} · ATM
           </div>
-        </div>
-
-        {isLoading ? (
-          <SentinelSkeleton />
-        ) : error ? (
-          <SystemErrorState error={error} onRetry={() => fetchData(currentDate)} />
-        ) : !hasData ? (
-          <EmptyDayState
-            date={currentDate}
-            onJumpToActiveDate={() => setCurrentDate('2026-08-29')}
-          />
-        ) : (
-          <>
-            {/* Commercial Performance View (Turnover + Style Breakdown) */}
-            <CommercialPerformanceView data={revData} />
-
-            {/* Fabric Sort Filter Spectrum */}
-            <div className="panel-saas space-y-3">
-              <div className="flex justify-between items-center pb-2 border-b border-surface-100">
-                <span className="font-semibold text-xs xl:text-sm text-surface-900 uppercase tracking-wide">
-                  Filter Loom Allocation by Fabric Quality
-                </span>
-                {selectedStyle && (
-                  <button
-                    onClick={() => setSelectedStyle(null)}
-                    className="text-xs text-brand-600 hover:text-brand-700 underline font-medium"
-                  >
-                    Clear Filter: {selectedStyle} ✕
-                  </button>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-                {styles.map((s) => {
-                  const isSelected = selectedStyle === s.fabric_style;
-                  return (
-                    <button
-                      key={s.fabric_style}
-                      onClick={() => setSelectedStyle(isSelected ? null : s.fabric_style)}
-                      className={`p-4 rounded-xl border text-left transition-all ${
-                        isSelected
-                          ? 'bg-brand-50 border-brand-300 shadow-sm ring-1 ring-brand-400'
-                          : 'bg-surface-50 border-surface-200 hover:bg-white'
-                      }`}
-                    >
-                      <div className="flex justify-between items-start">
-                        <span className="font-bold text-xs sm:text-sm text-surface-900">{s.fabric_style}</span>
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          {s.percentage_of_total}% Share
-                        </span>
-                      </div>
-                      <div className="text-xs text-surface-500 mt-1.5 font-normal">
-                        ₹{(s.total_revenue / 100000).toFixed(1)}L across {s.machine_count} looms
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Loom Yield Grid (up to 5 columns on 2xl) */}
-            <div className="panel-saas space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-surface-100">
-                <div>
-                  <h3 className="font-semibold text-sm xl:text-base text-surface-900 uppercase tracking-wide">
-                    Loom Commercial Yield ({filteredMachines.length} Looms)
-                  </h3>
-                  <p className="text-xs text-surface-500 font-normal">
-                    Turnover realized per loom from woven yardage
-                  </p>
+          <div style={{ display: 'flex', gap: 0, border: '1px solid var(--atm-border)', borderRadius: 4, overflow: 'hidden', marginBottom: 14 }}>
+            {[
+              { label: 'Today Revenue', value: rupee(summary.today_revenue), note: '' },
+              { label: 'MTD Revenue', value: rupee(summary.mtd_revenue), note: `since ${summary.mtd_start_date ? fmtDate(summary.mtd_start_date) : '—'}` },
+              { label: 'vs Yesterday', value: changePct != null ? deltaPct(changePct) : '—', note: `prev: ${rupee(summary.previous_day_revenue)}`, isStatus: true },
+            ].map((item, i) => (
+              <div key={i} style={{ flex: 1, padding: '12px 14px', borderRight: i < 2 ? '1px solid var(--atm-border)' : 'none', background: item.isStatus && (changePct ?? 0) < 0 ? 'var(--critical-bg)' : '#fff' }}>
+                <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>{item.label}</div>
+                <div className="num" style={{ fontSize: '1.25rem', fontWeight: 700, color: item.isStatus ? ((changePct ?? 0) < 0 ? 'var(--critical)' : 'var(--ok)') : 'var(--ink-900)' }}>
+                  {item.value}
                 </div>
-
-                <div className="flex bg-surface-100 rounded-lg p-0.5 text-surface-600">
-                  <button
-                    onClick={() => setViewMode('CARDS')}
-                    className={`p-1.5 rounded-md ${viewMode === 'CARDS' ? 'bg-white text-surface-900 shadow-xs' : ''}`}
-                  >
-                    <LayoutGrid className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode('TABLE')}
-                    className={`p-1.5 rounded-md ${viewMode === 'TABLE' ? 'bg-white text-surface-900 shadow-xs' : ''}`}
-                  >
-                    <TableIcon className="w-4 h-4" />
-                  </button>
-                </div>
+                {item.note && <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', marginTop: 2 }}>{item.note}</div>}
               </div>
+            ))}
+          </div>
 
-              {viewMode === 'CARDS' ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3.5">
-                  {filteredMachines.map((m, idx) => (
-                    <div
-                      key={m.machine_id}
-                      className="p-4 rounded-xl border border-surface-200 bg-surface-50/50 hover:bg-white hover:shadow-card transition-all flex flex-col justify-between space-y-3"
-                    >
-                      <div>
-                        <div className="flex justify-between items-start">
-                          <span className="font-mono font-bold text-sm text-surface-900">{m.machine_id}</span>
-                          <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                            {m.percentage_of_total}%
-                          </span>
-                        </div>
-                        <span className="text-xs text-surface-500 block truncate mt-1">
-                          {m.fabric_styles.join(', ')}
-                        </span>
-                      </div>
-
-                      <div className="pt-2 border-t border-surface-100 flex justify-between items-center text-xs">
-                        <div>
-                          <span className="text-[10px] text-surface-400 block font-normal">Realized:</span>
-                          <span className="font-bold text-surface-900 font-sans text-sm">₹{m.total_revenue.toLocaleString()}</span>
-                        </div>
-                        <button
-                          onClick={() => setSelectedMachineId(m.machine_id)}
-                          className="font-semibold text-brand-600 hover:text-brand-700 text-xs flex items-center space-x-0.5"
-                        >
-                          <span>Dossier</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="overflow-x-auto rounded-lg border border-surface-200">
-                  <table className="w-full text-xs text-left text-surface-700">
-                    <thead className="bg-surface-50 text-surface-500 font-semibold uppercase text-[10px] border-b border-surface-200">
-                      <tr>
-                        <th className="p-3">Rank</th>
-                        <th className="p-3">Loom</th>
-                        <th className="p-3">Woven Fabric Qualities</th>
-                        <th className="p-3 text-right">Realized Turnover</th>
-                        <th className="p-3 text-right">% Contribution</th>
-                        <th className="p-3 text-center">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-surface-100">
-                      {filteredMachines.map((m, idx) => (
-                        <tr key={m.machine_id} className="hover:bg-surface-50">
-                          <td className="p-3 text-surface-400 font-semibold">#{idx + 1}</td>
-                          <td className="p-3 font-mono font-bold text-surface-900">{m.machine_id}</td>
-                          <td className="p-3 text-surface-500">{m.fabric_styles.join(', ')}</td>
-                          <td className="p-3 text-right font-mono font-semibold text-surface-900">₹{m.total_revenue.toLocaleString()}</td>
-                          <td className="p-3 text-right font-semibold text-emerald-600">{m.percentage_of_total}%</td>
-                          <td className="p-3 text-center">
-                            <button
-                              onClick={() => setSelectedMachineId(m.machine_id)}
-                              className="text-brand-600 hover:text-brand-700 font-semibold text-xs"
-                            >
-                              Inspect →
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+          {/* Estimated revenue loss */}
+          {revLoss > 0 && (
+            <div style={{ padding: '12px 14px', background: 'var(--critical-bg)', border: '1px solid var(--critical-border)', borderRadius: 4 }}>
+              <div style={{ fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.05em', color: 'var(--ink-500)', textTransform: 'uppercase', marginBottom: 4 }}>
+                Estimated revenue opportunity lost (downtime)
+              </div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+                <RupeeWithHint
+                  value={revLoss}
+                  formula="lost_metres × revenue_per_metre_by_style"
+                  assumptions={data?.revenue_loss?.methodology ?? 'Realized revenue run-rate × breakdown downtime hours. Tagged ESTIMATED.'}
+                />
+                <span className="badge badge-nodata" style={{ fontSize: '0.6875rem' }}>ESTIMATED</span>
+              </div>
+              {data?.biggest_revenue_loss_contributor && (
+                <div style={{ fontSize: '0.8125rem', color: 'var(--ink-700)', marginTop: 6 }}>
+                  Biggest contributor: <strong>{data.biggest_revenue_loss_contributor.machine_id}</strong>
+                  {' '}— {rupee(data.biggest_revenue_loss_contributor.estimated_loss)}
                 </div>
               )}
             </div>
-          </>
-        )}
-      </main>
+          )}
+        </div>
+      )}
 
-      {/* Slide-Over Machine Intelligence Profile */}
-      <MachineDossier
-        isOpen={Boolean(selectedMachineId)}
-        onClose={() => setSelectedMachineId(null)}
-        machineId={selectedMachineId}
-        date={currentDate}
-        datasetLabel={datasetLabel}
-        onInspectRawIds={(title, ids) =>
-          setEvidenceModal({
-            isOpen: true,
-            title,
-            ids,
-          })
-        }
-      />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 0 }}>
 
-      {/* Slide-Over Evidence Drawer */}
-      <EvidenceDrawer
-        isOpen={evidenceModal.isOpen}
-        onClose={() => setEvidenceModal({ isOpen: false, title: '', ids: [] })}
-        title={evidenceModal.title}
-        evidenceIds={evidenceModal.ids}
-        provenanceLabel={datasetLabel}
-        sourceType="synthetic"
-      />
+        {/* Machine ranking */}
+        <div style={{ borderRight: '1px solid var(--atm-border)', borderBottom: '1px solid var(--atm-border)' }}>
+          <div className="card-header" style={{ borderRadius: 0 }}>Revenue by Loom</div>
+          <div className="table-scroll">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left' }}>Loom</th>
+                  <th>Revenue</th>
+                  <th>% Total</th>
+                  <th>Style(s)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {machines.slice(0, 20).map((m, i) => (
+                  <tr key={m.machine_id} className={i === machines.length - 1 ? 'row-warn' : ''}>
+                    <td style={{ fontWeight: 600, fontVariantNumeric: 'normal' }}>{m.machine_id}</td>
+                    <td>{rupee(m.total_revenue)}</td>
+                    <td>{m.percentage_of_total.toFixed(1)}%</td>
+                    <td style={{ fontSize: '0.75rem', color: 'var(--ink-500)', fontVariantNumeric: 'normal' }}>
+                      {m.fabric_styles.join(', ')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Style ranking */}
+        <div style={{ borderBottom: '1px solid var(--atm-border)' }}>
+          <div className="card-header" style={{ borderRadius: 0 }}>Revenue by Fabric Style</div>
+          <div className="table-scroll">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left' }}>Style</th>
+                  <th>Revenue</th>
+                  <th>% Total</th>
+                  <th>Looms</th>
+                </tr>
+              </thead>
+              <tbody>
+                {styles.map((s, i) => (
+                  <tr key={s.fabric_style}>
+                    <td style={{ fontVariantNumeric: 'normal', maxWidth: 160 }} className="truncate">{s.fabric_style}</td>
+                    <td>{rupee(s.total_revenue)}</td>
+                    <td>{s.percentage_of_total.toFixed(1)}%</td>
+                    <td>{s.machine_count}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* Best / worst style */}
+          {(data?.best_style || data?.worst_style) && (
+            <div style={{ display: 'flex', borderTop: '1px solid var(--atm-border)' }}>
+              {data?.best_style && (
+                <div style={{ flex: 1, padding: '8px 12px', background: 'var(--ok-bg)', borderRight: '1px solid var(--atm-border)' }}>
+                  <div style={{ fontSize: '0.6875rem', color: 'var(--ok)', fontWeight: 600, textTransform: 'uppercase', marginBottom: 2 }}>Best style</div>
+                  <div style={{ fontWeight: 600, fontSize: '0.8125rem' }}>{data.best_style.fabric_style}</div>
+                  <div className="num" style={{ color: 'var(--ok)' }}>{rupee(data.best_style.total_revenue)}</div>
+                </div>
+              )}
+              {data?.worst_style && (
+                <div style={{ flex: 1, padding: '8px 12px', background: 'var(--warn-bg)' }}>
+                  <div style={{ fontSize: '0.6875rem', color: 'var(--warn)', fontWeight: 600, textTransform: 'uppercase', marginBottom: 2 }}>Lowest style</div>
+                  <div style={{ fontWeight: 600, fontSize: '0.8125rem' }}>{data.worst_style.fabric_style}</div>
+                  <div className="num" style={{ color: 'var(--warn)' }}>{rupee(data.worst_style.total_revenue)}</div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Data note */}
+      <div style={{ padding: '10px 16px', fontSize: '0.6875rem', color: 'var(--ink-500)', borderTop: '1px solid var(--atm-border)', background: 'var(--ink-100)' }}>
+        ⓘ Revenue figures are derived: actual_metres × revenue_per_metre from cost_master. Until cost_master is populated with real ATM rate cards, all ₹ values are tagged DEMO/ESTIMATED.
+      </div>
     </div>
   );
 }

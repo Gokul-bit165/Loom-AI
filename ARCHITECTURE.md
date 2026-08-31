@@ -1,231 +1,137 @@
-# Loom AI — Architecture Extension Plan
+# Loom AI — System Architecture & Data Dependency Map
 
-This document specifies the design for future tables (Q2–Q23).
-**Do not implement these yet.** This document exists so that when the time
-comes, the schema is already designed and the team can add each table without
-touching the existing four core tables.
-
----
-
-## Core Design Contract
-
-Every fact table in this system follows the same grain:
-
-```
-machine_id + date + shift
-```
-
-This grain matches how production reports are already collected on the shop
-floor (one report per shift per machine). Every new table hangs off `Machine`
-via a foreign key on `machine_id`.
+> **Core Objective: TRUST & INDUSTRIAL TRACEABILITY**  
+> An internal decision-support and reporting system for plant managers, technical directors, and production superintendents in large-scale textile manufacturing.  
+> **Key Axiom**: Every business number must be 100% traceable to source factory logs. The AI layer is strictly an explanation and recommendation synthesis layer that NEVER computes or invents metrics.
 
 ---
 
-## Future Tables
+## 1. System Architecture
 
-### 1. `AttendanceLog` — Q8 to Q11 (Manpower)
-
-**Purpose:** Track operator presence per machine per shift.
-
-```sql
-CREATE TABLE attendance_logs (
-    id               SERIAL PRIMARY KEY,
-    date             DATE         NOT NULL,
-    shift            SMALLINT     NOT NULL CHECK (shift IN (1, 2, 3)),
-    machine_id       VARCHAR(20)  NOT NULL REFERENCES machines(machine_id) ON DELETE RESTRICT,
-    operator_id      VARCHAR(20)  NOT NULL REFERENCES operators(operator_id) ON DELETE RESTRICT,
-    hours_present    NUMERIC(4,2) NOT NULL CHECK (hours_present >= 0 AND hours_present <= 12),
-    hours_absent     NUMERIC(4,2) NOT NULL CHECK (hours_absent >= 0),
-    absence_reason   VARCHAR(200),
-    source_type      VARCHAR(20)  NOT NULL CHECK (source_type IN ('synthetic', 'real', 'derived')),
-    created_at       TIMESTAMPTZ  NOT NULL DEFAULT NOW()
-);
+```text
+[CSV / PLC Telemetry / ERP Orders]
+             ↓
+[app/ingestion/]  (BaseParser, CSVParser, IngestionPipeline)
+             ↓
+[app/models/]     (Pydantic validated immutable domain records)
+             ↓
+[app/validation/] (ProductionValidator, BreakdownValidator, RevenueValidator, MachineValidator)
+             ↓
+[app/repositories/] (PostgreSQL transactions + DB check constraints)
+             ↓
+[PostgreSQL Database] (Master Data, Operational Logs, Quality, Energy, Sensor Data, Import Batches)
+             ↓
+[app/analytics/]  (Deterministic Python/pandas engine for Q1, Q5, Q21 & KPI derivation)
+             ↓
+[app/services/]   (ProductionService, BreakdownService, RevenueService, AskService)
+             ↓
+[app/routers/]    (FastAPI endpoints with structured error envelopes)
+             ↓
+┌───────────────────────────────────────┴───────────────────────────────────────┐
+│                                                                               │
+▼                                                                               ▼
+[Next.js Management Frontend]                                       [app/assistant/] (AI Explanation)
+  ├── /             (Control Center & Attention Section)              ├── Intent classification (Q1, Q5, Q21)
+  ├── /production   (Production vs Target — Q1)                       ├── Claude LLM (Zero temperature)
+  ├── /breakdown    (Breakdown & Downtime Pareto — Q5)                └── Conservative recommendations
+  ├── /revenue      (Revenue & Style Analysis — Q21)
+  └── /ask          (AI Assistant Q&A + Evidence Drawer)
 ```
-
-**Analytics functions needed:**
-- `get_manpower_utilisation(date)` → attendance %, absent count, absent reasons
-- `get_chronic_absentees(period)` → operators with > N absences in period
-
-**Indexes:** `(date, machine_id)`, `(operator_id)`
 
 ---
 
-### 2. `Operator` — supporting entity for AttendanceLog
+## 2. Complete Data Dependency Map
 
-```sql
-CREATE TABLE operators (
-    operator_id    VARCHAR(20)  PRIMARY KEY,
-    name           VARCHAR(100) NOT NULL,
-    department     VARCHAR(50)  NOT NULL,
-    role           VARCHAR(50)  NOT NULL,  -- e.g. Weaver, Spinner, Supervisor
-    active         BOOLEAN      NOT NULL DEFAULT TRUE,
-    created_at     TIMESTAMPTZ  NOT NULL DEFAULT NOW()
-);
+```text
+                    ┌─────────────────┐
+                    │   LOOM MASTER   │
+                    │ Loom ID         │
+                    │ Machine Model   │
+                    │ Loom Type       │
+                    └────────┬────────┘
+                             │
+                             ↓
+                    ┌─────────────────┐
+                    │    PRODUCTION   │
+                    │ Target KG       │
+                    │ Actual KG       │
+                    │ Meters          │
+                    │ Efficiency      │
+                    │ Kilo Pick       │
+                    │ Warp Breaks     │
+                    │ Weft Breaks     │
+                    └───────┬─────────┘
+                            │
+               ┌────────────┼─────────────┐
+               ↓            ↓             ↓
+        ┌────────────┐ ┌───────────┐ ┌─────────────┐
+        │ BREAKDOWN  │ │  QUALITY  │ │    ORDER    │
+        │ Start      │ │ Defects   │ │ Order ID    │
+        │ End        │ │ Warp      │ │ Customer    │
+        │ Reason     │ │ Weft      │ │ Rate        │
+        └─────┬──────┘ └───────────┘ └──────┬──────┘
+              │                             │
+              ↓                             ↓
+        ┌──────────────┐              ┌──────────────┐
+        │ DOWNTIME     │              │   REVENUE    │
+        │ Duration     │              │ Production   │
+        │ Frequency    │              │ × Rate       │
+        │ Loss         │              │              │
+        └──────┬───────┘              └──────┬───────┘
+               │                             │
+               └──────────────┬──────────────┘
+                              ↓
+                    ┌─────────────────────┐
+                    │   ANALYTICS / KPI   │
+                    │ Target variance     │
+                    │ Yesterday compare   │
+                    │ Loom ranking        │
+                    │ Fabric ranking      │
+                    │ Revenue ranking     │
+                    └──────────┬──────────┘
+                               ↓
+                    ┌─────────────────────┐
+                    │       ML / AI       │
+                    │ Breakdown prediction│
+                    │ Production forecast │
+                    │ Efficiency forecast │
+                    │ Recommendations     │
+                    └─────────────────────┘
 ```
-
-**Note:** Operator IDs should be assigned from the real attendance register,
-not invented.
 
 ---
 
-### 3. `MaintenanceLog` — Q12 to Q14 (Maintenance)
+## 3. Data Classification: Source vs Derived vs Predictive
 
-**Purpose:** Track scheduled preventive maintenance (PM) separately from
-breakdown events. Breakdowns are unplanned; PM is planned.
+### 1. Independent / Source Data (Plant Floor Truth)
+* **Master Entities**: `loom_id`, `shift_id`, `fabric_style_id`, `customer_id`, `order_id`
+* **Direct Measurements**: `actual_meters`, `actual_kg`, `machine_speed_rpm`, `kilo_pick`, `warp_break_count`, `weft_break_count`
+* **Stoppages**: `start_time`, `end_time`, `reason`, `breakdown_category`
+* **Commercial Rates**: `selling_rate_per_kg`, `order_quantity_kg`
 
-```sql
-CREATE TABLE maintenance_logs (
-    id                SERIAL PRIMARY KEY,
-    date              DATE         NOT NULL,
-    shift             SMALLINT     NOT NULL CHECK (shift IN (1, 2, 3)),
-    machine_id        VARCHAR(20)  NOT NULL REFERENCES machines(machine_id) ON DELETE RESTRICT,
-    maintenance_type  VARCHAR(50)  NOT NULL CHECK (
-                          maintenance_type IN ('scheduled_pm', 'unscheduled', 'inspection', 'overhaul')
-                      ),
-    technician_id     VARCHAR(20)  REFERENCES operators(operator_id),
-    duration_minutes  INTEGER      NOT NULL CHECK (duration_minutes > 0),
-    parts_replaced    TEXT,        -- free text; structured in V3
-    cost_rs           NUMERIC(12,2) CHECK (cost_rs >= 0),
-    notes             TEXT,
-    source_type       VARCHAR(20)  NOT NULL CHECK (source_type IN ('synthetic', 'real', 'derived')),
-    created_at        TIMESTAMPTZ  NOT NULL DEFAULT NOW()
-);
-```
+### 2. Dependent / Derived Data (Deterministic Math)
+* **Production Variance**: $\text{Actual Quantity} - \text{Target Quantity}$
+* **Achievement %**: $(\text{Actual Quantity} / \text{Target Quantity}) \times 100$
+* **Downtime Duration**: $\text{End Time} - \text{Start Time}$
+* **Average Breakdown Duration**: $\text{Total Downtime Minutes} / \text{Event Count}$
+* **Production Loss**: $\text{Expected Rate} \times \text{Downtime Duration}$
+* **Shift Revenue**: $\text{Actual Production KG} \times \text{Selling Rate per KG}$
+* **Day-over-Day Variance**: $\frac{\text{Today Output} - \text{Yesterday Output}}{\text{Yesterday Output}} \times 100$
+* **Specific Energy Consumption**: $\text{Electricity kWh} / \text{Production KG}$
 
-**Why separate from BreakdownEvent:** Maintenance is planned downtime;
-breakdown is unplanned. Q12 asks about maintenance compliance, Q13 asks about
-breakdown-to-maintenance conversion rate — mixing them in one table would
-corrupt both questions.
-
-**Indexes:** `(date, machine_id)`, `(maintenance_type)`, `(date)`
+### 3. ML-Generated Data (Predictive Layer)
+* **Breakdown Risk**: $P(\text{Breakdown within 24h} \mid \text{Speed, Air Pressure, Warp/Weft Breaks, MTBF})$
+* **Shift Production Forecast**: $\hat{Y}_{\text{kg}} = f(X_{\text{features}})$
+* **Efficiency Trajectory**: $\hat{E}_{\%} = f(X_{\text{features}})$
+* **Prescriptive Actions**: AI-synthesized root-cause corrective maintenance plans.
 
 ---
 
-### 4. `AirConsumptionLog` — Q15 to Q17 (Compressor / Air)
+## 4. Analytical Progression: 4 Questions
 
-**Purpose:** Track compressed air consumption per machine per shift.
-
-```sql
-CREATE TABLE air_consumption_logs (
-    id                  SERIAL PRIMARY KEY,
-    date                DATE         NOT NULL,
-    shift               SMALLINT     NOT NULL CHECK (shift IN (1, 2, 3)),
-    machine_id          VARCHAR(20)  NOT NULL REFERENCES machines(machine_id) ON DELETE RESTRICT,
-    consumption_m3      NUMERIC(10,3) NOT NULL CHECK (consumption_m3 >= 0),
-    pressure_bar        NUMERIC(5,2)  CHECK (pressure_bar > 0),
-    leakage_detected    BOOLEAN,
-    source_type         VARCHAR(20)  NOT NULL CHECK (source_type IN ('synthetic', 'real', 'derived')),
-    created_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW()
-);
-```
-
-**Data gap note:** No air consumption report was supplied in the V1 reference
-images. This table can only be populated when a real source is identified
-(sensor log, manual meter reading, or DCS export). Do NOT generate synthetic
-values for this table — the data shape is too speculative.
-
-**Indexes:** `(date, machine_id)`, `(date)`
-
----
-
-### 5. `QualityLog` — Q18 to Q20 (Yarn / Fabric Quality)
-
-**Purpose:** Store per-machine quality test results. The columns below are
-derived from Image 3 (Yarn Quality Report — 14/08/2026).
-
-```sql
-CREATE TABLE quality_logs (
-    id                SERIAL PRIMARY KEY,
-    date              DATE         NOT NULL,
-    shift             SMALLINT     NOT NULL CHECK (shift IN (1, 2, 3)),
-    machine_id        VARCHAR(20)  NOT NULL REFERENCES machines(machine_id) ON DELETE RESTRICT,
-    yarn_count        NUMERIC(6,2) CHECK (yarn_count > 0),   -- e.g. 30s, 41s
-    cone_weight_kg    NUMERIC(5,3) CHECK (cone_weight_kg > 0),
-    avg_count         NUMERIC(6,2),
-    avg_strength      NUMERIC(8,2),
-    csp               NUMERIC(8,2),                          -- Count Strength Product
-    count_cv          NUMERIC(6,2),                          -- CV% of count
-    strength_cv       NUMERIC(6,2),
-    u_pct             NUMERIC(6,2),                          -- Uster U%
-    thin_per_km       NUMERIC(8,2),
-    thick_per_km      NUMERIC(8,2),
-    neps_per_km       NUMERIC(8,2),
-    total_ipi         NUMERIC(8,2),                          -- thin + thick + neps
-    source_type       VARCHAR(20)  NOT NULL CHECK (source_type IN ('synthetic', 'real', 'derived')),
-    created_at        TIMESTAMPTZ  NOT NULL DEFAULT NOW()
-);
-```
-
-**Note:** Quality is tested per machine group, not per individual loom.
-The V1 Spinning machines (RF, VTX, AJ) are the primary subjects of quality
-reports. The `machine_id` should reference the representative machine for
-the test group.
-
-**Indexes:** `(date, machine_id)`, `(date)`, `(yarn_count)`
-
----
-
-## Migration Strategy for Future Tables
-
-When adding a new table:
-
-1. Create a new Alembic revision:
-   ```
-   cd backend
-   alembic revision -m "add_attendance_log"
-   ```
-
-2. Write the `upgrade()` and `downgrade()` functions by hand (do not rely on
-   autogenerate for production migrations — it can miss check constraints).
-
-3. Add the SQLAlchemy model class to `models.py`.
-
-4. Add a `validate_*` function to `app/data/import_csv.py`.
-
-5. Add test cases to `tests/test_db_constraints.py`.
-
-**Nothing in the existing four tables needs to change.** The `machine_id`
-foreign key is the only coupling point.
-
----
-
-## Analytics Layer Extension Pattern
-
-For each new question Qn, add one file:
-
-```
-backend/app/analytics/qN_<topic>.py
-```
-
-Each file must export exactly one public function:
-
-```python
-def get_<topic>_summary(date: datetime.date, **kwargs) -> dict:
-    ...
-```
-
-The function must:
-- Accept only typed parameters (no raw SQL strings from callers)
-- Return a plain `dict` (not a DataFrame) — this is what the LLM prompt builder receives
-- Be fully unit-testable against the test database without mocking
-
----
-
-## API Extension Pattern
-
-For each new question, add one FastAPI router:
-
-```
-backend/app/routers/qN_<topic>.py
-```
-
-Each router registers under `/api/<topic>/`:
-
-```python
-GET  /api/attendance/summary?date=2026-08-29
-GET  /api/maintenance/history?machine_id=RF-11&period=month
-GET  /api/quality/trend?machine_type=Vortex&days=30
-```
-
-The dashboard at `/` is a composite of all available question endpoints.
-Adding a new endpoint does not affect existing ones.
+$$\begin{array}{rll}
+\text{1. What happened?} & \longrightarrow & \textbf{Descriptive BI} \text{ (Target vs Actual, Downtime Pareto, Revenue by Style)} \\
+\text{2. Why did it happen?} & \longrightarrow & \textbf{Diagnostic Analytics} \text{ (Weft break spikes, mechanical root causes, chronic underperformers)} \\
+\text{3. What will happen?} & \longrightarrow & \textbf{Predictive ML} \text{ (24h breakdown forecast, efficiency risk models)} \\
+\text{4. What should we do?} & \longrightarrow & \textbf{Prescriptive AI} \text{ (Zero-temperature synthesis with verified evidence traces)}
+\end{array}$$

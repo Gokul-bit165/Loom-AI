@@ -8,6 +8,7 @@ from typing import Any
 from sqlalchemy.orm import Session
 
 from app.analytics.revenue import get_revenue_summary
+from app.analytics.recommendations import get_revenue_recommendations
 
 
 class RevenueService:
@@ -36,6 +37,9 @@ class RevenueService:
         data_quality = raw_result["data_quality"]
         has_data = data_quality["records_analyzed"] > 0
 
+        # Generate deterministic recommendations
+        recommendations = get_revenue_recommendations(raw_result) if has_data else []
+
         data_payload = {
             "has_data": has_data,
             "summary": raw_result["summary"],
@@ -46,6 +50,8 @@ class RevenueService:
             "best_style": raw_result["best_style"],
             "worst_style": raw_result["worst_style"],
             "revenue_loss": raw_result["revenue_loss"],
+            "biggest_revenue_loss_contributor": raw_result.get("biggest_revenue_loss_contributor"),
+            "recommendations": recommendations,
             "evidence": raw_result["evidence"],
         }
 

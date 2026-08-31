@@ -109,10 +109,15 @@ def get_breakdown_ranking(
             },
             "total_downtime_minutes": 0,
             "total_events": 0,
+            "average_event_duration": 0,
             "machine_ranking": [],
+            "breakdown_count_ranking": [],
             "reason_ranking": [],
+            "shift_ranking": [],
             "highest_downtime_machine": None,
             "lowest_downtime_machine": None,
+            "most_breakdown_events_machine": None,
+            "highest_downtime_shift": None,
             "recurring_reasons": [],
             "data_quality": {
                 "records_analyzed": 0,
@@ -201,8 +206,42 @@ def get_breakdown_ranking(
 
     reason_ranking.sort(key=lambda x: (-x["total_downtime_minutes"], -x["event_count"]))
 
+    # Pareto cumulative % by downtime — lets the UI draw a Pareto chart and
+    # answer "which reasons explain 80% of downtime" without recomputing.
+    cumulative = 0.0
+    for r in reason_ranking:
+        cumulative += r["percentage_of_total_downtime"]
+        r["cumulative_percentage"] = round(cumulative, 2)
+
     # Recurring reasons: top 3 reasons by event frequency
     recurring_reasons = sorted(reason_ranking, key=lambda x: -x["event_count"])[:3]
+
+    # Breakdown-COUNT ranking — deliberately separate from the downtime
+    # ranking above. Per the product brief: a machine with the most
+    # breakdown *events* is not necessarily the machine with the most
+    # downtime *minutes*, and collapsing the two into one KPI hides that.
+    count_ranking = sorted(
+        machine_ranking,
+        key=lambda x: (-x["event_count"], -x["downtime_minutes"], x["machine_id"]),
+    )
+    most_breakdown_events_machine = count_ranking[0] if count_ranking else None
+
+    # Shift comparison — total downtime and event count per shift.
+    shift_groups = df.groupby("shift")
+    shift_ranking: list[dict[str, Any]] = []
+    for s_num, s_df in shift_groups:
+        s_events = len(s_df)
+        s_dt = int(s_df["duration_minutes"].sum())
+        shift_ranking.append(
+            {
+                "shift": int(s_num),
+                "event_count": s_events,
+                "downtime_minutes": s_dt,
+                "percentage_of_total_downtime": round(safe_divide(s_dt, total_downtime) * 100.0, 2),
+            }
+        )
+    shift_ranking.sort(key=lambda x: -x["downtime_minutes"])
+    highest_downtime_shift = shift_ranking[0] if shift_ranking else None
 
     return {
         "period_info": {
@@ -212,10 +251,15 @@ def get_breakdown_ranking(
         },
         "total_downtime_minutes": total_downtime,
         "total_events": total_events,
+        "average_event_duration": round(safe_divide(total_downtime, total_events), 1),
         "machine_ranking": machine_ranking,
+        "breakdown_count_ranking": count_ranking,
         "reason_ranking": reason_ranking,
+        "shift_ranking": shift_ranking,
         "highest_downtime_machine": highest_machine,
         "lowest_downtime_machine": lowest_machine,
+        "most_breakdown_events_machine": most_breakdown_events_machine,
+        "highest_downtime_shift": highest_downtime_shift,
         "recurring_reasons": recurring_reasons,
         "data_quality": {
             "records_analyzed": total_events,

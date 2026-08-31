@@ -48,6 +48,8 @@ class Settings(BaseSettings):
     # ── LLM (Phase 3) ────────────────────────────────────────────────────────
     anthropic_api_key: str = ""
     anthropic_model: str = "claude-3-5-sonnet-20241022"
+    groq_api_key: str = ""
+    groq_model: str = "openai/gpt-oss-120b"
 
     # ── App behaviour ────────────────────────────────────────────────────────
     app_env: str = "development"

@@ -42,3 +42,27 @@ def get_production_variance_endpoint(
         machine_id=machine_id,
         shift=shift,
     )
+
+
+@router.get(
+    "/trend",
+    summary="Get 14-Day Production Trajectory (Q1)",
+    description="Returns daily actual output, planned target, and efficiency trajectory over the last N days.",
+)
+def get_production_trend_endpoint(
+    date: str | None = Query(None, description="End date in YYYY-MM-DD format (defaults to latest available)"),
+    days: int = Query(14, ge=1, le=90, description="Number of trailing days (default 14)"),
+    department: str | None = Query(None, description="Filter by department"),
+    machine_type: str | None = Query(None, description="Filter by machine type"),
+    machine_id: str | None = Query(None, description="Filter by machine ID"),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    parsed_date = parse_query_date(date)
+    service = ProductionService(db)
+    return service.get_trend(
+        date=parsed_date,
+        days=days,
+        department=department,
+        machine_type=machine_type,
+        machine_id=machine_id,
+    )

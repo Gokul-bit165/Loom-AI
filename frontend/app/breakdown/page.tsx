@@ -1,358 +1,204 @@
 'use client';
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { api } from '@/lib/api';
-import { BreakdownRankingData, StandardApiResponse } from '@/lib/types';
-import { HeaderNav } from '@/components/common/HeaderNav';
-import { DowntimeLossMap } from '@/components/executive/DowntimeLossMap';
-import { MachineDossier } from '@/components/investigation/MachineDossier';
-import { EvidenceDrawer } from '@/components/EvidenceDrawer';
-import { SentinelSkeleton } from '@/components/states/SentinelSkeleton';
-import { EmptyDayState } from '@/components/states/EmptyDayState';
-import { SystemErrorState } from '@/components/states/SystemErrorState';
-import {
-  Clock,
-  Filter,
-  LayoutGrid,
-  Table as TableIcon,
-  ArrowRight,
-  Wrench,
-  ShieldAlert,
-  Calendar,
-} from 'lucide-react';
+import { fmtMinutes, rupee, pct, inr } from '@/lib/utils';
+import { DataStamp } from '@/components/DataStamp';
+import type { BreakdownRankingData, MachineRankingItem, ReasonRankingItem } from '@/lib/types';
 
-export default function DowntimeInvestigationWorkspace() {
-  const [currentDate, setCurrentDate] = useState<string>('2026-08-29');
-  const [period, setPeriod] = useState<'today' | 'month'>('today');
-  const [department, setDepartment] = useState<string>('');
-  const [viewMode, setViewMode] = useState<'CARDS' | 'TABLE'>('CARDS');
+function ParetoBar({ pctOfTotal, cumulative }: { pctOfTotal: number; cumulative?: number }) {
+  const past80 = (cumulative ?? 0) > 80;
+  return (
+    <div className="pareto-bar" style={{ flex: 1, margin: '0 8px' }}>
+      <div className="pareto-bar-fill" style={{ width: `${pctOfTotal}%`, background: past80 ? 'var(--warn)' : 'var(--critical)' }} />
+    </div>
+  );
+}
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [response, setResponse] = useState<StandardApiResponse<BreakdownRankingData> | null>(null);
+export default function BreakdownPage() {
+  const [data, setData]             = useState<BreakdownRankingData | null>(null);
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState<string | null>(null);
+  const [period, setPeriod]         = useState<'today' | 'month'>('month');
+  const [generatedAt, setGeneratedAt] = useState<string | null>(null);
+  const [isDemo, setIsDemo]         = useState(false);
 
-  const [selectedMachineId, setSelectedMachineId] = useState<string | null>(null);
-  const [evidenceModal, setEvidenceModal] = useState<{
-    isOpen: boolean;
-    title: string;
-    ids: number[];
-  }>({
-    isOpen: false,
-    title: '',
-    ids: [],
-  });
-
-  const fetchData = async (date: string, per: 'today' | 'month', dept: string) => {
-    setIsLoading(true);
+  const load = useCallback(async () => {
+    setLoading(true);
     setError(null);
     try {
-      const res = await api.getBreakdownRanking({
-        date,
-        period: per,
-        department: dept || undefined,
-      });
-      setResponse(res);
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch breakdown analytics');
+      const res = await api.getBreakdownRanking({ period });
+      setData(res.data);
+      setGeneratedAt(res.metadata.generated_at);
+      setIsDemo(res.data_quality.is_demo);
+    } catch (e: any) {
+      setError(e.message);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
-  };
+  }, [period]);
 
-  useEffect(() => {
-    fetchData(currentDate, period, department);
-  }, [currentDate, period, department]);
+  useEffect(() => { load(); }, [load]);
 
-  const bdData = response?.data;
-  const machines = bdData?.machine_ranking || [];
-  const reasons = bdData?.reason_ranking || [];
-  const hasData = bdData?.has_data;
+  if (loading) return <div style={{ padding: '48px 16px', textAlign: 'center', color: 'var(--ink-500)', fontSize: '0.875rem' }}>Loading breakdown data…</div>;
+  if (error)   return (
+    <div style={{ padding: '24px 16px', maxWidth: 900, margin: '0 auto' }}>
+      <div className="no-data-state">
+        <div style={{ fontWeight: 600 }}>Could not load breakdown data</div>
+        <div className="reason">{error}</div>
+        <button className="btn btn-outline" style={{ marginTop: 12 }} onClick={load}>↻ Retry</button>
+      </div>
+    </div>
+  );
 
-  const isDemo = response?.data_quality?.is_demo ?? true;
-  const datasetLabel = response?.data_quality?.dataset_label ?? 'Grounded Factory Baseline';
-
-  const selectedDowntime = machines.find((m) => m.machine_id === selectedMachineId);
+  const machines  = data?.machine_ranking ?? [];
+  const reasons   = data?.reason_ranking  ?? [];
+  const shifts    = data?.shift_ranking   ?? [];
 
   return (
-    <div className="min-h-screen bg-surface-50 flex flex-col font-sans">
-      <HeaderNav
-        currentDate={currentDate}
-        onDateChange={setCurrentDate}
-        isDemo={isDemo}
-        datasetLabel={datasetLabel}
-        recordsAnalyzed={response?.data_quality?.records_analyzed}
-      />
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 0 60px' }}>
 
-      <main className="max-w-7xl 2xl:max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-6 sm:py-8 space-y-6 flex-1">
-        {/* Workspace Title + Filters */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center space-x-2">
-              <Clock className="w-5 h-5 text-amber-600" />
-              <h1 className="text-xl sm:text-2xl 2xl:text-3xl font-bold text-surface-900 tracking-tight">
-                Mechanical Downtime & Stoppage Analysis
-              </h1>
+      {/* Provenance + period toggle */}
+      <div style={{ padding: '8px 16px', background: 'var(--ink-100)', borderBottom: '1px solid var(--atm-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+        <DataStamp asOf={generatedAt} isDemo={isDemo} source="CSV import" />
+        <div style={{ display: 'flex', gap: 6 }}>
+          {(['today', 'month'] as const).map(p => (
+            <button key={p} className={`btn ${period === p ? 'btn-primary' : 'btn-outline'}`} style={{ minHeight: 32, padding: '0 12px', fontSize: '0.8125rem' }} onClick={() => setPeriod(p)}>
+              {p === 'today' ? 'Today' : 'This Month'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Summary stats */}
+      {data?.has_data && (
+        <div style={{ display: 'flex', borderBottom: '1px solid var(--atm-border)', overflowX: 'auto' }}>
+          {[
+            { label: 'Total events', value: inr(data.total_events) },
+            { label: 'Total downtime', value: fmtMinutes(data.total_downtime_minutes) },
+            { label: 'Avg event', value: fmtMinutes(Math.round(data.average_event_duration ?? 0)) },
+            { label: 'Worst loom', value: data.highest_downtime_machine?.machine_id ?? '—' },
+          ].map((item, i) => (
+            <div key={i} style={{ flex: '1 1 100px', padding: '10px 14px', borderRight: i < 3 ? '1px solid var(--atm-border)' : 'none' }}>
+              <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 3 }}>{item.label}</div>
+              <div className="num" style={{ fontSize: '1.25rem', fontWeight: 700, color: i === 3 ? 'var(--critical)' : 'var(--ink-900)' }}>{item.value}</div>
             </div>
-            <p className="text-xs sm:text-sm text-surface-500 font-normal mt-0.5">
-              Root failure modes, stoppage duration Pareto, and chronic machine downtime dossiers
-            </p>
+          ))}
+        </div>
+      )}
+
+      {!data?.has_data && (
+        <div style={{ padding: '24px 16px' }}>
+          <div className="no-data-state">
+            <div style={{ fontWeight: 600 }}>No breakdown data for this period</div>
+            <div className="reason">Source: breakdown_events table · Period: {period}</div>
+          </div>
+        </div>
+      )}
+
+      {data?.has_data && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 0, borderBottom: '1px solid var(--atm-border)' }}>
+
+          {/* Machine downtime ranking */}
+          <div style={{ borderRight: '1px solid var(--atm-border)' }}>
+            <div className="card-header" style={{ borderRadius: 0 }}>Loom Downtime Ranking</div>
+            <div className="table-scroll">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: 'left' }}>Loom</th>
+                    <th>Events</th>
+                    <th>Downtime</th>
+                    <th>% Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {machines.slice(0, 15).map((m, i) => (
+                    <tr key={m.machine_id} className={i === 0 ? 'row-critical' : i < 3 ? 'row-warn' : ''}>
+                      <td style={{ fontWeight: 600, fontVariantNumeric: 'normal' }}>{m.machine_id}</td>
+                      <td>{m.event_count}</td>
+                      <td>{fmtMinutes(m.downtime_minutes)}</td>
+                      <td>{m.percentage_of_total_downtime.toFixed(1)}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Period Toggle */}
-            <div className="flex bg-surface-100 rounded-lg p-0.5 text-xs font-medium">
-              <button
-                onClick={() => setPeriod('today')}
-                className={`px-3 py-1.5 rounded-md transition-colors ${
-                  period === 'today' ? 'bg-white text-surface-900 font-semibold shadow-xs' : 'text-surface-600 hover:text-surface-900'
-                }`}
-              >
-                Today's Stoppages
-              </button>
-              <button
-                onClick={() => setPeriod('month')}
-                className={`px-3 py-1.5 rounded-md transition-colors ${
-                  period === 'month' ? 'bg-white text-surface-900 font-semibold shadow-xs' : 'text-surface-600 hover:text-surface-900'
-                }`}
-              >
-                Month-to-Date (MTD)
-              </button>
-            </div>
-
-            <div className="flex items-center space-x-2 bg-white border border-surface-200 rounded-lg px-3 py-1.5 shadow-xs text-xs">
-              <Filter className="w-4 h-4 text-surface-400" />
-              <select
-                value={department}
-                onChange={(e) => setDepartment(e.target.value)}
-                className="bg-transparent text-surface-800 font-medium focus:outline-none cursor-pointer"
-              >
-                <option value="">All Departments</option>
-                <option value="Weaving">Weaving Department</option>
-                <option value="Spinning">Spinning Department</option>
-              </select>
+          {/* Reason Pareto */}
+          <div>
+            <div className="card-header" style={{ borderRadius: 0 }}>Stoppage Reason Pareto</div>
+            <div style={{ padding: '8px 16px' }}>
+              {reasons.map((r, i) => (
+                <div key={i} style={{ padding: '8px 0', borderBottom: '1px solid var(--atm-border)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <span style={{ fontSize: '0.8125rem', fontWeight: 500, flex: 1, marginRight: 8 }}>{r.reason}</span>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'baseline', flexShrink: 0 }}>
+                      <span className="num" style={{ fontSize: '0.8125rem', fontWeight: 700 }}>{fmtMinutes(r.total_downtime_minutes)}</span>
+                      <span className="num" style={{ fontSize: '0.75rem', color: 'var(--ink-500)', minWidth: 36, textAlign: 'right' }}>{r.percentage_of_total_downtime.toFixed(0)}%</span>
+                      {r.cumulative_percentage !== undefined && (
+                        <span className="num" style={{ fontSize: '0.6875rem', color: (r.cumulative_percentage ?? 0) <= 80 ? 'var(--critical)' : 'var(--nodata)', minWidth: 42, textAlign: 'right' }}>
+                          cum {r.cumulative_percentage?.toFixed(0)}%
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <ParetoBar pctOfTotal={r.percentage_of_total_downtime} cumulative={r.cumulative_percentage} />
+                </div>
+              ))}
+              <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', paddingTop: 6 }}>
+                ⓘ Top reasons by downtime minutes. 80% line marks Pareto threshold.
+              </div>
             </div>
           </div>
         </div>
+      )}
 
-        {isLoading ? (
-          <SentinelSkeleton />
-        ) : error ? (
-          <SystemErrorState error={error} onRetry={() => fetchData(currentDate, period, department)} />
-        ) : !hasData ? (
-          <EmptyDayState
-            date={currentDate}
-            onJumpToActiveDate={() => setCurrentDate('2026-08-29')}
-          />
-        ) : (
-          <>
-            {/* Downtime Hero Metrics Strip */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="panel-saas space-y-1">
-                <span className="text-[11px] font-semibold text-surface-500 uppercase tracking-wide block">
-                  Total Lost Operating Time
-                </span>
-                <div className="text-2xl sm:text-3xl 2xl:text-4xl font-bold text-rose-600 font-sans">
-                  {bdData.total_downtime_minutes.toLocaleString()}m
+      {/* Shift ranking */}
+      {shifts.length > 0 && (
+        <div style={{ borderBottom: '1px solid var(--atm-border)' }}>
+          <div className="card-header" style={{ borderRadius: 0 }}>Downtime by Shift</div>
+          <div style={{ display: 'flex', overflowX: 'auto' }}>
+            {shifts.map((s, i) => (
+              <div key={s.shift} style={{ flex: 1, padding: '12px 16px', borderRight: i < shifts.length - 1 ? '1px solid var(--atm-border)' : 'none', minWidth: 120 }}>
+                <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Shift {s.shift}</div>
+                <div className="num" style={{ fontSize: '1.25rem', fontWeight: 700, color: i === 0 ? 'var(--critical)' : 'var(--ink-900)', marginBottom: 2 }}>
+                  {fmtMinutes(s.downtime_minutes)}
                 </div>
-                <span className="text-xs text-surface-500 font-normal block">
-                  {(bdData.total_downtime_minutes / 60).toFixed(1)} machine hours lost
-                </span>
-              </div>
-
-              <div className="panel-saas space-y-1">
-                <span className="text-[11px] font-semibold text-surface-500 uppercase tracking-wide block">
-                  Recorded Stoppage Events
-                </span>
-                <div className="text-2xl sm:text-3xl 2xl:text-4xl font-bold text-surface-900 font-sans">
-                  {bdData.total_events} events
-                </div>
-                <span className="text-xs text-surface-500 font-normal block">
-                  Avg Duration: {bdData.total_events > 0 ? (bdData.total_downtime_minutes / bdData.total_events).toFixed(1) : 0} min
-                </span>
-              </div>
-
-              <div className="panel-saas space-y-1">
-                <span className="text-[11px] font-semibold text-surface-500 uppercase tracking-wide block">
-                  Dominant Stoppage Cause
-                </span>
-                <div className="text-lg 2xl:text-xl font-bold text-surface-900 font-sans truncate">
-                  {reasons[0]?.reason || 'N/A'}
-                </div>
-                <span className="text-xs text-amber-600 font-semibold block">
-                  {reasons[0]?.percentage_of_total_downtime.toFixed(1)}% of all lost time
-                </span>
-              </div>
-
-              <div className="panel-saas space-y-1">
-                <span className="text-[11px] font-semibold text-surface-500 uppercase tracking-wide block">
-                  Worst Machine Stoppage
-                </span>
-                <div className="text-lg 2xl:text-xl font-bold text-rose-600 font-mono truncate">
-                  {bdData.highest_downtime_machine?.machine_id || 'None'}
-                </div>
-                <span className="text-xs text-surface-500 font-normal block">
-                  {bdData.highest_downtime_machine?.downtime_minutes} mins ({bdData.highest_downtime_machine?.event_count} events)
-                </span>
-              </div>
-            </div>
-
-            {/* Downtime Loss Map (Pareto + Concentration) */}
-            <DowntimeLossMap
-              reasons={reasons}
-              machines={machines}
-              totalDowntimeMinutes={bdData.total_downtime_minutes}
-            />
-
-            {/* Machine Dossier Grid */}
-            <div className="panel-saas space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-surface-100">
-                <div>
-                  <h3 className="font-semibold text-sm xl:text-base text-surface-900 uppercase tracking-wide">
-                    Chronic Machine Stoppage Dossiers ({machines.length} Units Affected)
-                  </h3>
-                  <p className="text-xs text-surface-500 font-normal">
-                    Ranked by total lost minutes. Select any unit to open full root-cause investigation
-                  </p>
-                </div>
-
-                <div className="flex bg-surface-100 rounded-lg p-0.5 text-surface-600">
-                  <button
-                    onClick={() => setViewMode('CARDS')}
-                    className={`p-1.5 rounded-md ${viewMode === 'CARDS' ? 'bg-white text-surface-900 shadow-xs' : ''}`}
-                  >
-                    <LayoutGrid className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode('TABLE')}
-                    className={`p-1.5 rounded-md ${viewMode === 'TABLE' ? 'bg-white text-surface-900 shadow-xs' : ''}`}
-                  >
-                    <TableIcon className="w-4 h-4" />
-                  </button>
+                <div className="num" style={{ fontSize: '0.75rem', color: 'var(--ink-500)' }}>
+                  {s.event_count} events · {s.percentage_of_total_downtime.toFixed(0)}%
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-              {viewMode === 'CARDS' ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3.5">
-                  {machines.map((m, idx) => (
-                    <div
-                      key={m.machine_id}
-                      className="p-4 rounded-xl border border-surface-200 bg-surface-50/50 hover:bg-white hover:shadow-card transition-all flex flex-col justify-between space-y-3"
-                    >
-                      <div>
-                        <div className="flex justify-between items-start">
-                          <div className="flex items-center space-x-2">
-                            <span className="w-5 h-5 rounded-full bg-surface-200 text-surface-700 text-xs font-bold flex items-center justify-center">
-                              {idx + 1}
-                            </span>
-                            <div>
-                              <span className="font-mono font-bold text-sm text-surface-900">{m.machine_id}</span>
-                              <span className="text-xs text-surface-500 block">({m.machine_type} • {m.department})</span>
-                            </div>
-                          </div>
-                          <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200 font-mono">
-                            {m.downtime_minutes}m lost
-                          </span>
-                        </div>
-
-                        <div className="grid grid-cols-3 gap-1 bg-white p-2 rounded-lg border border-surface-200/80 text-center text-xs mt-3">
-                          <div>
-                            <span className="text-[10px] text-surface-500 block">Events</span>
-                            <span className="font-semibold text-surface-900">{m.event_count}</span>
-                          </div>
-                          <div>
-                            <span className="text-[10px] text-surface-500 block">Avg Min</span>
-                            <span className="font-semibold text-surface-900">{m.average_event_duration}</span>
-                          </div>
-                          <div>
-                            <span className="text-[10px] text-surface-500 block">Share</span>
-                            <span className="font-semibold text-amber-600">{m.percentage_of_total_downtime}%</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="pt-2 border-t border-surface-100 flex justify-between items-center text-xs">
-                        <span className="text-[11px] text-surface-400">{m.evidence.breakdown_event_ids.length} logged events</span>
-                        <button
-                          onClick={() => setSelectedMachineId(m.machine_id)}
-                          className="font-semibold text-brand-600 hover:text-brand-700 flex items-center space-x-0.5 text-xs"
-                        >
-                          <span>Dossier</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
+      {/* Recommendations */}
+      {(data?.recommendations ?? []).length > 0 && (
+        <div style={{ borderBottom: '1px solid var(--atm-border)' }}>
+          <div className="card-header" style={{ borderRadius: 0 }}>Recommendations</div>
+          <div style={{ padding: '12px 16px' }}>
+            {(data!.recommendations ?? []).slice(0, 5).map((r, i) => {
+              const borderColour = r.priority === 'CRITICAL' ? 'var(--critical)' : r.priority === 'HIGH' ? 'var(--warn)' : 'var(--atm-border)';
+              return (
+                <div key={i} style={{ border: `1px solid ${borderColour}`, borderLeft: `4px solid ${borderColour}`, borderRadius: 3, padding: '10px 12px', marginBottom: 8, background: r.priority === 'CRITICAL' ? 'var(--critical-bg)' : '#fff' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                    <div>
+                      <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: borderColour, letterSpacing: '0.05em', marginRight: 8 }}>{r.priority}</span>
+                      <span style={{ fontSize: '0.8125rem', fontWeight: 600 }}>{r.issue}</span>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--ink-500)', marginTop: 3 }}>{r.suggested_action}</div>
                     </div>
-                  ))}
+                    <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', flexShrink: 0, textAlign: 'right' }}>
+                      {r.confidence}
+                    </div>
+                  </div>
                 </div>
-              ) : (
-                <div className="overflow-x-auto rounded-lg border border-surface-200">
-                  <table className="w-full text-xs text-left text-surface-700">
-                    <thead className="bg-surface-50 text-surface-500 font-semibold uppercase text-[10px] border-b border-surface-200">
-                      <tr>
-                        <th className="p-3">Rank</th>
-                        <th className="p-3">Unit</th>
-                        <th className="p-3">Department & Type</th>
-                        <th className="p-3 text-right">Events</th>
-                        <th className="p-3 text-right">Lost Time</th>
-                        <th className="p-3 text-right">Avg Duration</th>
-                        <th className="p-3 text-right">% Plant Loss</th>
-                        <th className="p-3 text-center">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-surface-100">
-                      {machines.map((m, idx) => (
-                        <tr key={m.machine_id} className="hover:bg-surface-50">
-                          <td className="p-3 text-surface-400 font-semibold">#{idx + 1}</td>
-                          <td className="p-3 font-mono font-bold text-surface-900">{m.machine_id}</td>
-                          <td className="p-3 text-surface-500">{m.department} • {m.machine_type}</td>
-                          <td className="p-3 text-right text-surface-800">{m.event_count}</td>
-                          <td className="p-3 text-right font-mono font-bold text-rose-600">{m.downtime_minutes}m</td>
-                          <td className="p-3 text-right text-surface-500">{m.average_event_duration}m</td>
-                          <td className="p-3 text-right font-semibold text-amber-600">{m.percentage_of_total_downtime}%</td>
-                          <td className="p-3 text-center">
-                            <button
-                              onClick={() => setSelectedMachineId(m.machine_id)}
-                              className="text-brand-600 hover:text-brand-700 font-semibold text-xs"
-                            >
-                              Inspect →
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          </>
-        )}
-      </main>
-
-      {/* Slide-Over Machine Intelligence Profile */}
-      <MachineDossier
-        isOpen={Boolean(selectedMachineId)}
-        onClose={() => setSelectedMachineId(null)}
-        machineId={selectedMachineId}
-        downtimeData={selectedDowntime}
-        date={currentDate}
-        datasetLabel={datasetLabel}
-        onInspectRawIds={(title, ids) =>
-          setEvidenceModal({
-            isOpen: true,
-            title,
-            ids,
-          })
-        }
-      />
-
-      {/* Slide-Over Evidence Drawer */}
-      <EvidenceDrawer
-        isOpen={evidenceModal.isOpen}
-        onClose={() => setEvidenceModal({ isOpen: false, title: '', ids: [] })}
-        title={evidenceModal.title}
-        evidenceIds={evidenceModal.ids}
-        provenanceLabel={datasetLabel}
-        sourceType="synthetic"
-      />
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

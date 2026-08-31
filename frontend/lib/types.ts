@@ -4,6 +4,9 @@ export interface ResponseMetadata {
   dataset: string;
   source_type: string;
   period?: string;
+  start_date?: string;
+  target_date?: string;
+  days?: number;
 }
 
 export interface DataQualityInfo {
@@ -19,6 +22,16 @@ export interface StandardApiResponse<T> {
   data: T;
   metadata: ResponseMetadata;
   data_quality: DataQualityInfo;
+}
+
+export interface RecommendationItem {
+  priority: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  issue: string;
+  evidence: string;
+  suggested_action: string;
+  expected_impact: string;
+  confidence: 'VERY HIGH' | 'HIGH' | 'MEDIUM';
+  source_metrics: Record<string, any>;
 }
 
 // ── Q1 Production Types ──────────────────────────────────────────────────────
@@ -69,12 +82,42 @@ export interface PreviousDayComparison {
   change_pct: number | null;
 }
 
+export interface ProductionTrendPoint {
+  date: string;
+  day: string;
+  actual: number;
+  target: number;
+  efficiency: number;
+}
+
+export interface ProductionTrendData {
+  start_date: string;
+  target_date: string;
+  days: number;
+  trend_points: ProductionTrendPoint[];
+}
+
 export interface ProductionVarianceData {
   has_data: boolean;
   summary: ProductionSummary;
+  trailing_averages?: {
+    avg_7d?: { average_actual: number | null; days_with_data: number; window_days: number };
+    avg_30d?: { average_actual: number | null; days_with_data: number; window_days: number };
+  };
+  production_loss?: {
+    estimated_production_loss_qty: number;
+    is_estimated: boolean;
+    methodology: string;
+    machines_with_loss: Array<{ machine_id: string; estimated_loss_qty: number }>;
+  };
+  best_machine?: MachinePerformanceItem | null;
+  worst_machine?: MachinePerformanceItem | null;
+  largest_variance_machine?: MachinePerformanceItem | null;
+  biggest_loss_contributor?: { machine_id: string; estimated_loss_qty: number } | null;
   machine_performance: MachinePerformanceItem[];
   shift_performance: ShiftPerformanceItem[];
   previous_day_comparison: PreviousDayComparison;
+  recommendations?: RecommendationItem[];
   evidence: {
     production_log_ids: number[];
   };
@@ -102,6 +145,14 @@ export interface ReasonRankingItem {
   total_downtime_minutes: number;
   average_event_duration: number;
   percentage_of_total_downtime: number;
+  cumulative_percentage?: number;
+}
+
+export interface ShiftDowntimeItem {
+  shift: number;
+  event_count: number;
+  downtime_minutes: number;
+  percentage_of_total_downtime: number;
 }
 
 export interface BreakdownRankingData {
@@ -113,11 +164,17 @@ export interface BreakdownRankingData {
   };
   total_downtime_minutes: number;
   total_events: number;
+  average_event_duration?: number;
   machine_ranking: MachineRankingItem[];
+  breakdown_count_ranking?: MachineRankingItem[];
   reason_ranking: ReasonRankingItem[];
+  shift_ranking?: ShiftDowntimeItem[];
   highest_downtime_machine: MachineRankingItem | null;
   lowest_downtime_machine: MachineRankingItem | null;
+  most_breakdown_events_machine?: MachineRankingItem | null;
+  highest_downtime_shift?: ShiftDowntimeItem | null;
   recurring_reasons: ReasonRankingItem[];
+  recommendations?: RecommendationItem[];
   evidence: {
     breakdown_event_ids: number[];
   };
@@ -162,9 +219,15 @@ export interface RevenueSummaryData {
   best_style: FabricStyleRankingItem | null;
   worst_style: FabricStyleRankingItem | null;
   revenue_loss: {
+    estimated_revenue_loss?: number;
+    is_estimated?: boolean;
     revenue_loss_available: boolean;
     reason: string;
+    methodology?: string;
+    machines_with_loss?: Array<{ machine_id: string; estimated_loss: number }>;
   };
+  biggest_revenue_loss_contributor?: { machine_id: string; estimated_loss: number } | null;
+  recommendations?: RecommendationItem[];
   evidence: {
     revenue_log_ids: number[];
   };

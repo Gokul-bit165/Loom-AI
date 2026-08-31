@@ -8,6 +8,7 @@ from typing import Any
 from sqlalchemy.orm import Session
 
 from app.analytics.breakdown import get_breakdown_ranking
+from app.analytics.recommendations import get_breakdown_recommendations
 
 
 class BreakdownService:
@@ -38,16 +39,25 @@ class BreakdownService:
         data_quality = raw_result["data_quality"]
         has_data = data_quality["records_analyzed"] > 0
 
+        # Generate deterministic recommendations
+        recommendations = get_breakdown_recommendations(raw_result) if has_data else []
+
         data_payload = {
             "has_data": has_data,
             "period_info": raw_result["period_info"],
             "total_downtime_minutes": raw_result["total_downtime_minutes"],
             "total_events": raw_result["total_events"],
+            "average_event_duration": raw_result.get("average_event_duration", 0),
             "machine_ranking": raw_result["machine_ranking"],
+            "breakdown_count_ranking": raw_result.get("breakdown_count_ranking", []),
             "reason_ranking": raw_result["reason_ranking"],
+            "shift_ranking": raw_result.get("shift_ranking", []),
             "highest_downtime_machine": raw_result["highest_downtime_machine"],
             "lowest_downtime_machine": raw_result["lowest_downtime_machine"],
+            "most_breakdown_events_machine": raw_result.get("most_breakdown_events_machine"),
+            "highest_downtime_shift": raw_result.get("highest_downtime_shift"),
             "recurring_reasons": raw_result["recurring_reasons"],
+            "recommendations": recommendations,
             "evidence": raw_result["evidence"],
         }
 

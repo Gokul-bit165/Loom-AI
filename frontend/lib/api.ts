@@ -1,6 +1,7 @@
 import {
   AskAssistantResponse,
   BreakdownRankingData,
+  ProductionTrendData,
   ProductionVarianceData,
   RevenueSummaryData,
   StandardApiResponse,
@@ -52,6 +53,24 @@ export const api = {
     return fetchJson(`${API_BASE_URL}/api/production/variance?${query.toString()}`);
   },
 
+  // Q1 Production 14-day Trend
+  async getProductionTrend(params?: {
+    date?: string;
+    days?: number;
+    department?: string;
+    machine_type?: string;
+    machine_id?: string;
+  }): Promise<StandardApiResponse<ProductionTrendData>> {
+    const query = new URLSearchParams();
+    if (params?.date) query.set('date', params.date);
+    if (params?.days) query.set('days', params.days.toString());
+    if (params?.department) query.set('department', params.department);
+    if (params?.machine_type) query.set('machine_type', params.machine_type);
+    if (params?.machine_id) query.set('machine_id', params.machine_id);
+
+    return fetchJson(`${API_BASE_URL}/api/production/trend?${query.toString()}`);
+  },
+
   // Q5 Breakdown
   async getBreakdownRanking(params?: {
     period?: 'today' | 'month';
@@ -97,5 +116,40 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(payload),
     });
+  },
+
+  // Template download URL helper
+  getTemplateDownloadUrl(format: 'xlsx' | 'csv' = 'xlsx', date?: string): string {
+    const query = new URLSearchParams();
+    query.set('format', format);
+    if (date) query.set('date', date);
+    return `${API_BASE_URL}/api/import/template?${query.toString()}`;
+  },
+
+  // Upload Shift Production Data (.xlsx or .csv)
+  async uploadShiftFile(file: File, userName: string = 'owner'): Promise<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('user_name', userName);
+
+    const res = await fetch(`${API_BASE_URL}/api/import/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      let errorMsg = `Upload failed with status ${res.status}`;
+      try {
+        const errorObj = await res.json();
+        if (errorObj?.detail) {
+          errorMsg = typeof errorObj.detail === 'string' ? errorObj.detail : JSON.stringify(errorObj.detail);
+        }
+      } catch {
+        // ignore
+      }
+      throw new Error(errorMsg);
+    }
+
+    return res.json();
   },
 };
