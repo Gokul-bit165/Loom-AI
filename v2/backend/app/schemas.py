@@ -202,10 +202,14 @@ class BreakdownLoomRow(BaseModel):
 class BreakdownSummaryResponse(DataEnvelope):
     date: datetime.date
     unit_code: str
-    worst_looms_today: list[BreakdownLoomRow]     # Q5: highest breakdown-time today
-    monthly_top_looms: list[BreakdownLoomRow]      # Q5: most breakdowns this month
-    avg_downtime_per_event_min: Optional[Decimal]  # Q6
-    reason_pareto: list[ReasonParetoRow]           # Q6
+    today_stopped_minutes_total: int = 0
+    today_events_count_total: int = 0
+    today_rupee_loss_total: RupeeAmount = RupeeAmount()
+    category_downtime_minutes: dict[str, float] = {}
+    worst_looms_today: list[BreakdownLoomRow] = []     # Q5: highest breakdown-time today
+    monthly_top_looms: list[BreakdownLoomRow] = []      # Q5: most breakdowns this month
+    avg_downtime_per_event_min: Optional[Decimal] = None  # Q6
+    reason_pareto: list[ReasonParetoRow] = []           # Q6
     total_rupee_lost: RupeeAmount = RupeeAmount()
 
 

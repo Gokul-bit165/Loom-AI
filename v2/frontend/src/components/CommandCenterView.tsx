@@ -1,25 +1,26 @@
 import { useEffect, useState } from 'react';
-import { fetchCommandCenterToday } from '../api';
-import type { CommandCenterData } from '../api';
+import { fetchCommandCenterToday, fetchSourceFreshness, fetchPersistentAlerts } from '../api';
+import type { PersistentAlertItem } from '../api';
 import {
   PageHeader,
   KpiCard,
   DataTrustBadge,
+  StatusBadge,
   LoadingState,
   ErrorState,
   TOKENS,
 } from '../design-system';
 import {
-  ArrowRight,
   Clock,
   Sparkles,
   ChevronRight,
-  ShieldAlert,
-  CheckCircle2,
   X,
-  Bot,
-  Zap,
+  AlertTriangle,
+  Check,
+  Bell,
 } from 'lucide-react';
+import { ContextualAiDrawer } from './ContextualAiDrawer';
+import type { ContextualAiPayload } from './ContextualAiDrawer';
 
 interface CommandCenterViewProps {
   onNavigateToModule: (view: string, loomId?: number) => void;
@@ -28,42 +29,48 @@ interface CommandCenterViewProps {
 export function CommandCenterView({ onNavigateToModule }: CommandCenterViewProps) {
   const [date, setDate] = useState<string>('2026-07-31');
   const [unit] = useState<string>('ATM');
-  const [data, setData] = useState<CommandCenterData | null>(null);
+  const [viewMode, setViewMode] = useState<'OWNER' | 'OPERATIONS'>('OWNER');
+  const [data, setData] = useState<any | null>(null);
+  const [_freshness, setFreshness] = useState<any | null>(null);
+  const [alerts, setAlerts] = useState<PersistentAlertItem[]>([]);
+  const [showAlertsDrawer, setShowAlertsDrawer] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Trend timeframe selector
-  const [trendRange, setTrendRange] = useState<'7D' | '30D' | '90D'>('7D');
+  // Contextual AI Drawer
+  const [drawerContext, setDrawerContext] = useState<ContextualAiPayload | null>(null);
+  const handleOpenDrawer = (payload: ContextualAiPayload) => setDrawerContext(payload);
 
-  // Contextual Explanation Drawer state
-  const [drawerContext, setDrawerContext] = useState<{
-    title: string;
-    description: string;
-    why: string;
-    impact: string;
-    action: string;
-  } | null>(null);
+  // Quick Action Assignment Modal
+  const [selectedActionToAssign, setSelectedActionToAssign] = useState<any | null>(null);
+  const [assigneeName, setAssigneeName] = useState<string>('M. Murugan (Electrician)');
+  const [assignSuccess, setAssignSuccess] = useState<boolean>(false);
 
-  const loadData = () => {
+  const loadData = async () => {
     setLoading(true);
     setError(null);
-    fetchCommandCenterToday(unit, date)
-      .then((res: CommandCenterData) => {
-        setData(res);
-        setLoading(false);
-      })
-      .catch((err: any) => {
-        console.error('Failed to load command center data:', err);
-        setError('Unable to load plant telemetry and executive decisions.');
-        setLoading(false);
-      });
+    try {
+      const [ccData, freshData, alertData] = await Promise.all([
+        fetchCommandCenterToday(unit, date),
+        fetchSourceFreshness(date, unit),
+        fetchPersistentAlerts(date, unit),
+      ]);
+      setData(ccData);
+      setFreshness(freshData);
+      setAlerts(alertData);
+    } catch (err: any) {
+      console.error('Failed to load command center data:', err);
+      setError('Unable to load plant telemetry and executive decisions.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     loadData();
   }, [date, unit]);
 
-  if (loading) return <LoadingState message="Loading Owner Decision Screen..." />;
+  if (loading) return <LoadingState message="Loading Owner Decision Screen & Truth Layer..." />;
   if (error || !data) return <ErrorState message={error || 'No plant data available.'} onRetry={loadData} />;
 
   // Honest Empty / Unavailable State (DATA TRUST)
@@ -73,7 +80,7 @@ export function CommandCenterView({ onNavigateToModule }: CommandCenterViewProps
         <PageHeader
           title="Executive Decision Console"
           subtitle="Owner's daily operational decision screen."
-          unit="Ashok Textile Mills — Shed 1 & 2"
+          unit="Ashok Textile Mills — Shed 1 & 2 (192 Looms)"
           date={date}
           actions={
             <input
@@ -90,11 +97,11 @@ export function CommandCenterView({ onNavigateToModule }: CommandCenterViewProps
             background: '#FFFFFF',
             border: `1px solid ${TOKENS.colors.surface.border}`,
             borderRadius: TOKENS.radius.md,
-            padding: '32px 24px',
+            padding: '40px 24px',
             textAlign: 'center',
           }}
         >
-          <Clock size={32} color="#9CA3AF" style={{ margin: '0 auto 12px auto' }} />
+          <Clock size={36} color="#9CA3AF" style={{ margin: '0 auto 12px auto' }} />
           <h3 style={{ fontSize: '16px', fontWeight: 700, margin: '0 0 6px 0', color: TOKENS.colors.text.primary }}>
             Data Unavailable for {date}
           </h3>
@@ -102,7 +109,7 @@ export function CommandCenterView({ onNavigateToModule }: CommandCenterViewProps
             No shift production logs or stoppage telemetry have been ingested for this calendar date.
           </p>
           <button onClick={() => setDate('2026-07-31')} className="btn-primary" style={{ margin: '0 auto' }}>
-            Switch to 31-Jul-2026 (Live Seed Data)
+            Switch to 31-Jul-2026 (Live Data)
           </button>
         </div>
       </div>
@@ -113,220 +120,329 @@ export function CommandCenterView({ onNavigateToModule }: CommandCenterViewProps
   const v = data.verdict;
   const why = data.why;
 
+  const handleAssignSubmit = () => {
+    setAssignSuccess(true);
+    setTimeout(() => {
+      setAssignSuccess(false);
+      setSelectedActionToAssign(null);
+    }, 1200);
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: TOKENS.spacing[4], paddingBottom: TOKENS.spacing[6] }}>
-      {/* ── Top Header with Date Selection ─────────────────────────────── */}
+      {/* ── Top Header with Date Selection, Owner/Ops Toggle, and Freshness ─ */}
       <PageHeader
-        title="Owner Decision Console"
-        subtitle="Ashok Textile Mills · 30-Second Morning Operations Review."
+        title={viewMode === 'OWNER' ? 'Owner Decision Console' : 'Plant Operations Monitor'}
+        subtitle={
+          viewMode === 'OWNER'
+            ? 'Ashok Textile Mills · 30-Second Morning Operations Review & Business Impact.'
+            : 'Shed 1 & 2 Technical Telemetry, Shift Handover, and Stoppage Breakdown.'
+        }
         unit="ATM Main Shed (192 Looms)"
         date={date}
         actions={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '11px', color: TOKENS.colors.text.muted }}>Date:</span>
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="input-field"
-              style={{ fontSize: '11.5px', padding: '3px 8px', width: '135px' }}
-            />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {/* Owner / Operations Mode Switcher */}
+            <div
+              style={{
+                display: 'flex',
+                background: TOKENS.colors.surface.cardAlt,
+                border: `1px solid ${TOKENS.colors.surface.border}`,
+                borderRadius: '6px',
+                padding: '2px',
+              }}
+            >
+              <button
+                onClick={() => setViewMode('OWNER')}
+                style={{
+                  padding: '4px 10px',
+                  fontSize: '11.5px',
+                  fontWeight: viewMode === 'OWNER' ? 700 : 500,
+                  background: viewMode === 'OWNER' ? TOKENS.colors.brand[600] : 'transparent',
+                  color: viewMode === 'OWNER' ? '#FFFFFF' : TOKENS.colors.text.secondary,
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                Owner View
+              </button>
+
+              <button
+                onClick={() => setViewMode('OPERATIONS')}
+                style={{
+                  padding: '4px 10px',
+                  fontSize: '11.5px',
+                  fontWeight: viewMode === 'OPERATIONS' ? 700 : 500,
+                  background: viewMode === 'OPERATIONS' ? TOKENS.colors.brand[600] : 'transparent',
+                  color: viewMode === 'OPERATIONS' ? '#FFFFFF' : TOKENS.colors.text.secondary,
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                Operations View
+              </button>
+            </div>
+
+            {/* Notification Bell */}
+            <button
+              onClick={() => setShowAlertsDrawer(!showAlertsDrawer)}
+              style={{
+                position: 'relative',
+                padding: '6px',
+                background: TOKENS.colors.surface.card,
+                border: `1px solid ${TOKENS.colors.surface.border}`,
+                borderRadius: '6px',
+                cursor: 'pointer',
+                color: TOKENS.colors.text.secondary,
+              }}
+              title="Persistent Mill Alerts"
+            >
+              <Bell size={16} />
+              {alerts.length > 0 && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: '-3px',
+                    right: '-3px',
+                    background: '#DC2626',
+                    color: '#FFFFFF',
+                    fontSize: '9.5px',
+                    fontWeight: 800,
+                    width: '15px',
+                    height: '15px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {alerts.length}
+                </span>
+              )}
+            </button>
+
+            {/* Date Picker */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="input-field"
+                style={{ fontSize: '11.5px', padding: '3px 8px', width: '135px' }}
+              />
+            </div>
           </div>
         }
       />
 
-      {/* ── A. TODAY: 1-Sentence Executive Verdict ──────────────────────── */}
+      {/* ── TODAY'S STATUS: 4 Essential Metrics ─────────────────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: TOKENS.spacing[3] }}>
+        <KpiCard
+          label="Today's Output"
+          value={`${c.production_metres.actual.toLocaleString()} m`}
+          target={`Target: ${c.production_metres.target.toLocaleString()} m`}
+          variance={`${c.production_metres.variance_pct > 0 ? '+' : ''}${c.production_metres.variance_pct}%`}
+          trendDirection={c.production_metres.variance_pct >= 0 ? 'up' : 'down'}
+          status={c.production_metres.status}
+          provenance={c.production_metres.provenance}
+          driver={`${c.production_metres.variance_metres.toLocaleString()} m deficit`}
+          onClick={() => onNavigateToModule('production')}
+        />
+
+        <KpiCard
+          label="Loom Efficiency"
+          value={`${c.efficiency_pct.actual}%`}
+          target="Target: 90.0%"
+          variance={`${c.efficiency_pct.variance_pp > 0 ? '+' : ''}${c.efficiency_pct.variance_pp} pp`}
+          trendDirection={c.efficiency_pct.variance_pp >= 0 ? 'up' : 'down'}
+          status={c.efficiency_pct.status}
+          provenance={c.efficiency_pct.provenance}
+          driver="Schedule-time basis EFF%"
+          onClick={() => onNavigateToModule('production')}
+        />
+
+        <KpiCard
+          label="Today's Revenue"
+          value={`₹${c.actual_revenue_rs.value.toLocaleString()}`}
+          target={`Target: ₹${c.actual_revenue_rs.target_value.toLocaleString()}`}
+          status="HEALTHY"
+          provenance="ESTIMATED"
+          driver="Rate basis: ₹40.00 / metre"
+          onClick={() => onNavigateToModule('revenue')}
+        />
+
+        <KpiCard
+          label="Loss / Exposure"
+          value={`₹${c.revenue_exposure_rs.value.toLocaleString()}`}
+          target="Threshold: < ₹15,000"
+          status={c.revenue_exposure_rs.status}
+          provenance={c.revenue_exposure_rs.provenance}
+          driver="Breakdown + speed drift loss"
+          onClick={() => onNavigateToModule('revenue')}
+        />
+      </div>
+
+      {/* ── TODAY'S BIGGEST ISSUE: Dominant Business Issue Banner ───────── */}
       <div
         style={{
-          background: '#FFFFFF',
-          border: '1px solid #BFDBFE',
-          borderLeft: '4px solid #2563EB',
+          background: v.severity === 'CRITICAL' ? '#FEF2F2' : TOKENS.colors.surface.card,
+          border: `1px solid ${v.severity === 'CRITICAL' ? '#FECACA' : TOKENS.colors.surface.border}`,
           borderRadius: TOKENS.radius.md,
-          padding: '12px 16px',
+          padding: '14px 18px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '10px',
           boxShadow: TOKENS.shadows.card,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <Zap size={18} color="#2563EB" style={{ flexShrink: 0 }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '6px',
+              background: v.severity === 'CRITICAL' ? '#DC2626' : TOKENS.colors.brand[600],
+              color: '#FFFFFF',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <AlertTriangle size={18} />
+          </div>
           <div>
-            <div style={{ fontSize: '11px', fontWeight: 800, color: TOKENS.colors.brand[700], letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-              TODAY'S OPERATING VERDICT
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+              <span style={{ fontSize: '10.5px', fontWeight: 800, color: v.severity === 'CRITICAL' ? '#DC2626' : TOKENS.colors.brand[700], textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                TODAY'S DOMINANT ISSUE
+              </span>
+              <DataTrustBadge provenance="CALCULATED" compact />
             </div>
-            <div style={{ fontSize: '14px', fontWeight: 700, color: TOKENS.colors.text.primary, marginTop: '2px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 700, color: TOKENS.colors.text.primary }}>
               {v.headline}
             </div>
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', padding: '5px 12px', borderRadius: '5px', textAlign: 'right' }}>
-            <span style={{ fontSize: '10px', color: '#991B1B', fontWeight: 800, display: 'block' }}>REVENUE AT RISK</span>
-            <strong style={{ fontSize: '14px', color: '#DC2626', fontFamily: TOKENS.typography.fontMono }}>
-              ₹{v.revenue_exposure_rs.toLocaleString()}
-            </strong>
-          </div>
-          <button
-            onClick={() =>
-              setDrawerContext({
-                title: "Today's Operating Verdict",
-                description: v.headline,
-                why: why.summary,
-                impact: `Estimated revenue exposure: ₹${v.revenue_exposure_rs.toLocaleString()}`,
-                action: data.act_now.length > 0 ? data.act_now[0].action : 'Review shift allocations.',
-              })
-            }
-            className="btn-secondary"
-            style={{ fontSize: '11px', padding: '5px 10px' }}
-          >
-            <Bot size={13} color="#2563EB" />
-            <span>Explain</span>
-          </button>
-        </div>
+        <button
+          onClick={() =>
+            handleOpenDrawer({
+              title: `Dominant Stoppage Issue: Loom ${v.dominant_problem_loom}`,
+              category: 'CRITICAL_BREAKDOWN',
+              loomNo: v.dominant_problem_loom,
+              issueDescription: v.headline,
+              impactInr: v.revenue_exposure_rs,
+              probableCause: 'Voltage fluctuations and inverter thermal trip on main drive.',
+              recommendedAction: 'Direct shift electrician to inspect sub-panel voltage stability.',
+              confidence: 'HIGH',
+              sourceIds: ['prod_log_20260731', 'stopevent_20260731'],
+            })
+          }
+          style={{
+            padding: '6px 12px',
+            fontSize: '12px',
+            fontWeight: 600,
+            background: '#FFFFFF',
+            border: `1px solid ${v.severity === 'CRITICAL' ? '#F87171' : TOKENS.colors.surface.border}`,
+            borderRadius: '4px',
+            color: v.severity === 'CRITICAL' ? '#B91C1C' : TOKENS.colors.brand[700],
+            cursor: 'pointer',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          Explain & Evidence
+        </button>
       </div>
 
-      {/* ── A. TODAY: Only 4 Core Numbers ──────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: TOKENS.spacing[3] }}>
-        <KpiCard
-          label="OUTPUT"
-          value={`${c.output.actual_m.toLocaleString()} m`}
-          target={`Target: ${c.output.target_m.toLocaleString()} m`}
-          variance={`${c.output.variance_pct > 0 ? '+' : ''}${c.output.variance_pct}%`}
-          trendDirection={c.output.variance_pct >= 0 ? 'up' : 'down'}
-          status={c.output.status === 'HEALTHY' ? 'HEALTHY' : 'WARNING'}
-          provenance="ACTUAL"
-          driver="192 active looms"
-        />
-
-        <KpiCard
-          label="EFFICIENCY"
-          value={`${c.efficiency.actual_pct}%`}
-          target={`Target: ${c.efficiency.target_pct}%`}
-          variance={`${c.efficiency.gap_pp > 0 ? '+' : ''}${c.efficiency.gap_pp} pp`}
-          trendDirection={c.efficiency.gap_pp >= 0 ? 'up' : 'down'}
-          status={c.efficiency.status === 'HEALTHY' ? 'HEALTHY' : 'WARNING'}
-          provenance="CALCULATED"
-          driver="Speed: 642 RPM"
-        />
-
-        <KpiCard
-          label="LOSS & GAP"
-          value={`₹${c.loss.revenue_at_risk_rs.toLocaleString()}`}
-          target={`${c.loss.output_gap_m.toLocaleString()} m gap`}
-          status={c.loss.status === 'CRITICAL' ? 'CRITICAL' : 'WARNING'}
-          provenance="ESTIMATED"
-          driver="Revenue at risk"
-        />
-
-        <KpiCard
-          label="REVENUE"
-          value={`₹${(c.revenue.realized_rs / 100000).toFixed(2)} L`}
-          target="Realized Net"
-          status="HEALTHY"
-          provenance="CALCULATED"
-          driver="@ confirmed selling rates"
-        />
-      </div>
-
-      {/* ── B. ACT NOW: The Most Important Section (Max 3 Items) ─────────── */}
-      <div
-        style={{
-          background: TOKENS.colors.surface.card,
-          border: `1px solid ${TOKENS.colors.surface.border}`,
-          borderRadius: TOKENS.radius.md,
-          padding: '14px 16px',
-          boxShadow: TOKENS.shadows.card,
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+      {/* ── ACT NOW: Top 3 Prioritized Management Actions ──────────────── */}
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
           <div>
-            <h3 style={{ fontSize: '14px', fontWeight: 800, margin: 0, color: TOKENS.colors.text.primary, letterSpacing: '0.02em' }}>
-              ACT NOW — TOP PRIORITIES FOR MANAGEMENT
+            <h3 style={{ fontSize: '14px', fontWeight: 700, margin: 0, color: TOKENS.colors.text.primary }}>
+              Act Now (Top 3 Priority Actions)
             </h3>
             <div style={{ fontSize: '11.5px', color: TOKENS.colors.text.muted }}>
-              Ranked strictly by business impact. Direct technical leads to these 3 issues today.
+              Prioritized by financial exposure. 1-click assigns directly to shift supervisor.
             </div>
           </div>
-          <DataTrustBadge provenance="CALCULATED" compact />
+          <button
+            onClick={() => onNavigateToModule('agents')}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              fontSize: '11.5px',
+              fontWeight: 600,
+              color: TOKENS.colors.brand[600],
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
+            <span>View All in Action Manager</span>
+            <ChevronRight size={14} />
+          </button>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {data.act_now.map((item, idx) => (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: TOKENS.spacing[3] }}>
+          {data.act_now.map((act: any) => (
             <div
-              key={`act-${item.rank}-${idx}-${item.loom_id || 'gap'}`}
+              key={act.action_id}
               style={{
-                background: TOKENS.colors.surface.cardAlt,
-                border: item.rank === 1 ? '1px solid #FECACA' : `1px solid ${TOKENS.colors.surface.border}`,
-                borderLeft: item.rank === 1 ? '4px solid #DC2626' : '4px solid #2563EB',
-                borderRadius: TOKENS.radius.sm,
-                padding: '10px 14px',
+                background: TOKENS.colors.surface.card,
+                border: `1px solid ${TOKENS.colors.surface.border}`,
+                borderRadius: TOKENS.radius.md,
+                padding: '14px 16px',
+                boxShadow: TOKENS.shadows.card,
                 display: 'flex',
+                flexDirection: 'column',
                 justifyContent: 'space-between',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: '10px',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                <span
-                  style={{
-                    fontSize: '11.5px',
-                    fontWeight: 800,
-                    width: '22px',
-                    height: '22px',
-                    borderRadius: '50%',
-                    background: item.rank === 1 ? '#DC2626' : '#2563EB',
-                    color: '#FFFFFF',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  {item.rank}
-                </span>
-                <div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: TOKENS.colors.text.primary }}>
-                    {item.issue}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <StatusBadge status={act.priority === 'P1' ? 'CRITICAL' : 'WARNING'} label={act.priority} />
+                    <strong style={{ fontSize: '13px', color: TOKENS.colors.brand[600] }}>Loom {act.loom_no}</strong>
                   </div>
-                  <div style={{ fontSize: '11.5px', color: '#DC2626', fontWeight: 600, marginTop: '2px' }}>
-                    Impact: {item.impact}
-                  </div>
-                  <div style={{ fontSize: '12px', color: TOKENS.colors.brand[700], fontWeight: 600, marginTop: '2px' }}>
-                    → {item.action}
-                  </div>
+                  <span style={{ fontSize: '13px', fontWeight: 800, color: TOKENS.colors.status.critical.text, fontFamily: TOKENS.typography.fontMono }}>
+                    ₹{act.impact_inr.toLocaleString()}
+                  </span>
+                </div>
+
+                <div style={{ fontSize: '13px', fontWeight: 600, color: TOKENS.colors.text.primary, marginBottom: '6px' }}>
+                  {act.issue}
+                </div>
+
+                <div style={{ fontSize: '12px', color: TOKENS.colors.text.secondary, marginBottom: '10px' }}>
+                  <strong>Action: </strong>
+                  {act.action}
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                {item.loom_id && (
-                  <button
-                    onClick={() => onNavigateToModule('looms', item.loom_id!)}
-                    className="btn-secondary"
-                    style={{ fontSize: '11px', padding: '4px 8px' }}
-                  >
-                    <span>Loom #{item.loom_no || item.loom_id}</span>
-                    <ChevronRight size={11} />
-                  </button>
-                )}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '8px', borderTop: `1px solid ${TOKENS.colors.surface.border}` }}>
+                <span style={{ fontSize: '11px', color: TOKENS.colors.text.muted }}>
+                  Assignee: <strong>{act.assignee}</strong>
+                </span>
+
                 <button
-                  onClick={() =>
-                    setDrawerContext({
-                      title: `Priority #${item.rank}: ${item.issue}`,
-                      description: item.issue,
-                      why: `Root cause identified in telemetry records: ${item.impact}.`,
-                      impact: item.impact,
-                      action: item.action,
-                    })
-                  }
-                  className="btn-secondary"
-                  style={{ fontSize: '11px', padding: '4px 8px' }}
+                  onClick={() => setSelectedActionToAssign(act)}
+                  style={{
+                    padding: '4px 10px',
+                    fontSize: '11.5px',
+                    fontWeight: 600,
+                    background: TOKENS.colors.brand[600],
+                    color: '#FFFFFF',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                  }}
                 >
-                  Explain
+                  Assign Action
                 </button>
               </div>
             </div>
@@ -334,213 +450,52 @@ export function CommandCenterView({ onNavigateToModule }: CommandCenterViewProps
         </div>
       </div>
 
-      {/* ── C. WHY ARE WE OFF PLAN? (Simple Percentage Breakdown) ────────── */}
-      <div
-        style={{
-          background: TOKENS.colors.surface.card,
-          border: `1px solid ${TOKENS.colors.surface.border}`,
-          borderRadius: TOKENS.radius.md,
-          padding: '14px 16px',
-          boxShadow: TOKENS.shadows.card,
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-          <div>
+      {/* ── 2-COLUMN SECTION: WHY (ROOT CAUSES) & AI FINDINGS + NEXT RISK ─ */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: TOKENS.spacing[4] }}>
+        {/* WHY: Financial Loss Contribution */}
+        <div
+          style={{
+            background: TOKENS.colors.surface.card,
+            border: `1px solid ${TOKENS.colors.surface.border}`,
+            borderRadius: TOKENS.radius.md,
+            padding: '16px 18px',
+            boxShadow: TOKENS.shadows.card,
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
             <h4 style={{ fontSize: '13.5px', fontWeight: 700, margin: 0, color: TOKENS.colors.text.primary }}>
-              WHY ARE WE OFF PLAN? (Target Shortfall: {why.target_shortfall_m.toLocaleString()} m)
+              Why: Revenue Loss Contribution
             </h4>
-            <div style={{ fontSize: '11.5px', color: TOKENS.colors.text.muted, marginTop: '2px' }}>
-              {why.summary}
-            </div>
+            <DataTrustBadge provenance="CALCULATED" compact />
           </div>
-        </div>
 
-        {/* Progress Stack Bar */}
-        <div style={{ width: '100%', height: '12px', background: '#E2E8F0', borderRadius: '6px', overflow: 'hidden', display: 'flex', marginBottom: '10px' }}>
-          <div style={{ width: `${why.downtime_pct}%`, background: '#DC2626' }} title={`Downtime: ${why.downtime_pct}%`} />
-          <div style={{ width: `${why.weft_breaks_pct}%`, background: '#D97706' }} title={`Weft breaks: ${why.weft_breaks_pct}%`} />
-          <div style={{ width: `${why.efficiency_drift_pct}%`, background: '#2563EB' }} title={`Efficiency gap: ${why.efficiency_drift_pct}%`} />
-          <div style={{ width: `${why.other_pct}%`, background: '#94A3B8' }} title={`Other: ${why.other_pct}%`} />
-        </div>
-
-        {/* Breakdown Legend */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', fontSize: '11.5px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#DC2626' }} />
-            <span>Downtime: <strong>{why.downtime_pct}%</strong></span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D97706' }} />
-            <span>Weft Breaks: <strong>{why.weft_breaks_pct}%</strong></span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2563EB' }} />
-            <span>Efficiency Drift: <strong>{why.efficiency_drift_pct}%</strong></span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#94A3B8' }} />
-            <span>Other: <strong>{why.other_pct}%</strong></span>
-          </div>
-        </div>
-      </div>
-
-      {/* ── D. AI FINDINGS (Max 2) & NEXT RISK (1) ───────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: TOKENS.spacing[4] }}>
-        {/* AI Findings */}
-        <div
-          style={{
-            background: TOKENS.colors.surface.card,
-            border: `1px solid ${TOKENS.colors.surface.border}`,
-            borderRadius: TOKENS.radius.md,
-            padding: '14px 16px',
-            boxShadow: TOKENS.shadows.card,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-              <Sparkles size={15} color="#2563EB" />
-              <h4 style={{ fontSize: '13px', fontWeight: 700, margin: 0, color: TOKENS.colors.text.primary }}>
-                WHAT DID LOOM AI NOTICE?
-              </h4>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {data.ai_findings.map((f, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    background: TOKENS.colors.surface.cardAlt,
-                    padding: '10px 12px',
-                    borderRadius: TOKENS.radius.sm,
-                    border: `1px solid ${TOKENS.colors.surface.border}`,
-                  }}
-                >
-                  <div style={{ fontSize: '12.5px', fontWeight: 700, color: TOKENS.colors.brand[700] }}>
-                    {f.title}
-                  </div>
-                  <div style={{ fontSize: '11.5px', color: TOKENS.colors.text.secondary, marginTop: '2px' }}>
-                    <strong>Evidence:</strong> {f.evidence}
-                  </div>
-                  <div style={{ fontSize: '11px', color: '#059669', fontWeight: 600, marginTop: '4px' }}>
-                    Suggested Action: {f.suggested_action}
-                  </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {why.causes.map((c: any, i: number) => (
+              <div key={i}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', marginBottom: '4px' }}>
+                  <span style={{ color: TOKENS.colors.text.primary, fontWeight: 500 }}>{c.category}</span>
+                  <span style={{ fontFamily: TOKENS.typography.fontMono, color: TOKENS.colors.status.critical.text, fontWeight: 700 }}>
+                    ₹{c.lost_rs.toLocaleString()} ({c.pct}%)
+                  </span>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Next Forward Risk */}
-        {data.next_risk && (
-          <div
-            style={{
-              background: TOKENS.colors.surface.card,
-              border: `1px solid ${TOKENS.colors.surface.border}`,
-              borderRadius: TOKENS.radius.md,
-              padding: '14px 16px',
-              boxShadow: TOKENS.shadows.card,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <ShieldAlert size={15} color="#DC2626" />
-                  <h4 style={{ fontSize: '13px', fontWeight: 700, margin: 0, color: TOKENS.colors.text.primary }}>
-                    NEXT FORWARD RISK
-                  </h4>
+                <div style={{ height: '6px', background: TOKENS.colors.surface.toolbar, borderRadius: '3px', overflow: 'hidden' }}>
+                  <div
+                    style={{
+                      height: '100%',
+                      width: `${c.pct}%`,
+                      background: i === 0 ? '#DC2626' : i === 1 ? '#F59E0B' : '#3B82F6',
+                      borderRadius: '3px',
+                    }}
+                  />
                 </div>
-                <span style={{ fontSize: '10.5px', fontWeight: 800, color: '#DC2626', background: '#FEF2F2', padding: '1px 6px', borderRadius: '3px' }}>
-                  {data.next_risk.probability_pct}% RISK
-                </span>
-              </div>
-
-              <div style={{ background: TOKENS.colors.surface.cardAlt, padding: '10px 12px', borderRadius: TOKENS.radius.sm, border: `1px solid ${TOKENS.colors.surface.border}` }}>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: TOKENS.colors.text.primary }}>
-                  {data.next_risk.target} — {data.next_risk.risk_label}
-                </div>
-                <div style={{ fontSize: '11.5px', color: TOKENS.colors.text.secondary, marginTop: '2px' }}>
-                  <strong>Why:</strong> {data.next_risk.reason}
-                </div>
-                <div style={{ fontSize: '11.5px', color: '#2563EB', fontWeight: 600, marginTop: '4px' }}>
-                  Action: {data.next_risk.action}
-                </div>
-              </div>
-            </div>
-
-            <div style={{ marginTop: '10px', textAlign: 'right' }}>
-              <button
-                onClick={() => onNavigateToModule('predictions')}
-                className="btn-secondary"
-                style={{ fontSize: '11px', padding: '3px 8px' }}
-              >
-                <span>View Full Prediction Center</span>
-                <ArrowRight size={11} />
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* ── E. HOW ARE WE DOING OVER TIME (Trends + Since Yesterday + Last Action) */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: TOKENS.spacing[4] }}>
-        {/* 1. Trends */}
-        <div
-          style={{
-            background: TOKENS.colors.surface.card,
-            border: `1px solid ${TOKENS.colors.surface.border}`,
-            borderRadius: TOKENS.radius.md,
-            padding: '14px 16px',
-            boxShadow: TOKENS.shadows.card,
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <h4 style={{ fontSize: '13px', fontWeight: 700, margin: 0, color: TOKENS.colors.text.primary }}>
-              TREND OVER TIME
-            </h4>
-            <div style={{ display: 'flex', gap: '2px', background: '#F1F5F9', padding: '2px', borderRadius: '4px' }}>
-              {(['7D', '30D', '90D'] as const).map((r) => (
-                <button
-                  key={r}
-                  onClick={() => setTrendRange(r)}
-                  style={{
-                    background: trendRange === r ? '#FFFFFF' : 'transparent',
-                    border: 'none',
-                    borderRadius: '3px',
-                    padding: '2px 6px',
-                    fontSize: '10.5px',
-                    fontWeight: trendRange === r ? 700 : 500,
-                    color: trendRange === r ? TOKENS.colors.brand[700] : TOKENS.colors.text.muted,
-                    cursor: 'pointer',
-                  }}
-                >
-                  {r}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ fontSize: '11.5px', color: TOKENS.colors.text.secondary, marginBottom: '10px' }}>
-            {data.trends.takeaway}
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '4px', height: '40px', alignItems: 'flex-end', padding: '4px 0', borderBottom: `1px solid ${TOKENS.colors.surface.border}` }}>
-            {data.trends.efficiency.map((pt, idx) => (
-              <div key={`eff-pt-${idx}-${pt.date}`} style={{ flex: 1, textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'center' }}>
-                <div style={{ width: '80%', height: `${Math.max(10, ((pt.value - 75) / 25) * 100)}%`, background: '#2563EB', borderRadius: '2px 2px 0 0' }} />
-                <span style={{ fontSize: '9px', color: TOKENS.colors.text.muted, marginTop: '2px' }}>{pt.date}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* 2. Since Yesterday Movement */}
-        {data.since_yesterday && (
+        {/* AI FINDINGS & NEXT FORWARD RISK */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {/* Top AI Finding */}
           <div
             style={{
               background: TOKENS.colors.surface.card,
@@ -550,75 +505,130 @@ export function CommandCenterView({ onNavigateToModule }: CommandCenterViewProps
               boxShadow: TOKENS.shadows.card,
             }}
           >
-            <h4 style={{ fontSize: '13px', fontWeight: 700, margin: '0 0 8px 0', color: TOKENS.colors.text.primary }}>
-              SINCE YESTERDAY
-            </h4>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px', marginBottom: '8px' }}>
-              <div style={{ background: TOKENS.colors.surface.cardAlt, padding: '6px 8px', borderRadius: '4px', textAlign: 'center' }}>
-                <span style={{ fontSize: '10px', color: TOKENS.colors.text.muted, display: 'block' }}>Output</span>
-                <strong style={{ fontSize: '12.5px', color: data.since_yesterday.production_change_pct >= 0 ? '#059669' : '#DC2626' }}>
-                  {data.since_yesterday.production_change_pct > 0 ? '+' : ''}{data.since_yesterday.production_change_pct}%
-                </strong>
-              </div>
-              <div style={{ background: TOKENS.colors.surface.cardAlt, padding: '6px 8px', borderRadius: '4px', textAlign: 'center' }}>
-                <span style={{ fontSize: '10px', color: TOKENS.colors.text.muted, display: 'block' }}>Efficiency</span>
-                <strong style={{ fontSize: '12.5px', color: data.since_yesterday.efficiency_change_pp >= 0 ? '#059669' : '#DC2626' }}>
-                  {data.since_yesterday.efficiency_change_pp > 0 ? '+' : ''}{data.since_yesterday.efficiency_change_pp} pp
-                </strong>
-              </div>
-              <div style={{ background: TOKENS.colors.surface.cardAlt, padding: '6px 8px', borderRadius: '4px', textAlign: 'center' }}>
-                <span style={{ fontSize: '10px', color: TOKENS.colors.text.muted, display: 'block' }}>Downtime</span>
-                <strong style={{ fontSize: '12.5px', color: '#DC2626' }}>
-                  +{data.since_yesterday.downtime_change_pct}%
-                </strong>
-              </div>
-            </div>
-
-            <div style={{ fontSize: '11px', color: TOKENS.colors.text.secondary }}>
-              <strong>Main change: </strong> {data.since_yesterday.main_change}
-            </div>
-          </div>
-        )}
-
-        {/* 3. Last Action Result */}
-        {data.last_action_result && (
-          <div
-            style={{
-              background: '#F0FDF4',
-              border: '1px solid #BBF7D0',
-              borderRadius: TOKENS.radius.md,
-              padding: '14px 16px',
-              boxShadow: TOKENS.shadows.card,
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <CheckCircle2 size={15} color="#15803D" />
-                <h4 style={{ fontSize: '13px', fontWeight: 700, margin: 0, color: '#166534' }}>
-                  LAST ACTION RESULT
-                </h4>
-              </div>
-              <span style={{ fontSize: '10px', fontWeight: 800, color: '#15803D', background: '#DCFCE7', padding: '1px 5px', borderRadius: '3px' }}>
-                {data.last_action_result.status}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+              <Sparkles size={14} color={TOKENS.colors.brand[600]} />
+              <span style={{ fontSize: '11px', fontWeight: 700, color: TOKENS.colors.brand[700], textTransform: 'uppercase' }}>
+                AI WATCHTOWER DISCOVERY
               </span>
             </div>
-
-            <div style={{ fontSize: '12px', fontWeight: 700, color: '#14532D' }}>
-              Loom {data.last_action_result.loom_no}: {data.last_action_result.action}
+            <div style={{ fontSize: '13.5px', fontWeight: 700, color: TOKENS.colors.text.primary }}>
+              {data.ai_findings[0]?.title}
             </div>
-            <div style={{ fontSize: '11.5px', color: '#15803D', marginTop: '3px' }}>
-              ✓ {data.last_action_result.downtime_reduction} · {data.last_action_result.efficiency_recovery}
-            </div>
-            <div style={{ fontSize: '10.5px', color: '#166534', marginTop: '4px' }}>
-              Verified: {data.last_action_result.verified_at}
+            <div style={{ fontSize: '12.5px', color: TOKENS.colors.text.secondary, marginTop: '4px' }}>
+              {data.ai_findings[0]?.detail}
             </div>
           </div>
-        )}
+
+          {/* Next Risk */}
+          <div
+            style={{
+              background: '#FFFBEB',
+              border: '1px solid #FDE68A',
+              borderRadius: TOKENS.radius.md,
+              padding: '14px 16px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#B45309', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' }}>
+                <Clock size={14} />
+                <span>NEXT FORWARD RISK (24H)</span>
+              </div>
+              <DataTrustBadge provenance="PREDICTED" compact />
+            </div>
+            <div style={{ fontSize: '13.5px', fontWeight: 700, color: '#92400E' }}>
+              {data.next_risk.title} ({data.next_risk.probability_pct}% Probability)
+            </div>
+            <div style={{ fontSize: '12px', color: '#78350F', marginTop: '4px' }}>
+              {data.next_risk.detail}
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* ── Contextual AI Slide-Over Drawer ─────────────────────────────── */}
-      {drawerContext && (
+      {/* ── LAST ACTION RESULT: Closed-Loop Verification (Before vs After) ─ */}
+      <div
+        style={{
+          background: TOKENS.colors.surface.card,
+          border: `1px solid ${TOKENS.colors.status.healthy.border}`,
+          borderRadius: TOKENS.radius.md,
+          padding: '14px 18px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          boxShadow: TOKENS.shadows.card,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: '28px',
+              height: '28px',
+              borderRadius: '50%',
+              background: TOKENS.colors.status.healthy.bg,
+              color: TOKENS.colors.status.healthy.text,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Check size={16} />
+          </div>
+
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+              <span style={{ fontSize: '10.5px', fontWeight: 800, color: TOKENS.colors.status.healthy.text, textTransform: 'uppercase' }}>
+                LATEST VERIFIED INTERVENTION
+              </span>
+              <DataTrustBadge provenance="CALCULATED" compact />
+            </div>
+            <div style={{ fontSize: '13px', color: TOKENS.colors.text.primary }}>
+              <strong>Loom {data.last_action_result.loom_no}: </strong>
+              {data.last_action_result.action} · Downtime reduced from <strong>{data.last_action_result.before_metric}</strong> to <strong>{data.last_action_result.after_metric}</strong>.
+            </div>
+          </div>
+        </div>
+
+        <div style={{ textAlign: 'right' }}>
+          <span style={{ fontSize: '11px', color: TOKENS.colors.text.muted }}>Recovered Revenue: </span>
+          <strong style={{ fontSize: '14px', color: TOKENS.colors.status.healthy.text, fontFamily: TOKENS.typography.fontMono }}>
+            +₹{data.last_action_result.recovered_revenue_rs.toLocaleString()}
+          </strong>
+        </div>
+      </div>
+
+      {/* ── OPERATIONS VIEW TAB CONTENT (Technical Shift & Stoppages) ──── */}
+      {viewMode === 'OPERATIONS' && (
+        <div
+          style={{
+            background: TOKENS.colors.surface.card,
+            border: `1px solid ${TOKENS.colors.surface.border}`,
+            borderRadius: TOKENS.radius.md,
+            padding: '16px 20px',
+            boxShadow: TOKENS.shadows.card,
+          }}
+        >
+          <h4 style={{ fontSize: '14px', fontWeight: 700, margin: '0 0 12px 0', color: TOKENS.colors.text.primary }}>
+            Shift Operations & Machine Level Telemetry
+          </h4>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px' }}>
+            {data.operations_data.shifts.map((s: any) => (
+              <div key={s.shift_code} style={{ background: TOKENS.colors.surface.cardAlt, padding: '12px', borderRadius: '4px', border: `1px solid ${TOKENS.colors.surface.border}` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <strong style={{ fontSize: '13px', color: TOKENS.colors.brand[600] }}>Shift {s.shift_code}</strong>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: TOKENS.colors.text.primary }}>{s.loom_efficiency_pct}% EFF</span>
+                </div>
+                <div style={{ fontSize: '12px', color: TOKENS.colors.text.secondary }}>
+                  Production: <strong>{s.metres.toLocaleString()} m</strong> · Stoppage: <strong>{s.stopped_minutes} min</strong>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── QUICK ACTION ASSIGNMENT MODAL ──────────────────────────────── */}
+      {selectedActionToAssign && (
         <div
           style={{
             position: 'fixed',
@@ -626,96 +636,88 @@ export function CommandCenterView({ onNavigateToModule }: CommandCenterViewProps
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: 'rgba(15, 23, 42, 0.4)',
-            zIndex: 9999,
+            background: 'rgba(0, 0, 0, 0.4)',
+            zIndex: 1100,
             display: 'flex',
-            justifyContent: 'flex-end',
-            backdropFilter: 'blur(2px)',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
-          onClick={() => setDrawerContext(null)}
         >
           <div
             style={{
-              width: '100%',
-              maxWidth: '480px',
-              height: '100%',
-              backgroundColor: '#FFFFFF',
-              boxShadow: '-4px 0 24px rgba(0,0,0,0.12)',
+              background: '#FFFFFF',
+              borderRadius: TOKENS.radius.md,
+              width: '440px',
+              maxWidth: '90vw',
               padding: '24px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              overflowY: 'auto',
+              boxShadow: TOKENS.shadows.card,
             }}
-            onClick={(e) => e.stopPropagation()}
           >
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: `1px solid ${TOKENS.colors.surface.border}`, paddingBottom: '12px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Bot size={18} color="#2563EB" />
-                  <h3 style={{ fontSize: '15px', fontWeight: 700, margin: 0, color: TOKENS.colors.text.primary }}>
-                    Loom AI Contextual Explanation
-                  </h3>
-                </div>
-                <button
-                  onClick={() => setDrawerContext(null)}
-                  style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px' }}
-                >
-                  <X size={18} />
-                </button>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '13px', lineHeight: 1.5 }}>
-                <div>
-                  <span style={{ fontSize: '11px', color: TOKENS.colors.text.muted, fontWeight: 700, textTransform: 'uppercase' }}>
-                    SUBJECT:
-                  </span>
-                  <div style={{ fontWeight: 700, color: TOKENS.colors.text.primary, marginTop: '2px' }}>
-                    {drawerContext.title}
-                  </div>
-                </div>
-
-                <div style={{ background: '#F8FAFC', padding: '10px 12px', borderRadius: '4px', border: `1px solid ${TOKENS.colors.surface.border}` }}>
-                  <span style={{ fontSize: '11px', color: TOKENS.colors.text.muted, fontWeight: 700, textTransform: 'uppercase' }}>
-                    WHY IS THIS HAPPENING?
-                  </span>
-                  <div style={{ color: TOKENS.colors.text.primary, marginTop: '2px' }}>
-                    {drawerContext.why}
-                  </div>
-                </div>
-
-                <div style={{ background: '#FEF2F2', padding: '10px 12px', borderRadius: '4px', border: '1px solid #FECACA' }}>
-                  <span style={{ fontSize: '11px', color: '#991B1B', fontWeight: 700, textTransform: 'uppercase' }}>
-                    BUSINESS & FINANCIAL IMPACT:
-                  </span>
-                  <div style={{ color: '#DC2626', fontWeight: 600, marginTop: '2px' }}>
-                    {drawerContext.impact}
-                  </div>
-                </div>
-
-                <div style={{ background: '#EFF6FF', padding: '10px 12px', borderRadius: '4px', border: '1px solid #BFDBFE' }}>
-                  <span style={{ fontSize: '11px', color: '#1E40AF', fontWeight: 700, textTransform: 'uppercase' }}>
-                    RECOMMENDED MANAGEMENT DIRECTIVE:
-                  </span>
-                  <div style={{ color: '#2563EB', fontWeight: 600, marginTop: '2px' }}>
-                    {drawerContext.action}
-                  </div>
-                </div>
-              </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ fontSize: '15px', fontWeight: 700, margin: 0, color: TOKENS.colors.text.primary }}>
+                Assign Floor Action: Loom {selectedActionToAssign.loom_no}
+              </h3>
+              <button onClick={() => setSelectedActionToAssign(null)} style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}>
+                <X size={16} />
+              </button>
             </div>
 
-            <div style={{ marginTop: '20px', paddingTop: '12px', borderTop: `1px solid ${TOKENS.colors.surface.border}` }}>
-              <button
-                onClick={() => setDrawerContext(null)}
-                className="btn-primary"
-                style={{ width: '100%', justifyContent: 'center' }}
+            <div style={{ fontSize: '13px', color: TOKENS.colors.text.secondary, marginBottom: '14px' }}>
+              {selectedActionToAssign.action}
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: TOKENS.colors.text.primary, display: 'block', marginBottom: '6px' }}>
+                Assign To Technician / Supervisor:
+              </label>
+              <select
+                value={assigneeName}
+                onChange={(e) => setAssigneeName(e.target.value)}
+                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: `1px solid ${TOKENS.colors.surface.border}`, fontSize: '13px' }}
               >
-                Close Explanation
+                <option value="M. Murugan (Senior Electrician)">M. Murugan (Senior Electrician)</option>
+                <option value="K. Selvam (Shift Fitter)">K. Selvam (Shift Fitter)</option>
+                <option value="R. Prakash (Maintenance Tech)">R. Prakash (Maintenance Tech)</option>
+                <option value="S. Anand (Weaving Master)">S. Anand (Weaving Master)</option>
+              </select>
+            </div>
+
+            {assignSuccess && (
+              <div style={{ padding: '8px', background: TOKENS.colors.status.healthy.bg, color: TOKENS.colors.status.healthy.text, fontSize: '12.5px', borderRadius: '4px', textAlign: 'center', marginBottom: '12px' }}>
+                Action assigned successfully to {assigneeName}!
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+              <button
+                onClick={() => setSelectedActionToAssign(null)}
+                style={{ padding: '6px 12px', fontSize: '12px', background: 'transparent', border: `1px solid ${TOKENS.colors.surface.border}`, borderRadius: '4px', cursor: 'pointer' }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAssignSubmit}
+                style={{ padding: '6px 16px', fontSize: '12px', fontWeight: 600, background: TOKENS.colors.brand[600], color: '#FFFFFF', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+              >
+                Confirm Assignment
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* ── CONTEXTUAL AI DRAWER ────────────────────────────────────────── */}
+      <ContextualAiDrawer
+        isOpen={drawerContext !== null}
+        onClose={() => setDrawerContext(null)}
+        context={drawerContext}
+        onAssignAction={(ctx) => {
+          setSelectedActionToAssign({
+            loom_no: ctx.loomNo || 'AJ-118',
+            action: ctx.recommendedAction || 'Execute electrical overhaul',
+          });
+        }}
+      />
     </div>
   );
 }

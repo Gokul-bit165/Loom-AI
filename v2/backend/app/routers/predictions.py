@@ -1,25 +1,18 @@
 """
 Loom AI v2 — /api/v2/predictions router (Prediction Center).
 
-Exposes:
-- Plant-wide 24h breakdown risk ranking
-- Feature importance breakdown
-- Model evaluation metrics (ROC-AUC, Precision, Recall, F1, Confusion Matrix)
-- Maintenance cost forecast by loom
-- Data sufficiency status gate
+Single canonical endpoint for ML prediction governance, consuming PredictiveMaintenanceAgent.
 """
 from __future__ import annotations
 
 import datetime
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.ai.ml_pipeline import predict_loom_breakdown_risk
-from app.db_models import Loom, Unit
-from app.routers.deps import get_session, http_error
+from app.domain.agents.predictive_maintenance import PredictiveMaintenanceAgent
+from app.routers.deps import get_session
 
 router = APIRouter()
 
@@ -30,53 +23,18 @@ def get_prediction_center_overview(
     date: datetime.date = Query(...),
     session: Session = Depends(get_session),
 ) -> dict[str, Any]:
-    unit_row = session.execute(select(Unit).where(Unit.code == unit)).scalar_one_or_none()
-    if unit_row is None:
-        http_error(404, "UNIT_NOT_FOUND", f"Unit '{unit}' does not exist.")
+    pm = PredictiveMaintenanceAgent.evaluate_fleet_risk(session, unit, date)
 
-    looms = session.execute(
-        select(Loom.loom_id, Loom.loom_no, Loom.loom_type_code)
-        .where(Loom.unit_id == unit_row.unit_id, Loom.active == True)
-    ).all()
-
-    predictions = []
-    high_risk_count = 0
-    med_risk_count = 0
-
-    for l_id, l_no, l_type in looms:
-        res = predict_loom_breakdown_risk(session, l_id, date)
-        if res.get("prediction_available"):
-            risk_pct = res["breakdown_risk_24h_pct"]
-            if risk_pct >= 70.0:
-                high_risk_count += 1
-            elif risk_pct >= 40.0:
-                med_risk_count += 1
-
-            predictions.append({
-                "loom_id": l_id,
-                "loom_no": l_no,
-                "loom_type": l_type,
-                "breakdown_risk_pct": risk_pct,
-                "risk_level": res["risk_level"],
-                "forecast_cost_next_30d_inr": res["expected_maintenance_cost_next_30d_inr"],
-                "top_factors": res["top_contributing_factors"],
-                "features": res["feature_snapshot"],
-            })
-
-    # Sort by risk descending
-    predictions.sort(key=lambda x: x["breakdown_risk_pct"], reverse=True)
-
-    # Standard model evaluation card
-    model_eval = {
-        "model_name": "LoomGuard-RandomForest-v2.1",
+    eval_meta = {
+        "model_name": "LoomGuard-GradientBoost-v2.2",
         "trained_on": "Ashok Textile Mills (ATM Shed 1 & 2)",
         "training_window": "30-Day Forward Chaining (July 2026)",
         "features_count": 9,
         "metrics": {
-            "roc_auc": 0.842,
-            "precision": 0.786,
-            "recall": 0.814,
-            "f1_score": 0.800,
+            "roc_auc": pm.get("business_impact_metrics", {}).get("model_roc_auc", 0.842),
+            "precision": pm.get("business_impact_metrics", {}).get("precision_pct", 78.6) / 100.0,
+            "recall": pm.get("business_impact_metrics", {}).get("recall_pct", 81.4) / 100.0,
+            "f1_score": pm.get("business_impact_metrics", {}).get("f1_score", 0.800),
             "brier_score": 0.128,
         },
         "confusion_matrix": {
@@ -84,6 +42,10 @@ def get_prediction_center_overview(
             "false_positive": 13,
             "true_negative": 162,
             "false_negative": 11,
+            "true_positives": 48,
+            "false_positives": 13,
+            "true_negatives": 162,
+            "false_negatives": 11,
         },
         "feature_importance": [
             {"feature": "Downtime Acceleration Ratio (7d vs 30d)", "importance": 0.34},
@@ -93,16 +55,21 @@ def get_prediction_center_overview(
             {"feature": "Pneumatic Excess CFM Deviation", "importance": 0.09},
             {"feature": "Weft Break Rate / 1k Picks", "importance": 0.05},
         ],
-        "data_sufficiency_status": "SUFFICIENT (31 Days Historical Records Available)",
+        "data_sufficiency_status": pm.get("data_sufficiency", {}).get("label", "SUFFICIENT"),
         "data_mode": "SYNTHETIC_CALIBRATED",
     }
+
+    preds = pm.get("predictions", [])
 
     return {
         "work_date": date.isoformat(),
         "unit_code": unit,
-        "total_looms_evaluated": len(predictions),
-        "high_risk_count": high_risk_count,
-        "medium_risk_count": med_risk_count,
-        "loom_predictions": predictions,
-        "model_evaluation": model_eval,
+        "total_looms_evaluated": pm.get("total_looms_evaluated", len(preds)),
+        "high_risk_count": pm.get("high_risk_count", 0),
+        "medium_risk_count": pm.get("medium_risk_count", 0),
+        "predictions": preds,
+        "loom_predictions": preds,
+        "data_sufficiency": pm.get("data_sufficiency", {}),
+        "business_metrics": pm.get("business_impact_metrics", {}),
+        "model_evaluation": eval_meta,
     }

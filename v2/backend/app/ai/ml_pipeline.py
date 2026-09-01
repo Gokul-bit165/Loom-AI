@@ -176,8 +176,9 @@ def predict_loom_breakdown_risk(
         + (0.05 * f["excess_air_cfm"])
     )
 
-    # Sigmoid function for probability
-    prob = 1.0 / (1.0 + np.exp(-logit))
+    # Sigmoid function for probability (clipped to prevent overflow)
+    clipped_logit = float(np.clip(logit, -15.0, 15.0))
+    prob = 1.0 / (1.0 + np.exp(-clipped_logit))
     prob = max(0.05, min(0.95, prob))
     prob_pct = round(prob * 100.0, 1)
 

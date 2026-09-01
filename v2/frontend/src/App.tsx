@@ -15,6 +15,8 @@ import { DecisionRegistryView } from './components/DecisionRegistryView';
 import { DataQualityImportView } from './components/DataQualityImportView';
 import { AskEngineView } from './components/AskEngineView';
 import { ExportsView } from './components/ExportsView';
+import { AiAgentsHubView } from './components/AiAgentsHubView';
+import type { AgentTab } from './components/AiAgentsHubView';
 import {
   Activity,
   Award,
@@ -30,6 +32,7 @@ import {
   LayoutDashboard,
   LayoutGrid,
   Layers,
+  ShieldAlert,
   UploadCloud,
   Users,
   Wind,
@@ -44,6 +47,7 @@ export type ViewMode =
   | 'breakdowns'
   | 'looms'
   | 'operations'
+  | 'agents'
   | 'workforce'
   | 'manpower'
   | 'maintenance'
@@ -58,6 +62,7 @@ export type ViewMode =
 
 export function App() {
   const [currentView, setCurrentView] = useState<ViewMode>('command-center');
+  const [initialAgentTab, setInitialAgentTab] = useState<AgentTab>('watchtower');
   const [selectedLoomId, setSelectedLoomId] = useState<number | null>(118);
   const [showSupportSection, setShowSupportSection] = useState<boolean>(true);
 
@@ -208,6 +213,19 @@ export function App() {
             )}
           </div>
 
+          {/* AI & AGENTS */}
+          <div className="nav-section-label" style={{ marginTop: '8px' }}>AI & OPERATIONAL AGENTS</div>
+          <button
+            className={`nav-item ${currentView === 'agents' ? 'active' : ''}`}
+            onClick={() => {
+              setInitialAgentTab('watchtower');
+              setCurrentView('agents');
+            }}
+          >
+            <ShieldAlert size={16} color="#2563EB" />
+            <span>AI Agents Hub (6)</span>
+          </button>
+
           {/* INTELLIGENCE */}
           <div className="nav-section-label" style={{ marginTop: '8px' }}>INTELLIGENCE</div>
           <button
@@ -268,6 +286,7 @@ export function App() {
         <header className="topbar">
           <div className="topbar-title">
             {currentView === 'command-center' && 'Command Center'}
+            {currentView === 'agents' && 'AI & Operational Agents Hub · Watchtower, Loss Hunter & Action Manager'}
             {currentView === 'production' && 'Production Operations'}
             {currentView === 'breakdowns' && 'Breakdowns & Downtime'}
             {currentView === 'revenue' && 'Revenue & Loss Attribution'}
@@ -316,6 +335,7 @@ export function App() {
 
         <div className="page-body">
           {currentView === 'command-center' && <CommandCenterView onNavigateToModule={handleNavigate} />}
+          {currentView === 'agents' && <AiAgentsHubView initialTab={initialAgentTab} onNavigateToModule={handleNavigate} />}
           {currentView === 'production' && <ProductionIntelligenceView onSelectLoom={handleSelectLoom} />}
           {currentView === 'breakdowns' && <BreakdownBoardView />}
           {currentView === 'revenue' && <RevenueLossView />}

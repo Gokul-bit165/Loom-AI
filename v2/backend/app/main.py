@@ -20,6 +20,7 @@ from app.seed.masters import seed_masters
 from app.seed.demo_generator import generate_atm_month
 
 from app.routers import (
+    agents,
     ai,
     air,
     breakdown,
@@ -88,6 +89,7 @@ app.include_router(decision_registry.router, prefix="/api/v2/decision-registry",
 app.include_router(data_quality.router,      prefix="/api/v2/data-quality",      tags=["data-quality"])
 app.include_router(ingest.router,            prefix="/api/v2/ingest",            tags=["ingest"])
 app.include_router(exports.router,           prefix="/api/v2/exports",           tags=["exports"])
+app.include_router(agents.router,               prefix="/api/v2/agents",            tags=["agents"])
 app.include_router(ai.router,                prefix="/api/v2/ai",                tags=["ai"])
 
 

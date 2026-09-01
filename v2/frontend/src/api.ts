@@ -784,3 +784,241 @@ export async function submitManagementReviewDecision(
   return res.json();
 }
 
+// ── AI & Operational Agents API ──────────────────────────────────────────────
+
+export interface WatchtowerFindingItem {
+  finding_id: string;
+  type: string;
+  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  entity_type: string;
+  entity_id: string;
+  title: string;
+  observations: string[];
+  baseline_value: string;
+  current_value: string;
+  impact: {
+    production_metres: number;
+    revenue_inr: number;
+    downtime_minutes: number;
+  };
+  inference: string;
+  recommendation: string;
+  confidence: string;
+  confidence_reason: string;
+  generated_at: string;
+  source_ids: string[];
+}
+
+export interface WatchtowerResponse {
+  agent_name: string;
+  status: string;
+  work_date: string;
+  unit_code: string;
+  findings_count: number;
+  findings: WatchtowerFindingItem[];
+}
+
+export interface LossHunterItem {
+  category: string;
+  amount_inr: number;
+  lost_units: string;
+  share_pct: number;
+  affected_entities: string;
+  primary_driver: string;
+  remedy: string;
+}
+
+export interface LossHunterResponse {
+  agent_name: string;
+  work_date: string;
+  unit_code: string;
+  total_floor_loss_inr: number;
+  top_loss_today: LossHunterItem[];
+  start_here: {
+    title: string;
+    priority_action: string;
+    target_machines: string;
+    potential_recovery_inr: number;
+  };
+  provenance: string;
+}
+
+export interface TrackedActionItem {
+  action_id: string;
+  recommendation_id: string;
+  loom_no: string;
+  issue: string;
+  recommended_action: string;
+  priority: string;
+  category: string;
+  status: string;
+  assignee?: string;
+  deadline?: string;
+  action_taken?: string;
+  baseline_metric: string;
+  expected_improvement: string;
+  post_action_metric?: string;
+  actual_improvement?: string;
+  financial_impact_inr: number;
+  outcome_status?: string;
+}
+
+export interface ActionManagerResponse {
+  agent_name: string;
+  unit_code: string;
+  work_date: string;
+  total_actions: number;
+  open_actions: number;
+  verified_outcomes: number;
+  verified_financial_savings_inr: number;
+  verification_rate_pct: number;
+  actions: TrackedActionItem[];
+}
+
+export interface PredictiveMaintenanceResponse {
+  agent_name: string;
+  unit_code: string;
+  work_date: string;
+  total_looms_evaluated: number;
+  high_risk_count: number;
+  medium_risk_count: number;
+  data_sufficiency: {
+    status: string;
+    label: string;
+    history_days: number;
+  };
+  business_impact_metrics: {
+    false_alarms_per_100_looms: number;
+    missed_major_failures: number;
+    estimated_downtime_avoided_min: number;
+    estimated_production_protected_metres: number;
+    estimated_revenue_protected_inr: number;
+    model_roc_auc: number;
+    precision_pct: number;
+    recall_pct: number;
+    f1_score: number;
+  };
+  predictions: any[];
+}
+
+export interface OpportunityItem {
+  opportunity_id: string;
+  category: string;
+  headline: string;
+  observations: string[];
+  potential_gain_metres: number;
+  potential_gain_inr: number;
+  constraints_verified: string[];
+  suggested_review: string;
+  confidence: string;
+}
+
+export interface OpportunityDetectorResponse {
+  agent_name: string;
+  unit_code: string;
+  work_date: string;
+  total_opportunities: number;
+  total_potential_output_gain_metres: number;
+  total_potential_revenue_gain_inr: number;
+  opportunities: OpportunityItem[];
+  provenance: string;
+}
+
+export interface RevenueGuardianResponse {
+  agent_name: string;
+  unit_code: string;
+  work_date: string;
+  actual_revenue_inr: number;
+  target_revenue_inr: number;
+  total_revenue_at_risk_inr: number;
+  exposure_share_pct: number;
+  loss_breakdown: any[];
+  guardian_alerts: any[];
+  provenance: string;
+}
+
+export interface DatasetFreshnessItem {
+  status: 'LIVE' | 'UPDATED' | 'STALE' | 'UNAVAILABLE';
+  latency_label: string;
+  coverage_pct: number;
+  last_ingested_at: string;
+  source_type: string;
+}
+
+export interface SourceFreshnessResponse {
+  plant_unit: string;
+  overall_health: string;
+  dqi_score_pct: number;
+  datasets: Record<string, DatasetFreshnessItem>;
+}
+
+export interface PersistentAlertItem {
+  alert_id: string;
+  decision_id: string;
+  event_id: string;
+  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  status: string;
+  title: string;
+  message: string;
+  target_role: string;
+  financial_impact_inr: number;
+  created_at: string;
+  cooldown_key: string;
+  source_ids: string[];
+}
+
+export async function fetchAgentsOverview(date: string = '2026-07-31', unit: string = 'ATM'): Promise<any> {
+  const res = await fetch(`${API_BASE}/agents/overview?unit=${unit}&date=${date}`);
+  if (!res.ok) throw new Error('Failed to fetch agents overview');
+  return res.json();
+}
+
+export async function fetchWatchtower(date: string = '2026-07-31', unit: string = 'ATM'): Promise<WatchtowerResponse> {
+  const res = await fetch(`${API_BASE}/agents/watchtower?unit=${unit}&date=${date}`);
+  if (!res.ok) throw new Error('Failed to fetch Watchtower findings');
+  return res.json();
+}
+
+export async function fetchLossHunter(date: string = '2026-07-31', unit: string = 'ATM'): Promise<LossHunterResponse> {
+  const res = await fetch(`${API_BASE}/agents/loss-hunter?unit=${unit}&date=${date}`);
+  if (!res.ok) throw new Error('Failed to fetch Loss Hunter ledger');
+  return res.json();
+}
+
+export async function fetchActionManager(date: string = '2026-07-31', unit: string = 'ATM'): Promise<ActionManagerResponse> {
+  const res = await fetch(`${API_BASE}/agents/action-manager?unit=${unit}&date=${date}`);
+  if (!res.ok) throw new Error('Failed to fetch Action Manager items');
+  return res.json();
+}
+
+export async function fetchPredictiveMaintenance(date: string = '2026-07-31', unit: string = 'ATM'): Promise<PredictiveMaintenanceResponse> {
+  const res = await fetch(`${API_BASE}/agents/predictive-maintenance?unit=${unit}&date=${date}`);
+  if (!res.ok) throw new Error('Failed to fetch Predictive Maintenance');
+  return res.json();
+}
+
+export async function fetchOpportunityDetector(date: string = '2026-07-31', unit: string = 'ATM'): Promise<OpportunityDetectorResponse> {
+  const res = await fetch(`${API_BASE}/agents/opportunity-detector?unit=${unit}&date=${date}`);
+  if (!res.ok) throw new Error('Failed to fetch Opportunity Detector');
+  return res.json();
+}
+
+export async function fetchRevenueGuardian(date: string = '2026-07-31', unit: string = 'ATM'): Promise<RevenueGuardianResponse> {
+  const res = await fetch(`${API_BASE}/agents/revenue-guardian?unit=${unit}&date=${date}`);
+  if (!res.ok) throw new Error('Failed to fetch Revenue Guardian');
+  return res.json();
+}
+
+export async function fetchSourceFreshness(date: string = '2026-07-31', unit: string = 'ATM'): Promise<SourceFreshnessResponse> {
+  const res = await fetch(`${API_BASE}/agents/freshness?unit=${unit}&date=${date}`);
+  if (!res.ok) throw new Error('Failed to fetch source freshness');
+  return res.json();
+}
+
+export async function fetchPersistentAlerts(date: string = '2026-07-31', unit: string = 'ATM'): Promise<PersistentAlertItem[]> {
+  const res = await fetch(`${API_BASE}/agents/alerts?unit=${unit}&date=${date}`);
+  if (!res.ok) throw new Error('Failed to fetch persistent alerts');
+  return res.json();
+}
+
+

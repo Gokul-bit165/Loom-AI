@@ -78,7 +78,7 @@ export function BreakdownBoardView() {
       key: 'loom_no',
       header: 'Loom No',
       sortable: true,
-      render: (row) => <strong style={{ color: TOKENS.colors.brand[600] }}>{row.loom_no}</strong>,
+      render: (row) => <strong style={{ color: TOKENS.colors.brand[600] }}>Loom {row.loom_no}</strong>,
     },
     {
       key: 'loom_type_code',
@@ -93,26 +93,26 @@ export function BreakdownBoardView() {
       render: (row) => <span>{row.event_count} stops</span>,
     },
     {
-      key: 'stopped_minutes',
+      key: 'total_stopped_minutes',
       header: 'Downtime Today',
       align: 'right',
       sortable: true,
       render: (row) => (
-        <strong style={{ color: row.stopped_minutes > 120 ? TOKENS.colors.status.critical.text : TOKENS.colors.text.primary }}>
-          {row.stopped_minutes} min
+        <strong style={{ color: row.total_stopped_minutes > 120 ? TOKENS.colors.status.critical.text : TOKENS.colors.text.primary, fontFamily: TOKENS.typography.fontMono }}>
+          {row.total_stopped_minutes} min
         </strong>
       ),
     },
     {
-      key: 'top_reason_label',
+      key: 'dominant_reason_en',
       header: 'Primary Reason',
-      render: (row) => <span style={{ color: TOKENS.colors.text.secondary }}>{row.top_reason_label || 'Voltage Fluctuation'}</span>,
+      render: (row) => <span style={{ color: TOKENS.colors.text.secondary }}>{row.dominant_reason_en || 'Drive Trip / Stoppage'}</span>,
     },
     {
       key: 'status',
       header: 'Status',
       align: 'center',
-      render: (row) => <StatusBadge status={row.stopped_minutes > 120 ? 'CRITICAL' : 'WARNING'} />,
+      render: (row) => <StatusBadge status={row.total_stopped_minutes > 120 ? 'CRITICAL' : 'WARNING'} />,
     },
   ];
 
@@ -121,7 +121,7 @@ export function BreakdownBoardView() {
       key: 'loom_no',
       header: 'Loom No',
       sortable: true,
-      render: (row) => <strong style={{ color: TOKENS.colors.brand[600] }}>{row.loom_no}</strong>,
+      render: (row) => <strong style={{ color: TOKENS.colors.brand[600] }}>Loom {row.loom_no}</strong>,
     },
     {
       key: 'loom_type_code',
@@ -134,17 +134,17 @@ export function BreakdownBoardView() {
       align: 'right',
       sortable: true,
       render: (row) => (
-        <strong style={{ color: row.event_count > 25 ? TOKENS.colors.status.critical.text : TOKENS.colors.text.primary }}>
+        <strong style={{ color: row.event_count > 25 ? TOKENS.colors.status.critical.text : TOKENS.colors.text.primary, fontFamily: TOKENS.typography.fontMono }}>
           {row.event_count} stops
         </strong>
       ),
     },
     {
-      key: 'stopped_minutes',
+      key: 'total_stopped_minutes',
       header: 'Cumulative Min',
       align: 'right',
       sortable: true,
-      render: (row) => <span>{row.stopped_minutes} min</span>,
+      render: (row) => <span style={{ fontFamily: TOKENS.typography.fontMono }}>{row.total_stopped_minutes} min</span>,
     },
     {
       key: 'status',
