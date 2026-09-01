@@ -6,24 +6,28 @@ shift_master, employee, reason_code, cost_master, loom (ATM ONLY —
 vendor units carry no loom rows, design correction §1.1), and
 vendor_unit_monthly_summary (the only data vendor units get).
 
-DATA-QUALITY NOTE (flagged, not silently resolved): the source brief's
-role-count table (63 WEAVER + 5 TRAINING-WEAVER + 18 FABRIC_CHECKER +
-8 LOADMAN + 6 SHIFT_FITTER + 3 HEAD_FITTER + 4 KNOTTER + 3 GAITER +
-3 ELECTRICIAN + 2 OILER + 2 QUALITY_CHECKER + 6 SWEEPER) sums to 123, not
-the "137 weaving employees" stated alongside it. This seed uses the
-role-count table as ground truth (123 employees) since it is the more
-specific, itemized figure, and does NOT pad to 137 with invented rows.
-Similarly, the grade-count table (49 G1+, 24 G2, 23 G1, 9 G2+, 5 G3,
-5 G4, 2 G3+, 2 G5, 2 G6+, 1 G6) sums to 122, one short of 123 — the last
-employee seeded (a SWEEPER) is left with grade=None rather than forcing a
-122nd grade onto a role the source data didn't grade.
+HEADCOUNT AUDIT (123 itemised + 14 UNCONFIRMED = 137 total):
+  The source brief's role-count table itemises 123 employees by designation:
+    63 WEAVER + 5 TRAINING_WEAVER + 18 FABRIC_CHECKER + 8 LOADMAN
+    + 6 SHIFT_FITTER + 3 HEAD_FITTER + 4 KNOTTER + 3 GAITER
+    + 3 ELECTRICIAN + 2 OILER + 2 QUALITY_CHECKER + 6 SWEEPER = 123
+  The department total stated alongside is 137. The 14 difference are real
+  employees whose specific designations are not given in the source brief.
+  Resolution (per handoff §1): seed 123 itemised + 14 as role=OTHER,
+  employee_code='UNCONFIRMED-{n}', grade=None, std_looms=None,
+  source=DEMO, active=True. Headcount reconciles to the real 137 without
+  inventing job titles. The OTHER role flag means these rows are excluded
+  from any grade-standard or assignment analysis that requires a known role.
 
-The mapping from grade code to "N-Looms + X% standard" band is NOT given
-explicitly in the source brief (only four example bands: "8-Looms+97.5%",
-"7-Looms+97%", "6-Looms+97.5%", "5-Looms+97%", trainee "4-Looms+97%").
-This seed uses a documented, deterministic assumption (higher grade ->
-more looms) and should be corrected against the mill's real grade
-standard sheet when available.
+GRADE AUDIT: The grade-count table (49 G1+, 24 G2, 23 G1, 9 G2+, 5 G3,
+  5 G4, 2 G3+, 2 G5, 2 G6+, 1 G6) sums to 122, one short of 123 — the
+  last itemised employee (a SWEEPER) is left with grade=None. The 14 OTHER
+  employees are also ungraded.
+
+GRADE-BAND NOTE: The mapping from grade to 'N-Looms + X% standard' band
+  is NOT given explicitly in the brief (only four example bands given).
+  This seed uses a documented deterministic assumption (higher grade ->
+  more looms) to be corrected against the mill's real grade-standard sheet.
 """
 from __future__ import annotations
 
@@ -204,7 +208,9 @@ ROLE_COUNTS = [
     (EmployeeRole.QUALITY_CHECKER, 2),
     (EmployeeRole.SWEEPER, 6),
 ]
-TOTAL_EMPLOYEES = sum(n for _, n in ROLE_COUNTS)  # 123, documented mismatch vs brief's "137"
+TOTAL_ITEMISED = sum(n for _, n in ROLE_COUNTS)  # 123 employees with known designations
+UNCONFIRMED_COUNT = 14                            # real employees, designations not given
+TOTAL_EMPLOYEES = TOTAL_ITEMISED + UNCONFIRMED_COUNT  # 137, matches the department total
 
 GRADE_COUNTS = [
     (EmployeeGrade.G1_PLUS, 49),
@@ -424,13 +430,13 @@ def _get_or_create_employees(session: Session, atm: Unit) -> list[Employee]:
     if existing:
         return existing
 
-    names = _employee_names(TOTAL_EMPLOYEES)
+    # Seed the 123 itemised employees with known designations.
+    names = _employee_names(TOTAL_EMPLOYEES)  # generates enough names for all 137
     grades_flat: list[EmployeeGrade | None] = []
     for grade, count in GRADE_COUNTS:
         grades_flat.extend([grade] * count)
-    # One employee short of a grade (122 grades / 123 employees, see
-    # module docstring) — pad with None, assigned to the last employee.
-    grades_flat.extend([None] * (TOTAL_EMPLOYEES - len(grades_flat)))
+    # 122 grades / 123 itemised employees — last SWEEPER gets grade=None (see docstring).
+    grades_flat.extend([None] * (TOTAL_ITEMISED - len(grades_flat)))
 
     employees: list[Employee] = []
     idx = 0
@@ -457,6 +463,28 @@ def _get_or_create_employees(session: Session, atm: Unit) -> list[Employee]:
                 )
             )
             idx += 1
+
+    # Seed 14 UNCONFIRMED employees (OTHER role) to bridge 123 -> 137.
+    # Per handoff §1: real headcount is 137; 14 designations are not given
+    # in the source brief. Seeded as OTHER/UNCONFIRMED so headcount
+    # reconciles without inventing job titles. These employees are excluded
+    # from any analysis requiring a known role (grade-standard, assignment).
+    for n in range(1, UNCONFIRMED_COUNT + 1):
+        employees.append(
+            Employee(
+                unit_id=atm.unit_id,
+                employee_code=f"UNCONFIRMED-{n:02d}",
+                name=names[idx],          # uses remaining name pool (idx 123..136)
+                role=EmployeeRole.OTHER,
+                grade=None,               # designation unknown
+                std_looms=None,
+                std_efficiency_pct=None,
+                active=True,
+                source=DataSource.DEMO,
+            )
+        )
+        idx += 1
+
     session.add_all(employees)
     session.flush()
     return employees

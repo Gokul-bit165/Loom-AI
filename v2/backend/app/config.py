@@ -21,20 +21,24 @@ class Settings:
     postgres_db: str = os.environ.get("V2_POSTGRES_DB", "loom_ai_v2")
     postgres_user: str = os.environ.get("V2_POSTGRES_USER", "loom_ai_v2")
     postgres_password: str = os.environ.get("V2_POSTGRES_PASSWORD", "")
-    postgres_test_db: str = os.environ.get("V2_POSTGRES_TEST_DB", "loom_ai_v2_test")
+    custom_database_url: str = os.environ.get("DATABASE_URL", "")
 
     @property
     def database_url(self) -> str:
-        return (
-            f"postgresql+psycopg2://{self.postgres_user}:{self.postgres_password}"
-            f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
-        )
+        if self.custom_database_url:
+            return self.custom_database_url
+        if self.postgres_password or os.environ.get("V2_POSTGRES_USER"):
+            return (
+                f"postgresql+psycopg2://{self.postgres_user}:{self.postgres_password}"
+                f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
+            )
+        # Default local SQLite database for instant development & standalone running
+        return "sqlite:///loom_ai_v2.db"
 
     def test_database_url(self) -> str:
-        return (
-            f"postgresql+psycopg2://{self.postgres_user}:{self.postgres_password}"
-            f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_test_db}"
-        )
+        if self.custom_database_url:
+            return self.custom_database_url
+        return "sqlite:///loom_ai_v2_test.db"
 
 
 settings = Settings()

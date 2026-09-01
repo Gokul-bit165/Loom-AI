@@ -21,7 +21,9 @@ from app.seed.masters import seed_masters
 
 @pytest.fixture(scope="session")
 def db_engine():
-    engine = create_engine(settings.test_database_url(), future=True)
+    db_url = settings.test_database_url()
+    connect_args = {"check_same_thread": False, "timeout": 30} if db_url.startswith("sqlite") else {}
+    engine = create_engine(db_url, connect_args=connect_args, future=True)
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
     yield engine
@@ -49,10 +51,44 @@ def db_session(db_engine, db_session_factory) -> Session:
 @pytest.fixture(scope="session")
 def masters_session_factory(db_engine):
     """A session whose master-data seed persists for the whole test
-    session (not rolled back) — the demo generator and reconciliation
+    session (not rolled back) -- the demo generator and reconciliation
     tests need real, committed master rows to build against."""
     factory = sessionmaker(bind=db_engine, future=True)
     session = factory()
     seed_masters(session)
+    session.commit()
     yield factory
     session.close()
+
+
+@pytest.fixture(scope="session")
+def generated_atm_month(masters_session_factory):
+    """Generates the full ATM demo month once for the entire test session."""
+    from app.config import DEMO_SEED
+    from app.seed.demo_generator import generate_atm_month
+    session = masters_session_factory()
+    totals = generate_atm_month(session, seed=DEMO_SEED)
+    session.commit()
+    yield session, totals
+    session.close()
+
+
+@pytest.fixture()
+def client(db_session_factory, generated_atm_month):
+    from fastapi.testclient import TestClient
+    from app.main import app
+    from app.routers.deps import get_session
+
+    def override_get_session():
+        session = db_session_factory()
+        try:
+            yield session
+        finally:
+            session.close()
+
+    app.dependency_overrides[get_session] = override_get_session
+    with TestClient(app) as test_client:
+        yield test_client
+    app.dependency_overrides.clear()
+
+

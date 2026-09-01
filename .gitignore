@@ -49,5 +49,12 @@ Desktop.ini
 # Alembic (keep versions, ignore pyc)
 backend/alembic/versions/__pycache__/
 
-# Logs
+# Logs & SQLite DBs
 *.log
+*.db
+*.sqlite3
+
+# Frontend builds
+v2/frontend/node_modules/
+v2/frontend/dist/
+v2/frontend/.vite/

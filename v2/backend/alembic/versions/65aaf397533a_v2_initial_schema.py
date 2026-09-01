@@ -93,7 +93,7 @@ def upgrade() -> None:
     sa.Column('unit_id', sa.Integer(), nullable=False),
     sa.Column('employee_code', sa.String(length=30), nullable=True),
     sa.Column('name', sa.String(length=150), nullable=False),
-    sa.Column('role', sa.Enum('WEAVER', 'TRAINING_WEAVER', 'FABRIC_CHECKER', 'LOADMAN', 'SHIFT_FITTER', 'HEAD_FITTER', 'KNOTTER', 'GAITER', 'ELECTRICIAN', 'OILER', 'QUALITY_CHECKER', 'SWEEPER', name='employee_role'), nullable=False),
+    sa.Column('role', sa.Enum('WEAVER', 'TRAINING_WEAVER', 'FABRIC_CHECKER', 'LOADMAN', 'SHIFT_FITTER', 'HEAD_FITTER', 'KNOTTER', 'GAITER', 'ELECTRICIAN', 'OILER', 'QUALITY_CHECKER', 'SWEEPER', 'OTHER', name='employee_role'), nullable=False),
     sa.Column('grade', sa.Enum('G1', 'G1_PLUS', 'G2', 'G2_PLUS', 'G3', 'G3_PLUS', 'G4', 'G5', 'G6', 'G6_PLUS', name='employee_grade'), nullable=True),
     sa.Column('std_looms', sa.Integer(), nullable=True),
     sa.Column('std_efficiency_pct', sa.Numeric(precision=5, scale=2), nullable=True),

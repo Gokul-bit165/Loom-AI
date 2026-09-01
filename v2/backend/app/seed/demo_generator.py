@@ -41,6 +41,7 @@ from sqlalchemy.orm import Session
 
 from app.config import DEMO_SEED
 from app.db_models import (
+    AirConsumptionLog,
     Assignment,
     BeamRun,
     DataSource,
@@ -48,7 +49,10 @@ from app.db_models import (
     EmployeeRole,
     FabricRoll,
     Loom,
+    MaintenanceRecord,
+    ManpowerAttendanceLog,
     ProductionLog,
+    QualityInspectionLog,
     ReasonCategory,
     ReasonCode,
     ShiftMaster,
@@ -66,6 +70,15 @@ UNIT_TARGET_EFF = Decimal("89.6")  # the one confirmed real number — never tun
 ATM_TARGET_KILO_PICKS = Decimal("3331544")
 ATM_TARGET_METRES = Decimal("1541450")
 ATM_TARGET_ROLLS = 2474
+
+# Post-composition floor for loom efficiency: no loom runs below unit_mean-20pp.
+# Applied to base_eff AFTER all additive terms (shift_factor, style_penalty,
+# efficiency_offset, daily_noise, degrade_delta) are composed — NOT just to
+# the offset alone. A 40% hard floor would allow 55-59% values through when
+# shift3 + bad style + noise + degrade stack on a chronic loom (the exact
+# 55-59% tail the handoff identified as the v1 F2 failure wearing a new hat).
+# Domain reality: a loom at 55% would have been pulled off the floor.
+LOOM_EFF_FLOOR = max(40.0, float(UNIT_TARGET_EFF) - 20.0)  # 69.6% for ATM at 89.6%
 
 SHIFT_EFF_FACTOR = {"1": 1.0, "2": 91.18 / 89.48, "3": 88.03 / 89.48}
 
@@ -160,8 +173,17 @@ def generate_atm_month(session: Session, seed: int = DEMO_SEED) -> dict:
     degrade_loom_indices = set(rng.choice(len(looms), size=min(2, len(looms)), replace=False))
     for i, loom in enumerate(looms):
         is_chronic = rng.random() < 0.15
-        eff_offset = rng.normal(-9.0, 2.0) if is_chronic else rng.normal(1.6, 1.5)
-        eff_offset = float(np.clip(eff_offset, -20.0, 10.0))
+        # Chronic offset: N(-9, 3). Normal offset: N(+1.6, 1.5).
+        # Stdev 3pp (was 2pp): wider spread within the chronic group so the
+        # worst-20 looms span >=6pp naturally (the test gate). With stdev=2,
+        # seed=42 produced 34 chronic looms clustered too tightly (5.43pp span).
+        # 3pp matches realistic variability between looms in poor condition —
+        # one loom at -14% offset and another at -6% is plausible; both at
+        # -9±2% is too uniform for a real plant.
+        # Clip is [-15, 10] — the post-composition LOOM_EFF_FLOOR is the real
+        # floor enforcer; this clip is just a sanity bound.
+        eff_offset = rng.normal(-9.0, 3.0) if is_chronic else rng.normal(1.6, 1.5)
+        eff_offset = float(np.clip(eff_offset, -15.0, 10.0))
         break_offset = max(0.0, -eff_offset * 0.15 + rng.normal(0, 0.3))
 
         degrade_window = None
@@ -229,6 +251,12 @@ def generate_atm_month(session: Session, seed: int = DEMO_SEED) -> dict:
     total_metres = sum(r["metres"] for r in raw_rows)
     _generate_fabric_rolls(session, raw_rows, total_metres, rng)
 
+    # ── Step 8: Maintenance, Air, Quality, and Manpower Domain Logs ─────
+    _generate_maintenance_logs(session, looms, rng)
+    _generate_air_logs(session, looms, shifts, rng)
+    _generate_quality_logs(session, looms, shifts, styles, rng)
+    _generate_manpower_attendance_logs(session, atm, shifts, rng)
+
     session.flush()
 
     total_kilo_picks = sum(r["actual_picks"] for r in raw_rows) / Decimal(1000)
@@ -288,7 +316,13 @@ def _generate_one_shift(session, profile: LoomProfile, beam_run: BeamRun, day, s
             degrade_delta = -0.5 * days_in
 
     base_eff = (float(UNIT_TARGET_EFF) * shift_multiplier) + style_penalty + profile.efficiency_offset + daily_noise + degrade_delta
-    loom_eff = float(np.clip(base_eff, 40.0, 100.0))
+    # Apply the floor AFTER all additive terms — not just to the offset.
+    # LOOM_EFF_FLOOR = max(40, unit_mean - 20) = 69.6%. Without this, stacking
+    # shift3 factor + style penalty + chronic offset + noise + degrade can push
+    # base_eff below 69.6% before the old clip(40, 100) catches it — producing
+    # the 55-59% tail the handoff identified ("a flat tail is the v1 F2 failure
+    # wearing a different hat").
+    loom_eff = float(np.clip(base_eff, LOOM_EFF_FLOOR, 100.0))
 
     std_rpm = float(style.std_rpm)
     actual_picks = round(std_rpm * SCHEDULED_MINUTES * loom_eff / 100.0)
@@ -374,11 +408,20 @@ def _generate_stop_events(session, loom: Loom, day, shift, stopped_minutes: int,
 
 
 def _apply_calibration(session, raw_rows: list[dict], factor: Decimal) -> None:
-    """Closed-form rescale of actual_picks/metres/kilo_picks by `factor`
-    (see module docstring — exploits linearity in std_rpm, no iteration
-    needed). Bounded: refuses to apply a factor outside [0.5, 2.0], which
-    would indicate a wrong seed assumption (e.g. std_rpm) rather than
-    something a scale factor should paper over (design correction #2)."""
+    """Closed-form rescale of actual_picks/metres/kilo_picks AND std_rpm_snapshot
+    by `factor` (see module docstring).
+
+    Critical: both actual_picks AND std_rpm_snapshot are scaled together so
+    that the efficiency formula loom_efficiency_pct = actual_picks /
+    (std_rpm_snapshot * scheduled_minutes) * 100 remains equal to the
+    original generated loom_efficiency_pct (the target value baked in during
+    Step 4). Scaling only actual_picks (as the previous version did) drags
+    the whole efficiency distribution from ~89.6% to ~65.2% when the factor
+    is 0.73, making every DB-computed efficiency wrong.
+
+    Bounded: refuses to apply a factor outside [0.5, 2.0], which would
+    indicate a wrong seed assumption (e.g. std_rpm) rather than something
+    a scale factor should paper over (design correction #2)."""
     if factor < Decimal("0.5") or factor > Decimal("2.0"):
         raise ValueError(
             f"Calibration factor {factor} is outside [0.5, 2.0] — this indicates a wrong "
@@ -394,6 +437,14 @@ def _apply_calibration(session, raw_rows: list[dict], factor: Decimal) -> None:
         prod_log.actual_picks = new_picks
         prod_log.metres = row["metres"]
         prod_log.kilo_picks = round(Decimal(new_picks) / Decimal(1000), 4)
+        # Scale std_rpm_snapshot by the same factor so that:
+        #   loom_efficiency_pct = new_picks / (new_std_rpm * sched_min)
+        #                       = (raw_picks * f) / (raw_std_rpm * f * sched_min)
+        #                       = raw_picks / (raw_std_rpm * sched_min)
+        #                       = original generated loom_eff  (correct)
+        new_std_rpm = round(Decimal(str(row["std_rpm"])) * factor, 2)
+        prod_log.std_rpm_snapshot = new_std_rpm
+        row["std_rpm"] = float(new_std_rpm)
 
 
 def _generate_fabric_rolls(session, raw_rows: list[dict], total_metres: Decimal, rng) -> None:
@@ -423,3 +474,136 @@ def _generate_fabric_rolls(session, raw_rows: list[dict], total_metres: Decimal,
                     source=DataSource.DEMO,
                 )
             )
+
+
+def _generate_maintenance_logs(session, looms, rng) -> None:
+    """Generates scheduled PM, corrective maintenance, overruns and recurring issues."""
+    for idx, loom in enumerate(looms):
+        # 1-2 PM tasks per loom in July 2026
+        sched_day = MONTH_START + datetime.timedelta(days=int(rng.integers(1, 30)))
+        due_day = sched_day + datetime.timedelta(days=int(rng.integers(0, 4)))
+        is_done = sched_day <= datetime.date(2026, 7, 28)
+        comp_day = sched_day if is_done else None
+
+        sched_dur = 120
+        overrun = int(rng.choice([0, 0, 15, 45, 90]))
+        act_dur = sched_dur + overrun if is_done else None
+        is_recurring = (idx % 12 == 0)
+
+        session.add(
+            MaintenanceRecord(
+                loom_id=loom.loom_id,
+                maintenance_type="PREVENTIVE" if not is_recurring else "CORRECTIVE",
+                scheduled_date=sched_day,
+                due_date=due_day,
+                completed_date=comp_day,
+                scheduled_duration_min=sched_dur,
+                actual_duration_min=act_dur,
+                overrun_min=overrun,
+                cost_inr=Decimal(str(float(rng.uniform(1500, 8500)))),
+                technician_name=str(rng.choice(["K. Murugan (Head Fitter)", "S. Palanisamy (Fitter)", "M. Ravi (Electrician)"])),
+                recurring_flag=is_recurring,
+                description="Gripper alignment & main drive inspection" if not is_recurring else "Recurring drive inverter voltage trip",
+                source=DataSource.DEMO,
+            )
+        )
+
+
+def _generate_air_logs(session, looms, shifts, rng) -> None:
+    """Generates pneumatic air consumption logs for looms across July 2026."""
+    # To keep seed fast, generate daily/shift air logs for active looms
+    # Focus heavily on the last 3 days of July (July 29-31)
+    for day_offset in range(28, 31):
+        day = MONTH_START + datetime.timedelta(days=day_offset)
+        for shift in shifts:
+            for loom in looms:
+                # Most looms 31-34 CFM, a few leaking at 42-55 CFM
+                is_leaking = (loom.loom_id in (112, 118, 132, 145))
+                actual_cfm = float(rng.uniform(42.0, 58.0)) if is_leaking else float(rng.uniform(31.0, 34.5))
+                std_cfm = 32.0
+                excess = max(0.0, actual_cfm - std_cfm)
+                power_kwh = (excess / 4.5) * 8.0
+                cost = power_kwh * 8.50
+
+                session.add(
+                    AirConsumptionLog(
+                        loom_id=loom.loom_id,
+                        work_date=day,
+                        shift_id=shift.shift_id,
+                        actual_cfm=Decimal(str(round(actual_cfm, 2))),
+                        standard_cfm=Decimal(str(std_cfm)),
+                        excess_cfm=Decimal(str(round(excess, 2))),
+                        line_pressure_bar=Decimal(str(round(float(rng.uniform(5.9, 6.4)), 2))),
+                        power_kwh=Decimal(str(round(power_kwh, 2))),
+                        air_cost_inr=Decimal(str(round(cost, 2))),
+                        source=DataSource.DEMO,
+                    )
+                )
+
+
+def _generate_quality_logs(session, looms, shifts, styles, rng) -> None:
+    """Generates quality inspection records, defect counts, crimp measurements, and yarn waste."""
+    categories = ["WARP_FLOAT", "WEFT_MISS", "OIL_STAIN", "REED_MARK"]
+    for day_offset in range(28, 31):
+        day = MONTH_START + datetime.timedelta(days=day_offset)
+        for shift in shifts:
+            for loom in looms[:40]:  # Sample rolls inspected
+                insp_metres = float(rng.uniform(180, 260))
+                is_defect_prone = (loom.loom_id in (105, 118, 160))
+                def_metres = float(rng.uniform(6.0, 14.0)) if is_defect_prone else float(rng.uniform(0.5, 3.5))
+                def_count = int(rng.integers(3, 8)) if is_defect_prone else int(rng.integers(0, 3))
+                rate = (def_metres / insp_metres) * 100.0
+
+                actual_crimp = float(rng.uniform(7.8, 9.6))
+                std_crimp = 8.5
+                waste_kg = float(rng.uniform(1.2, 3.8))
+
+                session.add(
+                    QualityInspectionLog(
+                        loom_id=loom.loom_id,
+                        style_id=styles[0].style_id if styles else 1,
+                        work_date=day,
+                        shift_id=shift.shift_id,
+                        inspected_metres=Decimal(str(round(insp_metres, 2))),
+                        defective_metres=Decimal(str(round(def_metres, 2))),
+                        defect_count=def_count,
+                        defect_rate_pct=Decimal(str(round(rate, 2))),
+                        defect_category=str(rng.choice(categories)),
+                        actual_crimp_pct=Decimal(str(round(actual_crimp, 2))),
+                        standard_crimp_pct=Decimal(str(std_crimp)),
+                        yarn_waste_kg=Decimal(str(round(waste_kg, 2))),
+                        source=DataSource.DEMO,
+                    )
+                )
+
+
+def _generate_manpower_attendance_logs(session, unit: Unit, shifts, rng) -> None:
+    """Generates shift attendance logs and absenteeism shortage figures."""
+    for day_offset in range(0, 31):
+        day = MONTH_START + datetime.timedelta(days=day_offset)
+        for shift in shifts:
+            total_hc = 45
+            shortage = int(rng.choice([0, 0, 1, 1, 2, 3]))
+            present = total_hc - shortage
+            pct = (present / total_hc) * 100.0
+            shortage_hrs = shortage * 8.0
+            # 6 looms/weaver, ~650 rpm, ~1968.5 ppm
+            lost_m = (shortage_hrs * 6.0 * 60.0 * 650.0) / 1968.5
+
+            session.add(
+                ManpowerAttendanceLog(
+                    unit_id=unit.unit_id,
+                    work_date=day,
+                    shift_id=shift.shift_id,
+                    total_headcount=total_hc,
+                    present_count=present,
+                    absent_count=shortage,
+                    attendance_pct=Decimal(str(round(pct, 2))),
+                    required_headcount=total_hc,
+                    shortage_count=shortage,
+                    shortage_hours=Decimal(str(round(shortage_hrs, 2))),
+                    estimated_loss_metres=Decimal(str(round(lost_m, 2))),
+                    source=DataSource.DEMO,
+                )
+            )
+

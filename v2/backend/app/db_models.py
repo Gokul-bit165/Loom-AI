@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import datetime
 import enum
+from typing import Optional
 
 from sqlalchemy import (
     BigInteger,
@@ -75,6 +76,12 @@ class EmployeeRole(str, enum.Enum):
     OILER = "OILER"
     QUALITY_CHECKER = "QUALITY_CHECKER"
     SWEEPER = "SWEEPER"
+    # Unenumerated designations: the source brief's role table itemises 123
+    # employees, while the department-total is 137. The 14 difference are
+    # real employees whose designations are not listed. Seeded as OTHER with
+    # employee_code='UNCONFIRMED-N' so headcount reconciles to the real 137
+    # without inventing job titles. See masters.py docstring for full audit.
+    OTHER = "OTHER"
 
 
 class EmployeeGrade(str, enum.Enum):
@@ -384,22 +391,38 @@ class ProductionLog(Base):
     weft_breaks: int = Column(Integer, nullable=False, default=0)
     actual_crimp_pct = Column(Numeric(5, 2), nullable=True, comment="NULL until lab feed exists (Q18-Q20 BLOCKED)")
 
+    actual_warp_time_min = Column(Numeric(6, 2), nullable=True, default=0)
+    actual_weft_time_min = Column(Numeric(6, 2), nullable=True, default=0)
+    standard_warp_time_min = Column(Numeric(6, 2), nullable=True, default=15.0)
+    standard_weft_time_min = Column(Numeric(6, 2), nullable=True, default=10.0)
+
     source: str = Column(Enum(DataSource, name="prodlog_data_source"), nullable=False, default=DataSource.DEMO)
     ingested_at: datetime.datetime = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
     import_batch_id: int = Column(Integer, ForeignKey("import_batch.import_batch_id", ondelete="SET NULL"), nullable=True)
+    superseded_by_batch_id: int = Column(Integer, ForeignKey("import_batch.import_batch_id", ondelete="SET NULL"), nullable=True)
+    is_current: bool = Column(Boolean, nullable=False, default=True)
 
     __table_args__ = (
-        UniqueConstraint("loom_id", "work_date", "shift_id", name="uq_prodlog_loom_date_shift"),
+        Index(
+            "uq_prodlog_current",
+            "loom_id",
+            "work_date",
+            "shift_id",
+            unique=True,
+            postgresql_where=(is_current == True),
+            sqlite_where=(is_current == True),
+        ),
         CheckConstraint("running_minutes <= scheduled_minutes", name="ck_prodlog_running_le_scheduled"),
         CheckConstraint("metres >= 0 AND kilo_picks >= 0 AND actual_picks >= 0", name="ck_prodlog_nonneg"),
         CheckConstraint("warp_breaks >= 0 AND weft_breaks >= 0", name="ck_prodlog_breaks_nonneg"),
         Index("ix_prodlog_date_loom", "work_date", "loom_id"),
         Index("ix_prodlog_style", "style_id"),
         Index("ix_prodlog_employee", "employee_id"),
+        Index("ix_prodlog_is_current", "is_current"),
     )
 
     def __repr__(self) -> str:
-        return f"<ProductionLog loom={self.loom_id} {self.work_date} shift={self.shift_id}>"
+        return f"<ProductionLog loom={self.loom_id} {self.work_date} shift={self.shift_id} current={self.is_current}>"
 
 
 class StopEvent(Base):
@@ -424,6 +447,12 @@ class StopEvent(Base):
     source: str = Column(Enum(DataSource, name="stopevent_data_source"), nullable=False, default=DataSource.DEMO)
     ingested_at: datetime.datetime = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
     import_batch_id: int = Column(Integer, ForeignKey("import_batch.import_batch_id", ondelete="SET NULL"), nullable=True)
+
+    # P6 Training Label Capture (close-out form ground truth)
+    failed_component: str = Column(String(50), nullable=True)  # e.g. "weft_feeder", "main_nozzle", ...
+    fix_action: str = Column(String(50), nullable=True)        # "adjust", "clean", "replace_part", "reset", "no_fault_found"
+    was_predictable: str = Column(String(20), nullable=True)   # "YES", "NO", "UNSURE"
+    classifier_assigned: bool = Column(Boolean, nullable=False, default=False)
 
     __table_args__ = (
         CheckConstraint(
@@ -481,7 +510,129 @@ class VendorUnitMonthlySummary(Base):
     __table_args__ = (UniqueConstraint("unit_id", "month", name="uq_vendor_summary_unit_month"),)
 
 
-# ── 4. Recommendation / audit / auth ────────────────────────────────────
+class MaintenanceRecord(Base):
+    __tablename__ = "maintenance_record"
+
+    record_id = Column(Integer, primary_key=True, autoincrement=True)
+    loom_id = Column(Integer, ForeignKey("loom.loom_id", ondelete="RESTRICT"), nullable=False)
+    maintenance_type = Column(String(30), nullable=False, default="PREVENTIVE")  # PREVENTIVE, CORRECTIVE, OVERHAUL
+    scheduled_date = Column(Date, nullable=False)
+    due_date = Column(Date, nullable=False)
+    completed_date = Column(Date, nullable=True)
+    scheduled_duration_min = Column(Integer, nullable=False, default=120)
+    actual_duration_min = Column(Integer, nullable=True)
+    overrun_min = Column(Integer, nullable=True, default=0)
+    cost_inr = Column(Numeric(10, 2), nullable=True, default=0)
+    technician_name = Column(String(100), nullable=True)
+    recurring_flag = Column(Boolean, nullable=False, default=False)
+    description = Column(Text, nullable=True)
+    source = Column(Enum(DataSource, name="maint_data_source"), nullable=False, default=DataSource.DEMO)
+
+    __table_args__ = (
+        Index("ix_maint_loom_date", "loom_id", "scheduled_date"),
+    )
+
+
+class AirConsumptionLog(Base):
+    __tablename__ = "air_consumption_log"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    loom_id = Column(Integer, ForeignKey("loom.loom_id", ondelete="RESTRICT"), nullable=False)
+    work_date = Column(Date, nullable=False)
+    shift_id = Column(Integer, ForeignKey("shift_master.shift_id"), nullable=False)
+    actual_cfm = Column(Numeric(8, 2), nullable=False)
+    standard_cfm = Column(Numeric(8, 2), nullable=False, default=32.0)
+    excess_cfm = Column(Numeric(8, 2), nullable=False, default=0.0)
+    line_pressure_bar = Column(Numeric(5, 2), nullable=True, default=6.2)
+    power_kwh = Column(Numeric(10, 2), nullable=True, default=0.0)
+    air_cost_inr = Column(Numeric(10, 2), nullable=True, default=0.0)
+    source = Column(Enum(DataSource, name="air_data_source"), nullable=False, default=DataSource.DEMO)
+
+    __table_args__ = (
+        Index("ix_air_loom_date", "loom_id", "work_date"),
+    )
+
+
+class QualityInspectionLog(Base):
+    __tablename__ = "quality_inspection_log"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    loom_id = Column(Integer, ForeignKey("loom.loom_id", ondelete="RESTRICT"), nullable=False)
+    style_id = Column(Integer, ForeignKey("style.style_id"), nullable=False)
+    work_date = Column(Date, nullable=False)
+    shift_id = Column(Integer, ForeignKey("shift_master.shift_id"), nullable=False)
+    inspected_metres = Column(Numeric(10, 2), nullable=False)
+    defective_metres = Column(Numeric(10, 2), nullable=False, default=0.0)
+    defect_count = Column(Integer, nullable=False, default=0)
+    defect_rate_pct = Column(Numeric(5, 2), nullable=False, default=0.0)
+    defect_category = Column(String(50), nullable=True)  # WARP_FLOAT, WEFT_MISS, OIL_STAIN, REED_MARK
+    actual_crimp_pct = Column(Numeric(5, 2), nullable=True)
+    standard_crimp_pct = Column(Numeric(5, 2), nullable=True)
+    yarn_waste_kg = Column(Numeric(8, 2), nullable=True, default=0.0)
+    source = Column(Enum(DataSource, name="quality_data_source"), nullable=False, default=DataSource.DEMO)
+
+    __table_args__ = (
+        Index("ix_quality_loom_date", "loom_id", "work_date"),
+    )
+
+
+class ManpowerAttendanceLog(Base):
+    __tablename__ = "manpower_attendance_log"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    unit_id = Column(Integer, ForeignKey("unit.unit_id"), nullable=False)
+    work_date = Column(Date, nullable=False)
+    shift_id = Column(Integer, ForeignKey("shift_master.shift_id"), nullable=False)
+    total_headcount = Column(Integer, nullable=False)
+    present_count = Column(Integer, nullable=False)
+    absent_count = Column(Integer, nullable=False)
+    attendance_pct = Column(Numeric(5, 2), nullable=False)
+    required_headcount = Column(Integer, nullable=False, default=45)
+    shortage_count = Column(Integer, nullable=False, default=0)
+    shortage_hours = Column(Numeric(8, 2), nullable=True, default=0.0)
+    estimated_loss_metres = Column(Numeric(10, 2), nullable=True, default=0.0)
+    source = Column(Enum(DataSource, name="manpower_data_source"), nullable=False, default=DataSource.DEMO)
+
+    __table_args__ = (
+        UniqueConstraint("unit_id", "work_date", "shift_id", name="uq_manpower_unit_date_shift"),
+    )
+
+
+# ── 4. Recommendation / Decision Loop / Audit / Auth ────────────────────────────
+
+class DecisionActionRecord(Base):
+    """Closed loop decision intelligence tracking:
+    OPEN -> ACKNOWLEDGED -> ASSIGNED -> COMPLETED -> VERIFIED"""
+    __tablename__ = "decision_action_record"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    recommendation_id = Column(String(50), nullable=False, unique=True)
+    priority = Column(String(10), nullable=False)  # P1, P2, P3, P4
+    category = Column(String(50), nullable=False)
+    loom_id = Column(Integer, ForeignKey("loom.loom_id"), nullable=True)
+    loom_no = Column(String(30), nullable=True)
+    issue = Column(String(255), nullable=False)
+    metrics_json = Column(Text, nullable=True)
+    evidence_json = Column(Text, nullable=True)
+    probable_cause = Column(Text, nullable=True)
+    recommended_action = Column(Text, nullable=False)
+    expected_impact_json = Column(Text, nullable=True)
+    confidence = Column(String(20), nullable=False, default="HIGH")  # HIGH, MEDIUM, LOW
+    status = Column(String(20), nullable=False, default="OPEN")  # OPEN, ACKNOWLEDGED, ASSIGNED, COMPLETED, VERIFIED
+    assignee = Column(String(100), nullable=True)
+    action_taken = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    acknowledged_at = Column(DateTime(timezone=True), nullable=True)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+    verified_at = Column(DateTime(timezone=True), nullable=True)
+    before_metrics = Column(Text, nullable=True)
+    after_metrics = Column(Text, nullable=True)
+
+    __table_args__ = (
+        Index("ix_decision_status", "status"),
+        Index("ix_decision_priority", "priority"),
+    )
+
 
 class SuggestionLog(Base):
     __tablename__ = "suggestion_log"

@@ -272,3 +272,166 @@ def weaver_index(
     (e.g. below the 97.5% in "8-Looms + 97.5%")."""
     result = _safe_div(weaver_efficiency_pct, std_efficiency_pct)
     return None if result is None else round(result, 4)
+
+
+# ── Q2: Warp / Weft Extra Timing Analytics ──────────────────────────────────
+
+def extra_warp_time(
+    actual_warp_time_min: Optional[Number],
+    std_warp_time_min: Optional[Number],
+) -> Optional[Decimal]:
+    """max(actual_warp_time - std_warp_time, 0)."""
+    act = _to_decimal(actual_warp_time_min)
+    std = _to_decimal(std_warp_time_min)
+    if act is None or std is None:
+        return None
+    return max(Decimal("0.0"), act - std)
+
+
+def extra_weft_time(
+    actual_weft_time_min: Optional[Number],
+    std_weft_time_min: Optional[Number],
+) -> Optional[Decimal]:
+    """max(actual_weft_time - std_weft_time, 0)."""
+    act = _to_decimal(actual_weft_time_min)
+    std = _to_decimal(std_weft_time_min)
+    if act is None or std is None:
+        return None
+    return max(Decimal("0.0"), act - std)
+
+
+def warp_weft_production_loss(
+    extra_warp_min: Optional[Number],
+    extra_weft_min: Optional[Number],
+    std_rpm: Optional[Number],
+    picks_per_metre: Optional[Number],
+) -> Optional[Decimal]:
+    """((extra_warp_min + extra_weft_min) * std_rpm) / picks_per_metre."""
+    ew = _to_decimal(extra_warp_min) or Decimal("0.0")
+    et = _to_decimal(extra_weft_min) or Decimal("0.0")
+    rpm = _to_decimal(std_rpm)
+    ppm = _to_decimal(picks_per_metre)
+    if rpm is None or ppm is None or ppm == 0:
+        return None
+    total_extra_min = ew + et
+    if total_extra_min <= 0:
+        return Decimal("0.0")
+    lost = (total_extra_min * rpm) / ppm
+    return round(lost, 3)
+
+
+# ── Q3: Composite Performance Score (CPS) ──────────────────────────────────
+
+def composite_performance_score(
+    efficiency_pct: Optional[Number],
+    utilization_pct_val: Optional[Number],
+    warp_breaks_per_1000_val: Optional[Number],
+    weft_breaks_per_1000_val: Optional[Number],
+    target_achievement_pct: Optional[Number],
+) -> Optional[Decimal]:
+    """
+    Transparent Loom Performance Score (Q3):
+    CPS = (0.40 * Norm(Eff)) + (0.30 * Norm(Util)) + (0.15 * Norm(1 - BreakRate)) + (0.15 * Norm(TargetAch))
+    Score is on a 0 - 100 scale.
+    """
+    eff = _to_decimal(efficiency_pct)
+    util = _to_decimal(utilization_pct_val)
+    if eff is None or util is None:
+        return None
+    
+    # Base normalization
+    norm_eff = min(Decimal("100.0"), max(Decimal("0.0"), eff))
+    norm_util = min(Decimal("100.0"), max(Decimal("0.0"), util))
+    
+    # Break rate penalty (lower breaks = higher score)
+    wbr = _to_decimal(warp_breaks_per_1000_val) or Decimal("0.0")
+    tbr = _to_decimal(weft_breaks_per_1000_val) or Decimal("0.0")
+    total_breaks = wbr + tbr
+    norm_breaks = max(Decimal("0.0"), Decimal("100.0") - (total_breaks * Decimal("20.0")))
+    
+    # Target achievement
+    ach = _to_decimal(target_achievement_pct) or Decimal("100.0")
+    norm_ach = min(Decimal("100.0"), max(Decimal("0.0"), ach))
+    
+    cps = (
+        (norm_eff * Decimal("0.40")) +
+        (norm_util * Decimal("0.30")) +
+        (norm_breaks * Decimal("0.15")) +
+        (norm_ach * Decimal("0.15"))
+    )
+    return round(cps, 1)
+
+
+# ── Q15-Q17: Air & Compressor Intelligence ──────────────────────────────────
+
+def air_excess_cfm(actual_cfm: Optional[Number], standard_cfm: Optional[Number]) -> Optional[Decimal]:
+    """max(actual_cfm - standard_cfm, 0)."""
+    act = _to_decimal(actual_cfm)
+    std = _to_decimal(standard_cfm)
+    if act is None or std is None:
+        return None
+    return max(Decimal("0.0"), round(act - std, 2))
+
+
+def air_power_loss_kwh(excess_cfm: Optional[Number], running_hours: Optional[Number]) -> Optional[Decimal]:
+    """(excess_cfm / 4.5) * running_hours (~4.5 CFM per kW rule of thumb)."""
+    ex = _to_decimal(excess_cfm)
+    hrs = _to_decimal(running_hours)
+    if ex is None or hrs is None:
+        return None
+    if ex <= 0:
+        return Decimal("0.0")
+    kwh = (ex / Decimal("4.5")) * hrs
+    return round(kwh, 2)
+
+
+def air_loss_cost(power_loss_kwh: Optional[Number], tariff_per_kwh: Optional[Number] = Decimal("8.50")) -> Optional[Decimal]:
+    """power_loss_kwh * tariff_per_kwh."""
+    pwr = _to_decimal(power_loss_kwh)
+    rate = _to_decimal(tariff_per_kwh)
+    if pwr is None or rate is None:
+        return None
+    return round(pwr * rate, 2)
+
+
+# ── Q18-Q20: Quality Intelligence ──────────────────────────────────────────
+
+def defect_rate_pct(defective_metres: Optional[Number], total_inspected_metres: Optional[Number]) -> Optional[Decimal]:
+    """(defective_metres / total_inspected_metres) * 100."""
+    result = _safe_div(defective_metres, total_inspected_metres)
+    return None if result is None else round(result * Decimal("100.0"), 2)
+
+
+def yarn_waste_pct(waste_kg: Optional[Number], yarn_input_kg: Optional[Number]) -> Optional[Decimal]:
+    """(waste_kg / yarn_input_kg) * 100."""
+    result = _safe_div(waste_kg, yarn_input_kg)
+    return None if result is None else round(result * Decimal("100.0"), 2)
+
+
+# ── Q10: Manpower Shortage Loss Model ──────────────────────────────────────
+
+def manpower_shortage_loss(
+    shortage_weavers: Optional[int],
+    shift_hours: Optional[Number] = Decimal("8.0"),
+    looms_per_weaver: Optional[Number] = Decimal("6.0"),
+    std_rpm: Optional[Number] = Decimal("650.0"),
+    picks_per_metre: Optional[Number] = Decimal("1968.5"),
+) -> Optional[Decimal]:
+    """
+    shortage_hours = shortage_weavers * shift_hours
+    unattended_loom_hours = shortage_hours * looms_per_weaver
+    lost_metres = unattended_loom_hours * 60 * std_rpm / picks_per_metre
+    """
+    if shortage_weavers is None or shortage_weavers <= 0:
+        return Decimal("0.0")
+    sh = Decimal(str(shortage_weavers))
+    hrs = _to_decimal(shift_hours)
+    lpw = _to_decimal(looms_per_weaver)
+    rpm = _to_decimal(std_rpm)
+    ppm = _to_decimal(picks_per_metre)
+    if hrs is None or lpw is None or rpm is None or ppm is None or ppm == 0:
+        return None
+    unattended_loom_hrs = sh * hrs * lpw
+    lost_metres = (unattended_loom_hrs * Decimal("60.0") * rpm) / ppm
+    return round(lost_metres, 2)
+
