@@ -32,25 +32,30 @@ def get_air_analytics(
     if unit_row is None:
         http_error(404, "UNIT_NOT_FOUND", f"Unit '{unit}' does not exist.")
 
-    # 1. Q15 Loom-wise Air Telemetry
+    # 1. Q15 Loom-wise Air Telemetry (Daily Aggregated across shifts to ensure 1 unambiguous row per loom)
     air_rows = session.execute(
         select(
             AirConsumptionLog.loom_id,
             Loom.loom_no,
             Loom.loom_type_code,
-            AirConsumptionLog.actual_cfm,
-            AirConsumptionLog.standard_cfm,
-            AirConsumptionLog.excess_cfm,
-            AirConsumptionLog.line_pressure_bar,
-            AirConsumptionLog.power_kwh,
-            AirConsumptionLog.air_cost_inr,
+            func.avg(AirConsumptionLog.actual_cfm).label("actual_cfm"),
+            func.avg(AirConsumptionLog.standard_cfm).label("standard_cfm"),
+            func.avg(AirConsumptionLog.excess_cfm).label("excess_cfm"),
+            func.avg(AirConsumptionLog.line_pressure_bar).label("line_pressure_bar"),
+            func.sum(AirConsumptionLog.power_kwh).label("power_kwh"),
+            func.sum(AirConsumptionLog.air_cost_inr).label("air_cost_inr"),
         )
         .join(Loom, Loom.loom_id == AirConsumptionLog.loom_id)
         .where(
             Loom.unit_id == unit_row.unit_id,
             AirConsumptionLog.work_date == date,
         )
-        .order_by(AirConsumptionLog.excess_cfm.desc())
+        .group_by(
+            AirConsumptionLog.loom_id,
+            Loom.loom_no,
+            Loom.loom_type_code,
+        )
+        .order_by(func.avg(AirConsumptionLog.excess_cfm).desc())
     ).all()
 
     loom_telemetry = []

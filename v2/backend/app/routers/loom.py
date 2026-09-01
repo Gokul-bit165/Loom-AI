@@ -325,38 +325,48 @@ def loom_detail(
             status=str(se.status),
         ))
 
-    pareto_rows = session.execute(
+    pareto_events = session.execute(
         select(
             ReasonCode.code,
             ReasonCode.label_en,
-            func.count(StopEvent.stop_event_id).label("cnt"),
-            func.sum(
-                func.extract(
-                    "epoch",
-                    func.coalesce(StopEvent.resolved_at, func.now()) - StopEvent.raised_at
-                ) / 60
-            ).label("total_min"),
+            StopEvent.raised_at,
+            StopEvent.resolved_at,
         )
         .join(ReasonCode, ReasonCode.reason_code_id == StopEvent.reason_code_id)
         .where(
             StopEvent.loom_id == loom_id,
             StopEvent.raised_at >= datetime.datetime.combine(window_start, datetime.time.min),
         )
-        .group_by(ReasonCode.code, ReasonCode.label_en)
-        .order_by(func.count(StopEvent.stop_event_id).desc())
     ).all()
 
-    total_stops = sum(pr.cnt for pr in pareto_rows) or 1
+    pareto_dict: dict[str, dict[str, Any]] = {}
+    for pe in pareto_events:
+        c = pe.code
+        if c not in pareto_dict:
+            pareto_dict[c] = {
+                "code": c,
+                "label": pe.label_en,
+                "count": 0,
+                "total_min": 0.0,
+            }
+        pareto_dict[c]["count"] += 1
+        dur = 0.0
+        if pe.raised_at:
+            res_time = pe.resolved_at or datetime.datetime.utcnow()
+            dur = max(0.0, (res_time - pe.raised_at).total_seconds() / 60.0)
+        pareto_dict[c]["total_min"] += dur
+
+    total_stops = sum(p["count"] for p in pareto_dict.values()) or 1
     reason_pareto: list[ReasonParetoRow] = [
         ReasonParetoRow(
-            reason_code=pr.code,
-            reason_label_en=pr.label_en,
-            count=pr.cnt,
-            total_minutes=round(Decimal(str(pr.total_min or 0)), 1),
-            pct_of_loom_downtime=round(Decimal(str(pr.cnt * 100 / total_stops)), 1),
+            reason_code=p["code"],
+            reason_label_en=p["label"],
+            count=p["count"],
+            total_minutes=round(Decimal(str(p["total_min"])), 1),
+            pct_of_loom_downtime=round(Decimal(str(p["count"] * 100 / total_stops)), 1),
             vs_plant_pct=None,
         )
-        for pr in pareto_rows
+        for p in sorted(pareto_dict.values(), key=lambda x: x["count"], reverse=True)
     ]
 
     break_row = session.execute(

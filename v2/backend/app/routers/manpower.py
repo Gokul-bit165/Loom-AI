@@ -105,10 +105,16 @@ def get_manpower_analytics(
             func.sum(ProductionLog.scheduled_minutes).label("sched_min"),
             func.count(ProductionLog.loom_id.distinct()).label("assigned_looms"),
         )
-        .join(ProductionLog, ProductionLog.employee_id == Employee.employee_id)
+        .join(Assignment, Assignment.employee_id == Employee.employee_id)
+        .join(
+            ProductionLog,
+            (ProductionLog.loom_id == Assignment.loom_id)
+            & (ProductionLog.shift_id == Assignment.shift_id)
+            & (ProductionLog.work_date == Assignment.work_date)
+        )
         .where(
             Employee.unit_id == unit_row.unit_id,
-            ProductionLog.work_date == date,
+            Assignment.work_date == date,
             ProductionLog.is_current == True,
         )
         .group_by(
