@@ -1,39 +1,50 @@
 # Loom AI v2 — Pre-Build Design (§12 deliverables)
 
-Per §12 of the v2 brief: no application code until this document is reviewed.
-v1 (everything currently in `backend/`, `frontend/`, and the root CSVs) is
-**not deleted yet** — deletion is destructive and irreversible, so it is the
-first task of P0 execution, done only after this design is approved, not as
-part of writing this doc.
+**Status: reviewed and corrected.** This revision incorporates the design
+review response (six blocking corrections, three additions, four open
+items resolved). Original open items are marked `RESOLVED` in place rather
+than deleted, so the reasoning stays visible.
+
+Per §12 of the v2 brief: no application code until this document is
+reviewed. v1 is **not deleted** — it is tagged `v1-final` and preserved on
+branch `archive/v1` (pushed to origin), staying deployable as a fallback.
+See `docs/V1_POSTMORTEM.md` for the seven failure modes (F1-F7) this
+rebuild exists to fix. v2 is built fresh; nothing is extended from v1's
+domain model.
 
 ---
 
 ## 1. Challenges, ambiguities, things I think are wrong or need a decision
 
-1. **Loom count is a calibration output, not a given.** §3 says "seed 168
-   airjet + 24 Sulzer at ATM" but also "put the count in a master table and
-   seed config — never hardcoded" and "banner LOOM MASTER UNCONFIRMED." These
-   aren't in tension as long as it's clear: the *numbers* 168/24 are a seed
-   **config value** (data), not a literal in application logic, and every
-   screen that shows loom counts reads it from `loom` table row-counts, not
-   from a constant. I'll treat 168+24 as the seed default, flagged
-   unconfirmed, and derive vendor-unit loom counts algorithmically from
-   their kilo-pick share (see §3 below) rather than guessing them too —
-   confirm this derivation is acceptable or if you have real vendor loom
-   counts to use instead.
-2. **`revenue_per_metre` by style is explicitly unconfirmed data** (see
-   Appendix: "confirm... revenue per metre by style... without these every
-   ₹ is fiction"). Every ₹ figure that depends on it (lost_revenue,
-   efficiency_gap_value, Revenue & Loss page) will be tagged
-   `rate_source: ESTIMATED` until real rate cards exist, per Anti-Slop
-   rule 8. I'm seeding a plausible rate per style scaled to reproduce the
-   aggregate ATM revenue figures the mill already reports in its MRM
-   (₹1,92,730/day was flagged in F6 as a *v1 bug*, not a real figure I have
-   permission to reuse — I have no real ATM revenue baseline in this brief
-   at all, only kilo-picks/metres/crimp). **I need either a real revenue
-   figure or explicit sign-off that all revenue/₹ numbers in the v2 demo
-   are synthetic/estimated placeholders** — I will not invent a precise
-   rupee baseline and present it as derived from real data.
+1. **`RESOLVED` — Loom count for ATM only; vendor units carry no looms at
+   all.** ATM is seeded at 168 airjet + 24 Sulzer, `register_confirmed:
+   false`, banner shown. Vendor units (CVF/SKT/VPN/METRO/TPN) are **not**
+   given fabricated loom registers — deriving ~800 imaginary looms across
+   five businesses we have zero floor data on was rejected on review.
+   Vendor units exist only as **unit-aggregate rows** populated from the
+   real July-2026 MRM figures, `source='CSV_IMPORT'`, tagged with the
+   period `2026-07`. This also makes the F5 cross-source-ranking failure
+   structurally impossible: there is no vendor loom-level data to
+   accidentally rank against ATM's live per-loom data. The absence becomes
+   a concrete, sellable ask for the next mill visit: get one vendor's loom
+   register + daily sheet and the same screens light up for them.
+2. **`RESOLVED` — Revenue rate is a flat, visible placeholder, not a
+   back-calculated "plausible" number.** Every style gets
+   `revenue_per_metre = DEFAULT_REVENUE_PER_METRE` (a single configurable
+   seed constant, not fit to reproduce any particular aggregate ₹
+   figure — there is no real ATM revenue baseline anywhere in this brief
+   to fit against, only kilo-picks/metres/crimp), `revenue_rate_source =
+   'ESTIMATED'` on every row. The UI renders a visible `EST` chip on every
+   ₹ figure; tapping it shows *"₹X/metre — placeholder rate, not supplied
+   by mill. Real rate card required for accurate figures."* The Revenue
+   page also ships a **"Confirm your rate card"** panel: the 10 styles
+   with an empty real-rate column and an export button, so the ten minutes
+   of the owner's time that would make the whole ₹ layer real has an
+   obvious place to happen. (Note for later: the Sizing MRM in the source
+   files gives a real ₹20.40/kg billing / ₹9.80/kg profit figure — that's
+   sizing, not weaving, so it is *not* used to derive a weaving rate, but
+   it's evidence the mill has this kind of data and can supply the weaving
+   equivalent.)
 3. **Crimp is per-style-per-month in §3's table** (aggregate, not
    per-shift). Q18-Q20 (quality/crimp) are marked `BLOCKED` pending a lab
    feed. So `production_log.actual_crimp_pct` will stay NULL in the demo
@@ -85,16 +96,40 @@ part of writing this doc.
    `std_looms` per grade, so Operations/Loom Detail/Weaver pages have real
    structure to show even though the *live* HR feed doesn't exist — this
    assignment data is tagged `source='DEMO'` same as everything else.
-10. **Auth/roles**: brief says 4 roles with financial gating "at the API
-    layer, not by hiding UI." I'm reading this as: the API returns
-    `null`/omits ₹ fields entirely for `supervisor`/`vendor_coordinator`
-    tokens rather than the frontend conditionally rendering them — please
-    confirm `vendor_coordinator` should see zero ₹ data for any unit
-    (including their own vendor unit's revenue), or only zero ₹ data for
-    *other* units.
+10. **`RESOLVED` — `vendor_coordinator` sees zero ₹ data anywhere,
+    including their own unit.** No partial rule, no "own unit only"
+    exception — that creates a join away from a leak. Enforced by omitting
+    ₹ fields from the serializer for that role (API layer, per the
+    brief), with a dedicated API test asserting the response body contains
+    no ₹-valued keys for a `vendor_coordinator` token.
 
-None of the above block starting P0 — flagging them now per §12 rule 1 so a
-wrong assumption doesn't get built into 40 files before it's caught.
+Also newly added on review:
+
+11. **`efficiency_pct` as originally specified in §6 of the brief
+    (`actual_picks / (std_rpm × running_min) × 100`) was wrong** and is
+    **not implemented**. That formula measures speed-while-running, which
+    lands near 97-98% and hides all stoppage — it cannot reconcile to the
+    real baseline table (ATM 89.6%, etc.), because the real figure is
+    measured against *scheduled* time, not running time. See §4.1 for the
+    corrected three-function split (`loom_efficiency_pct` /
+    `performance_eff_pct` / `utilization_pct`).
+12. **TimescaleDB is dropped.** A hypertable requires every UNIQUE/PK
+    constraint to include the partition column — `production_log_id SERIAL
+    PRIMARY KEY` on a table partitioned by `work_date` fails at migration
+    as originally designed. It's also unnecessary at this volume (~192
+    looms × 3 shifts × 31 days ≈ 18k rows/month) — plain indexed Postgres
+    handles years of this. Revisit Timescale if/when controller telemetry
+    (sub-minute sensor data) enters scope.
+13. **`production_target` and `fabric_roll` were missing entities.**
+    Targets are real entered data (the mill's own sheet shows `TARGET @
+    22.5 HRS` / `@ 22 HRS` / `@ 21 HRS` — targets derive from
+    *available hours per department*, not a generic capacity constant),
+    and rolls are the real despatch unit (7,760/month across units,
+    weight-banded). Both added in §2.
+
+None of the above block starting P0 — flagging them (and their
+resolutions) per §12 rule 1 so a wrong assumption doesn't get built into
+40 files before it's caught.
 
 ---
 
@@ -102,10 +137,9 @@ wrong assumption doesn't get built into 40 files before it's caught.
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════
--- EXTENSIONS
--- ═══════════════════════════════════════════════════════════════════════
-CREATE EXTENSION IF NOT EXISTS timescaledb;
-
+-- Plain PostgreSQL 16. No TimescaleDB (see design note §1.12 — dropped on
+-- review: incompatible with SERIAL PK + partition-column constraint rules
+-- as originally scoped, and unnecessary at this data volume).
 -- ═══════════════════════════════════════════════════════════════════════
 -- ENUMS
 -- ═══════════════════════════════════════════════════════════════════════
@@ -265,6 +299,58 @@ CREATE TABLE assignment (
   UNIQUE (loom_id, shift_id, work_date)
 );
 
+CREATE TABLE production_target (
+  target_id              SERIAL PRIMARY KEY,
+  loom_id                INT REFERENCES loom(loom_id),      -- NULL = unit-level target
+  unit_id                INT NOT NULL REFERENCES unit(unit_id) ON DELETE RESTRICT,
+  work_date              DATE NOT NULL,
+  shift_id               INT REFERENCES shift_master(shift_id),  -- NULL = whole day
+  style_id               INT REFERENCES style(style_id),
+  available_hours        NUMERIC(5,2) NOT NULL,   -- the '@ 22.5 HRS' basis — must be shown in the UI
+  target_metres          NUMERIC(12,3),
+  target_kilo_picks      NUMERIC(14,4),
+  target_efficiency_pct  NUMERIC(5,2),
+  basis_note             TEXT,
+  source                 data_source NOT NULL DEFAULT 'DEMO',
+  ingested_at            TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (loom_id, work_date, shift_id)
+);
+CREATE INDEX ix_target_unit_date ON production_target(unit_id, work_date);
+
+CREATE TABLE fabric_roll (
+  roll_id      SERIAL PRIMARY KEY,
+  loom_id      INT NOT NULL REFERENCES loom(loom_id) ON DELETE RESTRICT,
+  style_id     INT NOT NULL REFERENCES style(style_id) ON DELETE RESTRICT,
+  work_date    DATE NOT NULL,
+  shift_id     INT REFERENCES shift_master(shift_id),
+  metres       NUMERIC(10,2) NOT NULL,
+  weight_kg    NUMERIC(8,2),
+  doffed_at    TIMESTAMPTZ,
+  source       data_source NOT NULL DEFAULT 'DEMO',
+  ingested_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT ck_roll_nonneg CHECK (metres >= 0 AND (weight_kg IS NULL OR weight_kg >= 0))
+);
+CREATE INDEX ix_roll_loom_date ON fabric_roll(loom_id, work_date);
+
+-- Vendor units (is_own_unit=false) are NOT populated with loom/production_log/
+-- stop_event rows at all in v2 (design note §1.1) — only this aggregate table,
+-- sourced directly from the real July-2026 Vendor MRM.
+CREATE TABLE vendor_unit_monthly_summary (
+  id                SERIAL PRIMARY KEY,
+  unit_id           INT NOT NULL REFERENCES unit(unit_id) ON DELETE RESTRICT,
+  month             DATE NOT NULL,             -- first-of-month, e.g. 2026-07-01
+  efficiency_pct    NUMERIC(5,2) NOT NULL,
+  kilo_picks_day_avg NUMERIC(14,2),
+  metres_day_avg     NUMERIC(14,2),
+  warp_breaks_per_hr NUMERIC(6,3),
+  weft_breaks_per_hr NUMERIC(6,3),
+  month_kilo_picks   NUMERIC(16,2) NOT NULL,
+  month_metres       NUMERIC(16,2) NOT NULL,
+  month_rolls        INT,
+  source             VARCHAR(30) NOT NULL DEFAULT 'CSV_IMPORT',
+  UNIQUE (unit_id, month)
+);
+
 CREATE TABLE import_batch (
   import_batch_id SERIAL PRIMARY KEY,
   unit_id         INT NOT NULL REFERENCES unit(unit_id),
@@ -303,7 +389,6 @@ CREATE TABLE production_log (
   CONSTRAINT ck_prodlog_breaks_nonneg CHECK (warp_breaks >= 0 AND weft_breaks >= 0),
   UNIQUE (loom_id, work_date, shift_id)
 );
-SELECT create_hypertable('production_log', 'work_date', if_not_exists => TRUE);
 CREATE INDEX ix_prodlog_date_loom ON production_log(work_date, loom_id);
 CREATE INDEX ix_prodlog_style ON production_log(style_id);
 CREATE INDEX ix_prodlog_employee ON production_log(employee_id);
@@ -331,7 +416,6 @@ CREATE TABLE stop_event (
     (resolved_at     IS NULL OR attending_at    IS NULL OR resolved_at  >= attending_at)
   )
 );
-SELECT create_hypertable('stop_event', 'raised_at', if_not_exists => TRUE);
 CREATE INDEX ix_stopevent_loom_date ON stop_event(loom_id, work_date);
 CREATE INDEX ix_stopevent_open ON stop_event(status) WHERE status <> 'RESOLVED';
 CREATE INDEX ix_stopevent_reason ON stop_event(reason_code_id);
@@ -390,26 +474,40 @@ CREATE TABLE audit_log (
 -- 4. ANALYTICS VIEWS (SQL, not Python loops — per stack rule)
 -- ═══════════════════════════════════════════════════════════════════════
 
+-- loom_efficiency_pct is THE mill's EFF% — denominator is SCHEDULED
+-- minutes, not running minutes. This is what reconciles to the real
+-- baseline table (ATM 89.6%, etc.) — see design note §1.11/§4.1.
+-- performance_eff_pct (running-time only) is kept separate and used only
+-- as a diagnostic to distinguish "loom runs slow" from "loom doesn't run".
 CREATE VIEW v_production_derived AS
 SELECT
   p.*,
-  ROUND(p.actual_picks / NULLIF(p.std_rpm_snapshot * p.running_minutes, 0) * 100, 2) AS efficiency_pct,
-  ROUND(p.running_minutes::numeric / NULLIF(p.scheduled_minutes, 0) * 100, 2)        AS utilization_pct,
-  ROUND(p.warp_breaks / NULLIF(p.actual_picks / 1000.0, 0), 3)                       AS warp_breaks_per_1000,
-  ROUND(p.weft_breaks / NULLIF(p.actual_picks / 1000.0, 0), 3)                       AS weft_breaks_per_1000
+  ROUND(p.actual_picks / NULLIF(p.std_rpm_snapshot * p.scheduled_minutes, 0) * 100, 2) AS loom_efficiency_pct,
+  ROUND(p.actual_picks / NULLIF(p.std_rpm_snapshot * p.running_minutes, 0) * 100, 2)   AS performance_eff_pct,
+  ROUND(p.running_minutes::numeric / NULLIF(p.scheduled_minutes, 0) * 100, 2)          AS utilization_pct,
+  ROUND(p.warp_breaks / NULLIF(p.actual_picks / 1000.0, 0), 3)                         AS warp_breaks_per_1000,
+  ROUND(p.weft_breaks / NULLIF(p.actual_picks / 1000.0, 0), 3)                         AS weft_breaks_per_1000
 FROM production_log p;
 
-CREATE VIEW v_cohort_stats_30d AS
-SELECT
-  d.style_id,
-  l.loom_type_code,
-  d.work_date,
-  PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY d.efficiency_pct) AS cohort_median_eff,
-  PERCENTILE_CONT(0.9) WITHIN GROUP (ORDER BY d.efficiency_pct) AS cohort_p90_eff,
-  COUNT(DISTINCT d.loom_id) AS cohort_loom_count
-FROM v_production_derived d
-JOIN loom l ON l.loom_id = d.loom_id
-GROUP BY d.style_id, l.loom_type_code, d.work_date;
+-- Rolling 30-day cohort (renamed from v_cohort_stats_30d, which — as
+-- originally written — grouped by work_date and produced a same-day
+-- cohort, not a 30-day one; that mismatch between name and behavior was
+-- exactly the kind of bug that survives review, per correction #6).
+-- Computed per query-date via a LATERAL join over the trailing 30-day
+-- window ending on that date, evaluated at the API layer (not a plain
+-- view, since "as of date X" needs a parameter) — this is the reference
+-- query shape the API's cohort function implements:
+--   SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY loom_efficiency_pct) AS cohort_median_eff,
+--          PERCENTILE_CONT(0.9) WITHIN GROUP (ORDER BY loom_efficiency_pct) AS cohort_p90_eff,
+--          COUNT(DISTINCT loom_id) AS cohort_loom_count
+--   FROM v_production_derived d JOIN loom l ON l.loom_id = d.loom_id
+--   WHERE d.style_id = :style_id AND l.loom_type_code = :loom_type_code
+--     AND d.work_date BETWEEN :as_of_date - INTERVAL '30 days' AND :as_of_date
+-- If cohort_loom_count < 5, the API falls back to all-history for that
+-- style/loom_type and tags the response cohort_window='ALL_HISTORY —
+-- insufficient recent data' (design note §1.6) — and per correction A,
+-- a cohort below 5 looms may inform a screen but must NEVER fire a
+-- suggestion rule.
 
 CREATE VIEW v_stop_event_metrics AS
 SELECT
@@ -431,15 +529,15 @@ re-run reproduces byte-identical output. Every row written with
 `source='DEMO'`.
 
 **Step 1 — Masters.**
-- `unit`: ATM (`is_own_unit=true`) + CVF, SKT, VPN, METRO, TPN.
+- `unit`: ATM (`is_own_unit=true`) + CVF, SKT, VPN, METRO, TPN
+  (`is_own_unit=false`).
 - `loom_type`: 810, 910 (Tsudakoma airjet), 340, 280, TS, SZ (Sulzer).
-- `loom` counts: ATM = 168 airjet (mix of 810/910) + 24 Sulzer (mix of
-  340/280/TS/SZ), `register_confirmed=false`. Vendor units: derive
-  `loom_count ≈ round(unit_kilo_picks_per_day / atm_kilo_picks_per_loom)`
-  where `atm_kilo_picks_per_loom = 107,469 / 192 ≈ 559.7`, adjusted by each
-  unit's efficiency ratio to ATM's (a lower-efficiency unit needs
-  proportionally more looms for the same output). All flagged
-  `register_confirmed=false`.
+- `loom` counts: **ATM only** = 168 airjet (mix of 810/910) + 24 Sulzer
+  (mix of 340/280/TS/SZ), `register_confirmed=false`. **Vendor units get
+  no `loom` rows at all** (design note §1.1, `RESOLVED`) — their real
+  July-2026 figures go into `vendor_unit_monthly_summary` directly, one
+  row per unit, `source='CSV_IMPORT'`. No loom-count derivation is
+  performed or needed.
 - `employee`: 137 rows built directly from the grade/role table in §3 of
   the brief — role counts and grade counts are sampled to hit the exact
   totals given (63 WEAVER, 18 FABRIC_CHECKER, etc.; grade distribution
@@ -450,11 +548,19 @@ re-run reproduces byte-identical output. Every row written with
   duplicates.
 - `style`: the 10 real styles from §3, `loom_type_code` inferred from the
   "Loom type" column (Airjet→810/910, Sulzer→340/280/TS/SZ, picked
-  deterministically per style index). `picks_per_metre` derived from
-  `reed × pick` where given, otherwise a reasonable construction-based
-  default. `revenue_per_metre` seeded as `ESTIMATED` (see design note §1.2)
-  scaled so per-unit monthly revenue lands in a plausible range for a mid-
-  size composite mill — explicitly not claimed as real.
+  deterministically per style index). `picks_per_metre` is **derived from
+  the style code's own pick density**, not a generic construction default
+  (correction #3): a style code like `66X55` means 66 ends/inch × 55
+  picks/inch, so `picks_per_metre = picks_per_inch × 39.3701`. This is
+  independently checkable against the baseline table — dividing each
+  unit's month kilo-picks by month metres gives an implied picks/metre
+  (ATM≈2,161, CVF≈2,308, SKT≈2,438, VPN≈1,809, METRO≈2,212, TPN≈2,682),
+  and ATM's implied ~54.9 picks/inch lines up with the `66×55` plain style
+  that dominates its mix — good evidence the baseline table is internally
+  consistent real data. `revenue_per_metre` seeded flat as
+  `DEFAULT_REVENUE_PER_METRE` (design note §1.2, `RESOLVED`),
+  `revenue_rate_source='ESTIMATED'` — not fit to reproduce any particular
+  ₹ total, since none exists to fit against.
 - `style_unit_crimp_monthly`: the exact crimp % values given per
   style×unit×July-2026, `source='CONFIRMED'`.
 - `shift_master`: 3 rows, shift 3 `crosses_midnight=true`.
@@ -527,40 +633,96 @@ electrical/mechanical longer-tailed than material/manpower), all inside
 the shift window (spilling into the next shift's window is allowed and
 handled correctly by `work_date`/timestamp separation, not clamped).
 
-**Step 6 — Calibration pass.** After generating a full month, sum
-`kilo_picks`/`metres` per unit and compare to the §3 table. If any unit is
-outside ±2%, apply one deterministic multiplicative correction to that
-unit's `unit_target_eff` (or loom count, if the count derivation was the
-source of drift) and regenerate — bounded to at most 3 correction passes,
+**Step 6 — Calibration pass (ATM only — vendor units have no generator to
+calibrate).** After generating a full month, sum `kilo_picks`/`metres` and
+compare to the ATM row of the §3 table. **`unit_target_eff` (89.6%) is
+never the free variable** (correction #2) — it is the one confirmed real
+number in the whole baseline and is the calibration *target*. If ATM's
+generated totals are outside ±2%, correct in this preference order: (1)
+`loom_count` (currently unconfirmed — the legitimate knob), (2) `std_rpm`
+per loom type (currently seeded, not confirmed), (3) `scheduled_minutes`
+per shift if 480 doesn't reflect the mill's actual available hours (their
+own sheet uses `@ 22.5 HRS` / `@ 22 HRS` / `@ 21 HRS` per department,
+i.e. *not* a flat 8h/24h assumption). Bounded to 3 correction passes,
 still seeded/deterministic, logged so the final calibration factor is
-visible (not silently tuned away).
+visible. **If drift can't be closed within 3 passes, stop and report the
+inconsistency rather than tuning until it fits** — an unclosable gap is
+information about a wrong assumption (e.g. `scheduled_minutes`), not a
+bug to paper over.
+
+**Step 7 — Fabric rolls.** Each production_log row that completes a
+running batch doffs 0-2 rolls, weight drawn from the real bands (50-200 kg)
+per unit; totals calibrated the same way as Step 6, targeting ATM 2,474
+rolls/month (vendor unit roll counts — CVF 3,354, SKT 1,019, VPN 381,
+METRO 277, TPN 255 — go straight into
+`vendor_unit_monthly_summary.month_rolls`, not generated per-loom, since
+vendor units have no looms in v2).
 
 **Reconciliation test** (`tests/test_demo_reconciliation.py`):
 ```python
-def test_demo_month_matches_vendor_mrm():
-    totals = generate_demo_month(seed=42)
-    expected = {
-        "VPN": {"eff": 93.9, "kilo_picks": 473_905, "metres": 261_892},
-        "CVF": {"eff": 90.6, "kilo_picks": 4_742_548, "metres": 2_054_906},
-        "ATM": {"eff": 89.6, "kilo_picks": 3_331_544, "metres": 1_541_450},
-        "SKT": {"eff": 87.2, "kilo_picks": 1_218_425, "metres": 499_839},
-        "METRO": {"eff": 84.3, "kilo_picks": 423_515, "metres": 191_497},
-        "TPN": {"eff": 83.7, "kilo_picks": 374_280, "metres": 139_530},
-    }
-    for unit_code, exp in expected.items():
-        got = totals[unit_code]
-        assert abs(got["kilo_picks"] - exp["kilo_picks"]) / exp["kilo_picks"] <= 0.02
-        assert abs(got["metres"] - exp["metres"]) / exp["metres"] <= 0.02
-        assert abs(got["eff"] - exp["eff"]) <= 1.0   # percentage points, tighter absolute band
+# ATM is the only unit with a generator to reconcile — vendor units are
+# loaded straight into vendor_unit_monthly_summary from the real MRM
+# figures, so "reconciliation" for them is just "does the loaded row match
+# the source table", asserted once at import/seed time, not regenerated.
+ATM_EXPECTED = {"eff": 89.6, "kilo_picks": 3_331_544, "metres": 1_541_450, "rolls": 2_474}
+VENDOR_EXPECTED = {
+    "VPN":   {"eff": 93.9, "kilo_picks": 473_905,   "metres": 261_892,   "rolls": 381},
+    "CVF":   {"eff": 90.6, "kilo_picks": 4_742_548, "metres": 2_054_906, "rolls": 3_354},
+    "SKT":   {"eff": 87.2, "kilo_picks": 1_218_425, "metres": 499_839,   "rolls": 1_019},
+    "METRO": {"eff": 84.3, "kilo_picks": 423_515,   "metres": 191_497,   "rolls": 277},
+    "TPN":   {"eff": 83.7, "kilo_picks": 374_280,   "metres": 139_530,   "rolls": 255},
+}
+IMPLIED_PICKS_PER_METRE = {
+    "ATM": 2161, "CVF": 2308, "SKT": 2438, "VPN": 1809, "METRO": 2212, "TPN": 2682,
+}
 
-def test_demo_no_two_looms_identical():
+def test_demo_atm_matches_vendor_mrm():
+    totals = generate_demo_month(seed=42)["ATM"]
+    exp = ATM_EXPECTED
+    assert abs(totals["kilo_picks"] - exp["kilo_picks"]) / exp["kilo_picks"] <= 0.02
+    assert abs(totals["metres"] - exp["metres"]) / exp["metres"] <= 0.02
+    assert abs(totals["rolls"] - exp["rolls"]) / exp["rolls"] <= 0.02
+    assert abs(totals["eff"] - exp["eff"]) <= 1.0   # percentage points, tighter absolute band
+
+def test_vendor_summary_rows_match_source_exactly():
+    for unit_code, exp in VENDOR_EXPECTED.items():
+        row = get_vendor_unit_monthly_summary(unit_code, month="2026-07-01")
+        assert row.efficiency_pct == exp["eff"]
+        assert row.month_kilo_picks == exp["kilo_picks"]
+        assert row.month_metres == exp["metres"]
+        assert row.month_rolls == exp["rolls"]
+
+def test_demo_picks_per_metre_ratio():
+    # Correction #3 — catches style-mix errors the totals tests can each
+    # pass independently while still getting the fabric mix wrong.
+    totals = generate_demo_month(seed=42)
+    for unit_code, expected_ppm in IMPLIED_PICKS_PER_METRE.items():
+        got = totals[unit_code]
+        implied = (got["kilo_picks"] * 1000) / got["metres"]
+        assert abs(implied - expected_ppm) / expected_ppm <= 0.03
+
+def test_demo_efficiency_has_real_spread():
+    # Strengthens the plain "no two looms identical" check (correction C)
+    # — a uniform distribution with float noise can pass a distinctness
+    # check while still looking dead on screen.
     rows = get_all_loom_month_summaries(unit="ATM")
-    signatures = {(r.efficiency_pct, r.metres, r.revenue) for r in rows}
-    assert len(signatures) == len(rows)   # F2 regression guard
+    effs = [r.loom_efficiency_pct for r in rows]
+    signatures = {(r.loom_efficiency_pct, r.metres, r.revenue) for r in rows}
+    assert len(signatures) == len(rows)                       # F2 regression guard
+    assert statistics.pstdev(effs) >= 2.0                     # real spread, not noise
+    p10_cutoff = sorted(effs)[len(effs) // 10]
+    median = statistics.median(effs)
+    assert median - p10_cutoff >= 5.0                         # a real worst-10% tail
 
 def test_demo_loss_causes_sum_to_headline():
     brief = compute_morning_brief(unit="ATM", date=...)
     assert abs(sum(c.rupees for c in brief.loss_causes) - brief.total_loss_rupees) <= brief.total_loss_rupees * 0.005
+
+def test_loom_efficiency_reconciles_with_performance_and_utilization():
+    # Identity check for correction #1's three-function split.
+    row = get_one_production_log_row()
+    implied = row.performance_eff_pct * row.utilization_pct / 100
+    assert abs(implied - row.loom_efficiency_pct) <= 0.5   # rounding tolerance
 ```
 
 ---
@@ -570,10 +732,25 @@ def test_demo_loss_causes_sum_to_headline():
 ### 4.1 `backend/app/analytics/formulas.py` (pure functions, each unit-tested)
 
 ```python
-def efficiency_pct(actual_picks: Decimal, std_rpm: Decimal, running_min: Decimal) -> Decimal | None:
-    """actual_picks / (std_rpm * running_min) * 100. None if running_min == 0 (no fabricated 0%)."""
+def loom_efficiency_pct(actual_picks: Decimal, std_rpm: Decimal, scheduled_min: Decimal) -> Decimal | None:
+    """THE mill's EFF%. Denominator = SCHEDULED minutes, not running minutes
+    (correction #1 — the brief's original formula used running_min, which
+    measures speed-while-running and lands near 97-98%, hiding all
+    stoppage; it cannot reconcile to the real baseline table, e.g. ATM
+    89.6%, because that figure is measured against scheduled time).
+    This is THE headline number everywhere "efficiency" is shown unqualified.
+    None if scheduled_min == 0 (no fabricated 0%)."""
 
-def utilization_pct(running_min: Decimal, scheduled_min: Decimal) -> Decimal | None: ...
+def performance_eff_pct(actual_picks: Decimal, std_rpm: Decimal, running_min: Decimal) -> Decimal | None:
+    """Speed efficiency while actually running. Diagnostic only — separates
+    'loom runs slow' from 'loom doesn't run'. Never shown as THE efficiency
+    number without the 'performance (while running)' qualifier."""
+
+def utilization_pct(running_min: Decimal, scheduled_min: Decimal) -> Decimal | None:
+    """running_min / scheduled_min * 100.
+    Identity that must hold (tested): loom_efficiency_pct ≈
+    performance_eff_pct * utilization_pct / 100, within rounding."""
+    ...
 
 def kilo_picks(picks_per_metre: Decimal, metres: Decimal) -> Decimal:
     """(picks_per_metre * metres) / 1000 — derivation, asserted consistent with stored kilo_picks."""
@@ -581,8 +758,11 @@ def kilo_picks(picks_per_metre: Decimal, metres: Decimal) -> Decimal:
 def warp_breaks_per_1000(warp_breaks: int, actual_picks: int) -> Decimal | None: ...
 def weft_breaks_per_1000(weft_breaks: int, actual_picks: int) -> Decimal | None: ...
 
-def cohort_gap_pp(loom_eff: Decimal, cohort_median_eff: Decimal | None) -> Decimal | None:
-    """None (not 0) when no cohort exists — see cohort fallback rule in design note §1.6."""
+def cohort_gap_pp(loom_efficiency_pct: Decimal, cohort_median_eff: Decimal | None) -> Decimal | None:
+    """Both inputs are loom_efficiency_pct (scheduled-time basis), never
+    performance_eff_pct — a cohort comparison on the running-time number
+    would compare stoppage-hidden figures. None (not 0) when no cohort
+    exists — see cohort fallback rule in design note §1.6."""
 
 def mtbf_hours(running_min_total: Decimal, stop_count: int) -> Decimal | None: ...
 def mttr_min(resolved_at: datetime, attending_at: datetime) -> Decimal | None: ...
@@ -629,6 +809,28 @@ brief; `confidence` is set by rule-internal logic (e.g.
 `LOOM_CHRONIC_UNDERPERFORMER` is `HIGH` at 7-of-7 days, `MEDIUM` at 5-6,
 never fires below 5) — not a single global confidence constant.
 
+**Addition A — minimum cohort size gate (mandatory, applies to every
+cohort-based rule).** `LOOM_CHRONIC_UNDERPERFORMER` and any other rule
+comparing a loom against `cohort_median_eff`/`cohort_p90_eff` **must not
+fire from a cohort of fewer than 5 looms.** Below that size the API still
+returns the comparison as informational (with `cohort_loom_count` visible
+so the UI can show "compared against only 3 looms — informational only"),
+but the rule engine suppresses the suggestion entirely. A wrong suggestion
+built on a 3-loom median costs more credibility with the owner than a
+missing one — this is enforced once, centrally, in the rule-evaluation
+wrapper that every cohort-based rule runs through, not re-implemented per
+rule.
+
+**Addition B — outcome-tracking loop (P3, using the schema already
+present).** `suggestion_log.status`/`acted_by`/`acted_at` exist from P0.
+When a suggestion transitions to `DONE`, a P3 job measures that loom's
+`loom_efficiency_pct` over the following 7 days against the 7 days before
+the suggestion fired, and stores the delta. This produces the single most
+persuasive screen in the product — *"suggestions acted on this month
+recovered ₹X of an estimated ₹Y opportunity"* — because it demonstrates
+the system paying for itself instead of asserting it. Not built in P0;
+the schema (§2) already supports it without changes.
+
 ---
 
 ## 5. Q1–Q23 module registry
@@ -667,27 +869,56 @@ Manpower, Maintenance, Compressor, Quality, Revenue).
 with no `assignment` data at all would show Q9 as `BLOCKED` even though
 ATM shows it `PARTIAL`, per §4's own per-source gating logic.
 
+**Vendor-unit scoping (post-review):** since vendor units carry no
+`loom`/`production_log`/`stop_event` rows at all (design note §1.1), any
+question requiring per-loom, per-shift, or per-event detail — Q3-Q13,
+Q19-Q20, Q22-Q23's decomposition — is `BLOCKED` for vendor units
+specifically, even where it's `READY`/`PARTIAL` for ATM. Vendor units only
+ever answer the aggregate-shaped questions (Q1's headline, Q4's monthly
+total, Q21's monthly revenue) from `vendor_unit_monthly_summary`, each
+response carrying `period: "2026-07 (monthly MRM, not live)"` so it's
+never mistaken for a live figure, and never assembled into a cross-unit
+ranking with ATM's per-loom data (this is the structural fix for F5).
+
 ---
 
 ## 6. P0 task list with definition of done
 
 | # | Task | Definition of done |
 |---|---|---|
-| 0.1 | **Delete v1** (`backend/app/{db_models.py,analytics,repositories,services,routers,ingestion,data,assistant,models,validation}`, `frontend/app`, `frontend/components`, root CSVs, old alembic versions) — after this design is approved | `git rm` in one dedicated commit, nothing from v1 imported by any v2 file; v1's `docs/REDEVELOPMENT_PLAN.md` superseded by this doc (kept for history, not deleted — it documents real prior audit work). |
-| 0.2 | New Alembic migration from the DDL in §2 | `alembic upgrade head` succeeds against a clean DB; `alembic downgrade base` succeeds and is symmetric. |
-| 0.3 | Master seed script (units, sheds, loom_type, loom, style, style_unit_crimp_monthly, shift_master, employee, reason_code, cost_master) | Row counts match §3 of the brief exactly (137 employees split per role/grade table, 168+24 ATM looms, 10 styles, 6 units); `register_confirmed=false` on all seeded looms; idempotent (re-running doesn't duplicate). |
-| 0.4 | Demo data generator (beam_run, assignment, production_log, stop_event) per §3 of this doc | `test_demo_month_matches_vendor_mrm`, `test_demo_no_two_looms_identical`, `test_demo_loss_causes_sum_to_headline` all pass; generation is deterministic (byte-identical output across 2 runs with the same seed). |
-| 0.5 | `formulas.py` with full test coverage | Every function in §4.1 has ≥3 tests (normal/zero-denominator/None-input); 100% line coverage on the module. |
-| 0.6 | Reconciliation test suite wired into CI | `pytest tests/test_demo_reconciliation.py` is a required check; failing it fails the build (§6 of the brief: "Fail the build if they don't"). |
-| 0.7 | `docs/V2_DDL.sql`, `docs/V2_DEMO_GENERATOR.md`, `docs/V2_RULES.md` extracted from this design doc into their own reference files once implementation starts (so each is independently linkable from the code that implements it) | Files exist, cross-linked from module docstrings. |
+| 0.1 | **Preserve v1, scaffold v2 fresh** — v1 tagged `v1-final`, branched `archive/v1` (both pushed), `docs/V1_POSTMORTEM.md` written; v2 scaffolded under `v2/backend/` alongside (not replacing) v1's `backend/`/`frontend/` | `v1-final` tag and `archive/v1` branch exist on origin; postmortem covers F1-F7; `v2/` directory exists with no imports from v1's `backend/app/`. **DONE.** |
+| 0.2 | New Alembic migration from the corrected DDL in §2 (no TimescaleDB; includes `production_target`, `fabric_roll`, `vendor_unit_monthly_summary`) | `alembic upgrade head` succeeds against a clean DB; `alembic downgrade base` succeeds and is symmetric. |
+| 0.3 | Master seed script — **ATM only** for `loom`; units, sheds, loom_type, style, style_unit_crimp_monthly, shift_master, employee, reason_code, cost_master, production_target basis; vendor units get `vendor_unit_monthly_summary` rows only (loaded from the real July-2026 table, `source='CSV_IMPORT'`) | Row counts match §3 exactly (137 employees split per role/grade table, 168+24 ATM looms only, 10 styles, 6 units); `register_confirmed=false` on all seeded looms; `test_vendor_summary_rows_match_source_exactly` passes; idempotent. |
+| 0.4 | `formulas.py` with full test coverage — **built before the demo generator**, since the generator depends on the corrected `loom_efficiency_pct` definition (correction #1); building the generator first would bake in the wrong one | Every function in §4.1 has ≥3 tests (normal/zero-denominator/None-input); `test_loom_efficiency_reconciles_with_performance_and_utilization` passes; 100% line coverage on the module. |
+| 0.5 | Demo data generator (beam_run, assignment, production_log, stop_event, fabric_roll) for **ATM only** per §3 of this doc, using `formulas.py` from 0.4 | `test_demo_atm_matches_vendor_mrm`, `test_demo_picks_per_metre_ratio`, `test_demo_efficiency_has_real_spread`, `test_demo_loss_causes_sum_to_headline` all pass; generation is deterministic (byte-identical output across 2 runs with the same seed). |
+| 0.6 | Reconciliation test suite (5 tests per §3) wired into CI | `pytest tests/test_demo_reconciliation.py` is a required check; failing it fails the build. Includes a printed report of the 20 worst ATM looms by monthly `loom_efficiency_pct` for manual review — the shape (visible tail, chronic offenders, one degrading loom) is checked by eye before P1 starts, not just by the automated assertions. |
+| 0.7 | `docs/V2_DDL.sql`, `docs/V2_DEMO_GENERATOR.md`, `docs/V2_RULES.md` extracted from this design doc into their own reference files once implementation starts | Files exist, cross-linked from module docstrings. |
 
-**Nothing in P1+ starts until 0.1–0.6 are green.**
+**Nothing in P1+ starts until 0.2–0.6 are green.**
 
 ---
 
-## Open items requiring your answer before P0 starts
+## Open items — all resolved in review
 
-1. Confirm loom-count derivation for vendor units (§1.1) or supply real counts.
-2. Confirm all ₹/revenue figures in the demo are synthetic/`ESTIMATED` placeholders — I have no real ATM revenue baseline to calibrate against (§1.2).
-3. Confirm `vendor_coordinator` role's ₹ visibility scope (§1.10).
-4. Confirm go-ahead to delete v1 (task 0.1) — this is irreversible once pushed; I'll do it in its own commit so it's cleanly revertible via git history if needed, but want explicit sign-off before running it given how much genuinely-working v1 code exists.
+1. ~~Loom-count derivation for vendor units~~ → **Resolved: no vendor
+   looms; unit-aggregate only.** See §1.1.
+2. ~~₹/revenue placeholder confirmation~~ → **Resolved: flat
+   `DEFAULT_REVENUE_PER_METRE`, `ESTIMATED` tag, "Confirm your rate card"
+   panel.** See §1.2.
+3. ~~`vendor_coordinator` ₹ visibility scope~~ → **Resolved: zero ₹
+   anywhere, no exceptions.** See §1.10.
+4. ~~Go-ahead to delete v1~~ → **Resolved: v1 is not deleted.** Tagged
+   `v1-final`, branched `archive/v1`, both pushed to origin. v2 is built
+   fresh alongside it in `v2/`.
+
+Six additional blocking corrections from review are folded into the
+relevant sections above (marked `correction #1`-`#6` inline): the wrong
+efficiency formula (§4.1), the calibration pass tuning the wrong variable
+(§3 Step 6), the picks-per-metre derivation and its reconciliation test
+(§3), dropping TimescaleDB (§2), the two missing entities
+`production_target`/`fabric_roll` (§2), and the cohort view's
+name/behavior mismatch (§2). Three additions — the cohort minimum-size
+gate, the outcome-tracking loop, and the strengthened uniformity test —
+are folded into §4.2 and §3 respectively.
+
+P0 is proceeding per the corrected task list in §6.
