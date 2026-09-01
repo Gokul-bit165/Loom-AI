@@ -362,6 +362,137 @@ export async function fetchProductionSummary(date: string = '2026-07-31', unit: 
   return res.json();
 }
 
+export interface ProductionComparisonPoint {
+  date: string;
+  metres: number;
+  target_metres: number;
+  efficiency_pct: number;
+  warp_breaks: number;
+  weft_breaks: number;
+}
+
+export interface BreakHotspotLoom {
+  loom_no: string;
+  loom_type: string;
+  warp_breaks: number;
+  weft_breaks: number;
+  total_breaks: number;
+  breaks_per_1000_picks: number;
+  primary_cause: string;
+}
+
+export interface TimelineSeriesPoint {
+  label: string;
+  current_metres: number;
+  current_eff: number;
+  current_breaks: number;
+  baseline_metres: number;
+  baseline_eff: number;
+  baseline_breaks: number;
+  target_metres: number;
+}
+
+export interface TimelineModeData {
+  id: 'yesterday' | 'week' | 'month' | 'year';
+  label: string;
+  granularity?: 'shift' | 'day' | 'week' | 'month';
+  chart_type?: 'line_shifts' | 'bar_days' | 'bar_weeks' | 'bar_months';
+  period_label: string;
+  current_name: string;
+  baseline_name: string;
+  current_summary: {
+    metres: number;
+    efficiency_pct: number;
+    warp_breaks?: number;
+    weft_breaks?: number;
+    total_breaks: number;
+    stopped_minutes?: number;
+  };
+  baseline_summary: {
+    metres: number;
+    efficiency_pct: number;
+    warp_breaks?: number;
+    weft_breaks?: number;
+    total_breaks: number;
+    stopped_minutes?: number;
+  };
+  variance: {
+    metres_diff: number;
+    metres_pct: number;
+    eff_diff_pp: number;
+    breaks_diff: number;
+  };
+  series: TimelineSeriesPoint[];
+  ai_insight: string;
+}
+
+export interface ProductionComparisonResponse {
+  work_date: string;
+  unit_code: string;
+  timeline_modes: {
+    yesterday: TimelineModeData;
+    week: TimelineModeData;
+    month: TimelineModeData;
+    year: TimelineModeData;
+  };
+  comparison: {
+    today: {
+      metres: number;
+      target_metres: number;
+      efficiency_pct: number;
+      warp_breaks: number;
+      weft_breaks: number;
+      total_breaks: number;
+      stopped_minutes: number;
+    };
+    yesterday: {
+      date: string;
+      metres: number;
+      efficiency_pct: number;
+      variance_metres: number;
+      variance_pct: number;
+    };
+    last_week_avg: {
+      metres: number;
+      efficiency_pct: number;
+      warp_breaks_daily_avg: number;
+      weft_breaks_daily_avg: number;
+      variance_metres: number;
+      variance_pct: number;
+    };
+    last_month_avg: {
+      metres: number;
+      efficiency_pct: number;
+      warp_breaks_daily_avg: number;
+      weft_breaks_daily_avg: number;
+      variance_metres: number;
+      variance_pct: number;
+    };
+  };
+  daily_trend: ProductionComparisonPoint[];
+  break_analytics: {
+    warp_breaks_total: number;
+    weft_breaks_total: number;
+    total_breaks: number;
+    warp_breaks_per_1000_picks: number;
+    weft_breaks_per_1000_picks: number;
+    warp_vs_weft_ratio: string;
+    break_hotspots: BreakHotspotLoom[];
+  };
+  ai_overview: {
+    headline: string;
+    insights: string[];
+    recommendation: string;
+  };
+  provenance: Record<string, string>;
+}
+
+export async function fetchProductionComparison(date: string = '2026-07-31', unit: string = 'ATM'): Promise<ProductionComparisonResponse> {
+  const res = await fetch(`${API_BASE}/production/comparison?date=${date}&unit=${unit}`);
+  if (!res.ok) throw new Error(`Production comparison fetch failed: ${res.statusText}`);
+  return res.json();
+}
+
 export async function fetchLooms(
   date: string = '2026-07-31',
   unit: string = 'ATM',

@@ -141,3 +141,14 @@ def production_summary(
         data_as_of=data_as_of,
         source_mix=[str(s) for s in source_mix] if source_mix else ["DEMO"],
     )
+
+
+@router.get("/comparison")
+def production_comparison(
+    unit: str = Query("ATM"),
+    date: datetime.date = Query(...),
+    session: Session = Depends(get_session),
+) -> dict:
+    from app.services.truth_service import ProductionService
+    return ProductionService.get_production_comparison(session, unit, date)
+
