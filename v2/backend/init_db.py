@@ -1,7 +1,9 @@
+import os
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-conn = psycopg2.connect(host='localhost', port=5432, user='postgres', password='admin')
+admin_pass = os.environ.get("PG_ADMIN_PASSWORD", "kishore")
+conn = psycopg2.connect(host='localhost', port=5432, user='postgres', password=admin_pass)
 conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = conn.cursor()
 

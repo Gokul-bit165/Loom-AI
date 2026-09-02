@@ -381,6 +381,29 @@ export interface BreakHotspotLoom {
   primary_cause: string;
 }
 
+export interface ShiftHourlyPoint {
+  hour: string;
+  today_m: number;
+  yesterday_m: number;
+  target_m: number;
+  is_anomaly?: boolean;
+}
+
+export interface ShiftLoomParetoItem {
+  loom_no: string;
+  type: string;
+  downtime_min: number;
+  lost_m: number;
+  lost_inr?: number;
+  reason: string;
+}
+
+export interface ShiftChronologyItem {
+  time: string;
+  badge: string;
+  note: string;
+}
+
 export interface TimelineSeriesPoint {
   label: string;
   current_metres: number;
@@ -390,6 +413,22 @@ export interface TimelineSeriesPoint {
   baseline_eff: number;
   baseline_breaks: number;
   target_metres: number;
+  delta_metres?: number;
+  delta_pct?: number;
+  delta_eff?: number;
+  is_loss?: boolean;
+  loss_metres?: number;
+  loss_cost_inr?: number;
+  ai_loss_reason?: string | null;
+  ai_root_cause?: string | null;
+  ai_recommended_action?: string | null;
+  loss_category?: string | null;
+  affected_looms?: string[];
+  ai_gain_reason?: string | null;
+  ai_confidence?: string;
+  hourly_telemetry?: ShiftHourlyPoint[];
+  loom_breakdown_pareto?: ShiftLoomParetoItem[];
+  chronology_events?: ShiftChronologyItem[];
 }
 
 export interface TimelineModeData {
