@@ -9,13 +9,10 @@ import {
   Wrench,
   AlertTriangle,
   Clock,
-  Activity,
   Layers,
   CheckCircle2,
   Send,
-  HelpCircle,
   BarChart3,
-  ArrowRight,
 } from 'lucide-react';
 
 interface ShiftLossReasonModalProps {
@@ -142,7 +139,7 @@ export const ShiftLossReasonModal: React.FC<ShiftLossReasonModalProps> = ({
                 <span>•</span>
                 <span>Work Date: 31 Jul 2026 vs 30 Jul 2026</span>
                 <span>•</span>
-                <DataTrustBadge classification="ACTUAL" sourceId="plc_telemetry" />
+                <DataTrustBadge provenance="ACTUAL" />
               </div>
             </div>
           </div>

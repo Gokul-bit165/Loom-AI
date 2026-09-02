@@ -6,6 +6,7 @@ import type {
   LoomsResponse,
   BreakHotspotLoom,
   TimelineModeData,
+  TimelineSeriesPoint,
 } from '../api';
 import {
   PageHeader,
@@ -25,7 +26,6 @@ import {
   ArrowRight,
   Columns,
   Layers as LayersIcon,
-  Wrench,
 } from 'lucide-react';
 import { ContextualAiDrawer } from './ContextualAiDrawer';
 import type { ContextualAiPayload } from './ContextualAiDrawer';
