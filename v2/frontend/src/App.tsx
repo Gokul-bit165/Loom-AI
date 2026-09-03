@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { CommandCenterView } from './components/CommandCenterView';
 import { ProductionIntelligenceView } from './components/ProductionIntelligenceView';
-import { BreakdownBoardView } from './components/BreakdownBoardView';
+import { BreakdownHubView } from './components/BreakdownHubView';
+import type { BreakdownSubPage } from './components/BreakdownHubView';
 import { LoomDetailView } from './components/LoomDetailView';
 import { OperationsView } from './components/OperationsView';
 import { ManpowerIntelligenceView } from './components/ManpowerIntelligenceView';
@@ -19,7 +20,9 @@ import { AiAgentsHubView } from './components/AiAgentsHubView';
 import type { AgentTab } from './components/AiAgentsHubView';
 import {
   Activity,
+  AlertTriangle,
   Award,
+  BarChart3,
   Bot,
   BrainCircuit,
   ChevronDown,
@@ -32,6 +35,7 @@ import {
   LayoutDashboard,
   LayoutGrid,
   Layers,
+  Search,
   ShieldAlert,
   UploadCloud,
   Users,
@@ -62,6 +66,8 @@ export type ViewMode =
 
 export function App() {
   const [currentView, setCurrentView] = useState<ViewMode>('command-center');
+  const [breakdownSubPage, setBreakdownSubPage] = useState<BreakdownSubPage>('overview');
+  const [breakdownsExpanded, setBreakdownsExpanded] = useState<boolean>(true);
   const [initialAgentTab, setInitialAgentTab] = useState<AgentTab>('watchtower');
   const [selectedLoomId, setSelectedLoomId] = useState<number | null>(118);
   const [showSupportSection, setShowSupportSection] = useState<boolean>(true);
@@ -109,14 +115,87 @@ export function App() {
             <span>Production</span>
           </button>
 
+          {/* 🔧 BREAKDOWNS (EXPANDABLE PARENT MODULE) */}
           <button
             className={`nav-item ${currentView === 'breakdowns' ? 'active' : ''}`}
-            onClick={() => setCurrentView('breakdowns')}
+            onClick={() => {
+              if (currentView !== 'breakdowns') {
+                setCurrentView('breakdowns');
+                setBreakdownsExpanded(true);
+              } else {
+                setBreakdownsExpanded(!breakdownsExpanded);
+              }
+            }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
           >
-            <Wrench size={16} />
-            <span>Breakdowns</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+              <Wrench size={16} />
+              <span>Breakdowns</span>
+            </div>
+            {breakdownsExpanded ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
           </button>
 
+          {/* BREAKDOWNS SUB-PAGES */}
+          {breakdownsExpanded && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              <button
+                className={`nav-subitem ${currentView === 'breakdowns' && breakdownSubPage === 'overview' ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentView('breakdowns');
+                  setBreakdownSubPage('overview');
+                }}
+              >
+                <BarChart3 size={14} />
+                <span>Overview</span>
+              </button>
+
+              <button
+                className={`nav-subitem ${currentView === 'breakdowns' && breakdownSubPage === 'downtime' ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentView('breakdowns');
+                  setBreakdownSubPage('downtime');
+                }}
+              >
+                <Clock size={14} />
+                <span>Downtime Analysis</span>
+              </button>
+
+              <button
+                className={`nav-subitem ${currentView === 'breakdowns' && breakdownSubPage === 'reasons' ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentView('breakdowns');
+                  setBreakdownSubPage('reasons');
+                }}
+              >
+                <AlertTriangle size={14} />
+                <span>Breakdown Reasons</span>
+              </button>
+
+              <button
+                className={`nav-subitem ${currentView === 'breakdowns' && breakdownSubPage === 'patterns' ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentView('breakdowns');
+                  setBreakdownSubPage('patterns');
+                }}
+              >
+                <Search size={14} />
+                <span>Pattern & Alerts</span>
+              </button>
+
+              <button
+                className={`nav-subitem ${currentView === 'breakdowns' && breakdownSubPage === 'loss' ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentView('breakdowns');
+                  setBreakdownSubPage('loss');
+                }}
+              >
+                <IndianRupee size={14} />
+                <span>Loss Analysis</span>
+              </button>
+            </div>
+          )}
+
+          {/* ⚙️ LOOM 360° PROFILE (STANDALONE PAGE - NOT INSIDE BREAKDOWNS) */}
           <button
             className={`nav-item ${currentView === 'looms' ? 'active' : ''}`}
             onClick={() => setCurrentView('looms')}
@@ -125,6 +204,7 @@ export function App() {
             <span>Loom 360° Profile</span>
           </button>
 
+          {/* ▦ OPERATIONS TABLE (STANDALONE PAGE - NOT INSIDE BREAKDOWNS) */}
           <button
             className={`nav-item ${currentView === 'operations' ? 'active' : ''}`}
             onClick={() => setCurrentView('operations')}
@@ -288,7 +368,16 @@ export function App() {
             {currentView === 'command-center' && 'Command Center'}
             {currentView === 'agents' && 'AI & Operational Agents Hub · Watchtower, Loss Hunter & Action Manager'}
             {currentView === 'production' && 'Production Operations'}
-            {currentView === 'breakdowns' && 'Breakdowns & Downtime'}
+            {currentView === 'breakdowns' &&
+              (breakdownSubPage === 'overview'
+                ? 'Breakdowns · Operational Overview & Stoppage Telemetry'
+                : breakdownSubPage === 'downtime'
+                ? 'Breakdowns · Machine Downtime & Timeline Analysis'
+                : breakdownSubPage === 'reasons'
+                ? 'Breakdowns · 80/20 Reason Pareto & Remediation'
+                : breakdownSubPage === 'patterns'
+                ? 'Breakdowns · Breakdown Patterns & MTBF Alerts'
+                : 'Breakdowns · Production Deficit & Financial Loss Attribution')}
             {currentView === 'revenue' && 'Revenue & Loss Attribution'}
             {currentView === 'looms' && 'Loom 360° Profile'}
             {currentView === 'operations' && 'Daily Operations Table'}
@@ -337,7 +426,13 @@ export function App() {
           {currentView === 'command-center' && <CommandCenterView onNavigateToModule={handleNavigate} />}
           {currentView === 'agents' && <AiAgentsHubView initialTab={initialAgentTab} onNavigateToModule={handleNavigate} />}
           {currentView === 'production' && <ProductionIntelligenceView onSelectLoom={handleSelectLoom} />}
-          {currentView === 'breakdowns' && <BreakdownBoardView />}
+          {currentView === 'breakdowns' && (
+            <BreakdownHubView
+              activeTab={breakdownSubPage}
+              onTabChange={setBreakdownSubPage}
+              onSelectLoom={handleSelectLoom}
+            />
+          )}
           {currentView === 'revenue' && <RevenueLossView />}
           {currentView === 'looms' && <LoomDetailView loomId={selectedLoomId || 118} onBack={() => setCurrentView('production')} />}
           {currentView === 'operations' && <OperationsView onSelectLoom={handleSelectLoom} />}
