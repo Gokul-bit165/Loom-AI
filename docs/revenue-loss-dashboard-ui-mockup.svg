@@ -1,0 +1,150 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" fill="#F6F8FA"/>
+  <rect x="32" y="22" width="1536" height="58" rx="6" fill="#FFFFFF" stroke="#E2E6EA"/>
+  <text x="56" y="58" font-family="Inter, Arial" font-size="20" font-weight="800" fill="#17212B">Revenue and Loss Decision Dashboard</text>
+  <text x="412" y="58" font-family="Inter, Arial" font-size="13" fill="#4B5563">Unit: Ashok Textile Mills Main Shed</text>
+  <text x="680" y="58" font-family="Inter, Arial" font-size="13" fill="#4B5563">Date: 31 July 2026</text>
+  <rect x="1220" y="34" width="118" height="30" rx="5" fill="#2563EB"/>
+  <text x="1247" y="54" font-family="Inter, Arial" font-size="13" font-weight="800" fill="#FFFFFF">Owner view</text>
+  <rect x="1348" y="34" width="170" height="30" rx="5" fill="#F9FAFB" stroke="#E2E6EA"/>
+  <text x="1370" y="54" font-family="Inter, Arial" font-size="13" font-weight="700" fill="#4B5563">Plant assistant detail</text>
+
+  <rect x="32" y="100" width="1536" height="116" rx="8" fill="#FEF2F2" stroke="#FECACA"/>
+  <circle cx="72" cy="137" r="20" fill="#DC2626"/>
+  <text x="67" y="144" font-family="Arial" font-size="24" font-weight="900" fill="#FFFFFF">!</text>
+  <text x="104" y="128" font-family="Inter, Arial" font-size="12" font-weight="900" fill="#991B1B">MAIN DECISION</text>
+  <text x="104" y="157" font-family="Inter, Arial" font-size="22" font-weight="900" fill="#17212B">Electrical and power is the largest revenue loss. Approve panel inspection before evening shift.</text>
+  <rect x="104" y="176" width="185" height="28" rx="5" fill="#ECFDF5" stroke="#A7F3D0"/>
+  <text x="118" y="195" font-family="Inter, Arial" font-size="13" font-weight="800" fill="#059669">Recoverable: ₹1.30 lakh</text>
+  <rect x="304" y="176" width="280" height="28" rx="5" fill="#DC2626"/>
+  <text x="322" y="195" font-family="Inter, Arial" font-size="13" font-weight="900" fill="#FFFFFF">Approve Action: Chief Electrical Engineer</text>
+  <rect x="1252" y="120" width="126" height="30" rx="5" fill="#EFF6FF" stroke="#BFDBFE"/>
+  <text x="1278" y="140" font-family="Inter, Arial" font-size="12" font-weight="900" fill="#1E40AF">CALCULATED</text>
+
+  <g font-family="Inter, Arial">
+    <rect x="32" y="238" width="236" height="116" rx="6" fill="#FFFFFF" stroke="#E2E6EA"/>
+    <text x="52" y="272" font-size="13" fill="#4B5563">Actual revenue</text>
+    <text x="52" y="310" font-size="25" font-weight="900" fill="#059669">₹19.90 lakh</text>
+    <text x="52" y="336" font-size="12" fill="#6B7280">From metres woven</text>
+
+    <rect x="282" y="238" width="236" height="116" rx="6" fill="#FFFFFF" stroke="#E2E6EA"/>
+    <text x="302" y="272" font-size="13" fill="#4B5563">Potential revenue</text>
+    <text x="302" y="310" font-size="25" font-weight="900" fill="#17212B">₹23.13 lakh</text>
+    <text x="302" y="336" font-size="12" fill="#6B7280">At scheduled capacity</text>
+
+    <rect x="532" y="238" width="236" height="116" rx="6" fill="#FEF2F2" stroke="#FECACA"/>
+    <text x="552" y="272" font-size="13" fill="#991B1B">Revenue loss</text>
+    <text x="552" y="310" font-size="25" font-weight="900" fill="#DC2626">₹3.23 lakh</text>
+    <text x="552" y="336" font-size="12" fill="#991B1B">Unproduced capacity gap</text>
+
+    <rect x="782" y="238" width="236" height="116" rx="6" fill="#ECFDF5" stroke="#A7F3D0"/>
+    <text x="802" y="272" font-size="13" fill="#065F46">Recoverable revenue</text>
+    <text x="802" y="310" font-size="25" font-weight="900" fill="#059669">₹1.30 lakh</text>
+    <text x="802" y="336" font-size="12" fill="#065F46">If top issue is fixed</text>
+
+    <rect x="1032" y="238" width="236" height="116" rx="6" fill="#FFFFFF" stroke="#E2E6EA"/>
+    <text x="1052" y="272" font-size="13" fill="#4B5563">Contribution profit</text>
+    <text x="1052" y="310" font-size="25" font-weight="900" fill="#1E3A5F">₹6.37 lakh</text>
+    <text x="1052" y="336" font-size="12" fill="#059669">32.0% margin</text>
+
+    <rect x="1282" y="238" width="286" height="116" rx="6" fill="#FFFFFF" stroke="#E2E6EA"/>
+    <text x="1302" y="272" font-size="13" fill="#4B5563">Main problem department</text>
+    <text x="1302" y="310" font-size="22" font-weight="900" fill="#DC2626">Electrical and power</text>
+    <text x="1302" y="336" font-size="12" fill="#6B7280">62% of today's loss</text>
+  </g>
+
+  <rect x="32" y="374" width="1536" height="42" rx="6" fill="#FFFFFF" stroke="#E2E6EA"/>
+  <rect x="52" y="382" width="102" height="26" rx="4" fill="#2563EB"/>
+  <text x="82" y="400" font-family="Inter, Arial" font-size="12" font-weight="800" fill="#FFFFFF">Today</text>
+  <text x="188" y="400" font-family="Inter, Arial" font-size="12" font-weight="700" fill="#4B5563">Last 7 days</text>
+  <text x="318" y="400" font-family="Inter, Arial" font-size="12" font-weight="700" fill="#4B5563">Month to date</text>
+  <text x="468" y="400" font-family="Inter, Arial" font-size="12" font-weight="700" fill="#4B5563">Year to date</text>
+
+  <rect x="32" y="438" width="748" height="246" rx="8" fill="#FFFFFF" stroke="#E2E6EA"/>
+  <text x="56" y="470" font-family="Inter, Arial" font-size="17" font-weight="900" fill="#17212B">Revenue Trend</text>
+  <text x="56" y="494" font-family="Inter, Arial" font-size="12" fill="#6B7280">X-axis: Date   Y-axis: Revenue (rupees)</text>
+  <line x1="88" y1="620" x2="716" y2="620" stroke="#D1D5DB"/>
+  <line x1="88" y1="522" x2="88" y2="620" stroke="#D1D5DB"/>
+  <text x="392" y="658" font-family="Inter, Arial" font-size="11" fill="#6B7280">Date</text>
+  <text x="48" y="575" font-family="Inter, Arial" font-size="11" fill="#6B7280" transform="rotate(-90 48 575)">Revenue (rupees)</text>
+  <polyline points="100,588 158,584 216,592 274,590 332,582 390,586 448,578 506,574 564,580 622,570 700,566" fill="none" stroke="#2563EB" stroke-width="4"/>
+  <polyline points="100,548 158,548 216,548 274,548 332,548 390,548 448,548 506,548 564,548 622,548 700,548" fill="none" stroke="#94A3B8" stroke-width="3" stroke-dasharray="8 6"/>
+  <circle cx="700" cy="566" r="6" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+  <rect x="548" y="458" width="12" height="4" fill="#2563EB"/>
+  <text x="566" y="464" font-family="Inter, Arial" font-size="11" fill="#4B5563">Actual revenue</text>
+  <rect x="548" y="478" width="12" height="4" fill="#94A3B8"/>
+  <text x="566" y="484" font-family="Inter, Arial" font-size="11" fill="#4B5563">Target revenue</text>
+  <rect x="56" y="632" width="690" height="34" rx="5" fill="#EFF6FF" stroke="#BFDBFE"/>
+  <text x="72" y="654" font-family="Inter, Arial" font-size="12" font-weight="800" fill="#1E40AF">Decision: Revenue is below target. Monitor revenue per scheduled loom hour after panel inspection.</text>
+
+  <rect x="800" y="438" width="768" height="246" rx="8" fill="#FFFFFF" stroke="#E2E6EA"/>
+  <text x="824" y="470" font-family="Inter, Arial" font-size="17" font-weight="900" fill="#17212B">Revenue Loss Trend</text>
+  <text x="824" y="494" font-family="Inter, Arial" font-size="12" fill="#6B7280">X-axis: Date   Y-axis: Revenue loss (rupees)</text>
+  <line x1="866" y1="620" x2="1250" y2="620" stroke="#D1D5DB"/>
+  <line x1="866" y1="522" x2="866" y2="620" stroke="#D1D5DB"/>
+  <text x="1028" y="658" font-family="Inter, Arial" font-size="11" fill="#6B7280">Date</text>
+  <text x="826" y="586" font-family="Inter, Arial" font-size="11" fill="#6B7280" transform="rotate(-90 826 586)">Revenue loss</text>
+  <g>
+    <rect x="884" y="574" width="24" height="46" rx="3" fill="#F59E0B"/>
+    <rect x="920" y="566" width="24" height="54" rx="3" fill="#F59E0B"/>
+    <rect x="956" y="552" width="24" height="68" rx="3" fill="#F59E0B"/>
+    <rect x="992" y="532" width="24" height="88" rx="3" fill="#DC2626"/>
+    <rect x="1028" y="578" width="24" height="42" rx="3" fill="#F59E0B"/>
+    <rect x="1064" y="570" width="24" height="50" rx="3" fill="#F59E0B"/>
+    <rect x="1100" y="562" width="24" height="58" rx="3" fill="#F59E0B"/>
+    <rect x="1136" y="526" width="24" height="94" rx="3" fill="#DC2626"/>
+    <rect x="1172" y="568" width="24" height="52" rx="3" fill="#F59E0B"/>
+    <rect x="1208" y="578" width="24" height="42" rx="3" fill="#F59E0B"/>
+  </g>
+  <line x1="870" y1="548" x2="1248" y2="548" stroke="#DC2626" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="1250" y="552" font-family="Inter, Arial" font-size="11" fill="#DC2626">Spike threshold</text>
+  <rect x="1290" y="520" width="238" height="118" rx="6" fill="#FEF2F2" stroke="#FECACA"/>
+  <text x="1308" y="546" font-family="Inter, Arial" font-size="12" font-weight="900" fill="#991B1B">Peak loss day</text>
+  <text x="1308" y="574" font-family="Inter, Arial" font-size="18" font-weight="900" fill="#DC2626">₹2.01 lakh</text>
+  <text x="1308" y="600" font-family="Inter, Arial" font-size="12" fill="#4B5563">Department: Electrical and power</text>
+  <text x="1308" y="624" font-family="Inter, Arial" font-size="12" fill="#4B5563">Owner: Chief Electrical Engineer</text>
+
+  <rect x="32" y="706" width="748" height="246" rx="8" fill="#FFFFFF" stroke="#E2E6EA"/>
+  <text x="56" y="738" font-family="Inter, Arial" font-size="17" font-weight="900" fill="#17212B">Department Problem Histogram</text>
+  <text x="56" y="762" font-family="Inter, Arial" font-size="12" fill="#6B7280">X-axis: Loss amount (rupees)   Y-axis: Department</text>
+  <line x1="230" y1="900" x2="704" y2="900" stroke="#D1D5DB"/>
+  <line x1="230" y1="786" x2="230" y2="900" stroke="#D1D5DB"/>
+  <g font-family="Inter, Arial" font-size="12" fill="#4B5563">
+    <text x="66" y="806">Electrical and power</text>
+    <text x="66" y="834">Mechanical maintenance</text>
+    <text x="66" y="862">Weaving efficiency</text>
+    <text x="66" y="890">Quality and seconds</text>
+  </g>
+  <rect x="230" y="790" width="416" height="18" rx="3" fill="#DC2626"/>
+  <rect x="230" y="818" width="122" height="18" rx="3" fill="#F59E0B"/>
+  <rect x="230" y="846" width="124" height="18" rx="3" fill="#2563EB"/>
+  <rect x="230" y="874" width="26" height="18" rx="3" fill="#7E22CE"/>
+  <text x="250" y="930" font-family="Inter, Arial" font-size="11" fill="#6B7280">₹0</text>
+  <text x="520" y="930" font-family="Inter, Arial" font-size="11" fill="#6B7280">₹1 lakh</text>
+  <text x="664" y="930" font-family="Inter, Arial" font-size="11" fill="#6B7280">₹2 lakh</text>
+
+  <rect x="800" y="706" width="768" height="246" rx="8" fill="#FFFFFF" stroke="#E2E6EA"/>
+  <text x="824" y="738" font-family="Inter, Arial" font-size="17" font-weight="900" fill="#17212B">Top Department Actions</text>
+  <g font-family="Inter, Arial">
+    <rect x="824" y="762" width="224" height="160" rx="6" fill="#FEF2F2" stroke="#FECACA"/>
+    <text x="842" y="792" font-size="14" font-weight="900" fill="#991B1B">Electrical and power</text>
+    <text x="842" y="824" font-size="21" font-weight="900" fill="#DC2626">₹2.01 lakh</text>
+    <text x="842" y="852" font-size="12" fill="#4B5563">Reason: voltage dips</text>
+    <text x="842" y="878" font-size="12" fill="#17212B">Action: inspect sub-panel</text>
+    <text x="842" y="904" font-size="12" fill="#6B7280">Owner: Chief engineer</text>
+
+    <rect x="1064" y="762" width="224" height="160" rx="6" fill="#FFFBEB" stroke="#FDE68A"/>
+    <text x="1082" y="792" font-size="14" font-weight="900" fill="#92400E">Mechanical maintenance</text>
+    <text x="1082" y="824" font-size="21" font-weight="900" fill="#D97706">₹58,933</text>
+    <text x="1082" y="852" font-size="12" fill="#4B5563">Reason: repeated stops</text>
+    <text x="1082" y="878" font-size="12" fill="#17212B">Action: fitter dispatch</text>
+    <text x="1082" y="904" font-size="12" fill="#6B7280">Owner: Maintenance lead</text>
+
+    <rect x="1304" y="762" width="224" height="160" rx="6" fill="#EFF6FF" stroke="#BFDBFE"/>
+    <text x="1322" y="792" font-size="14" font-weight="900" fill="#1E40AF">Weaving efficiency</text>
+    <text x="1322" y="824" font-size="21" font-weight="900" fill="#2563EB">₹59,376</text>
+    <text x="1322" y="852" font-size="12" fill="#4B5563">Reason: speed gap</text>
+    <text x="1322" y="878" font-size="12" fill="#17212B">Action: shift review</text>
+    <text x="1322" y="904" font-size="12" fill="#6B7280">Owner: Weaving master</text>
+  </g>
+</svg>

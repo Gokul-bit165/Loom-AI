@@ -18,6 +18,7 @@ import { DataQualityImportView } from './components/DataQualityImportView';
 import { AskEngineView } from './components/AskEngineView';
 import { ExportsView } from './components/ExportsView';
 import { AiAgentsHubView } from './components/AiAgentsHubView';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import type { AgentTab } from './components/AiAgentsHubView';
 import {
   Activity,
@@ -475,7 +476,7 @@ export function App() {
                 : breakdownSubPage === 'abnormal'
                 ? 'Breakdowns · ⚠️ Abnormal Events ("What is unusual?")'
                 : 'Breakdowns · 💰 Production Loss Impact ("What did we lose & why?")')}
-            {currentView === 'revenue' && 'Revenue & Loss Attribution'}
+            {currentView === 'revenue' && 'Revenue & Financial Loss Decision Room'}
             {currentView === 'looms' && 'Loom 360° Profile'}
             {currentView === 'operations' && 'Daily Operations Table'}
             {currentView === 'workforce' && 'Weaving Workforce Intelligence · Grade, Skill & Pay Progression'}
@@ -545,41 +546,43 @@ export function App() {
         </header>
 
         <div className="page-body">
-          {currentView === 'command-center' && (
-            <CommandCenterView
-              onNavigateToModule={handleNavigate}
-              onOpenWhyModal={() => setIsWhyModalOpen(true)}
-            />
-          )}
-          {currentView === 'agents' && <AiAgentsHubView initialTab={initialAgentTab} onNavigateToModule={handleNavigate} />}
-          {currentView === 'production' && (
-            <ProductionIntelligenceView
-              submodule={productionSubmodule}
-              onSelectSubmodule={setProductionSubmodule}
-              onSelectLoom={handleSelectLoom}
-              onOpenWhyModal={() => setIsWhyModalOpen(true)}
-            />
-          )}
-          {currentView === 'breakdowns' && (
-            <BreakdownHubView
-              activeTab={breakdownSubPage}
-              onTabChange={setBreakdownSubPage}
-              onSelectLoom={handleSelectLoom}
-            />
-          )}
-          {currentView === 'revenue' && <RevenueLossView />}
-          {currentView === 'looms' && <LoomDetailView loomId={selectedLoomId || 118} onBack={() => setCurrentView('production')} />}
-          {currentView === 'operations' && <OperationsView onSelectLoom={handleSelectLoom} />}
-          {currentView === 'workforce' && <WorkforceIntelligenceView />}
-          {currentView === 'manpower' && <ManpowerIntelligenceView />}
-          {currentView === 'maintenance' && <MaintenanceIntelligenceView />}
-          {currentView === 'air' && <AirCompressorView />}
-          {currentView === 'quality' && <QualityIntelligenceView />}
-          {currentView === 'predictions' && <PredictionCenterView />}
-          {currentView === 'registry' && <DecisionRegistryView />}
-          {currentView === 'import' && <DataQualityImportView />}
-          {currentView === 'assistant' && <AskEngineView />}
-          {currentView === 'exports' && <ExportsView />}
+          <ErrorBoundary key={currentView}>
+            {currentView === 'command-center' && (
+              <CommandCenterView
+                onNavigateToModule={handleNavigate}
+                onOpenWhyModal={() => setIsWhyModalOpen(true)}
+              />
+            )}
+            {currentView === 'agents' && <AiAgentsHubView initialTab={initialAgentTab} onNavigateToModule={handleNavigate} />}
+            {currentView === 'production' && (
+              <ProductionIntelligenceView
+                submodule={productionSubmodule}
+                onSelectSubmodule={setProductionSubmodule}
+                onSelectLoom={handleSelectLoom}
+                onOpenWhyModal={() => setIsWhyModalOpen(true)}
+              />
+            )}
+            {currentView === 'breakdowns' && (
+              <BreakdownHubView
+                activeTab={breakdownSubPage}
+                onTabChange={setBreakdownSubPage}
+                onSelectLoom={handleSelectLoom}
+              />
+            )}
+            {currentView === 'revenue' && <RevenueLossView />}
+            {currentView === 'looms' && <LoomDetailView loomId={selectedLoomId || 118} onBack={() => setCurrentView('production')} />}
+            {currentView === 'operations' && <OperationsView onSelectLoom={handleSelectLoom} />}
+            {currentView === 'workforce' && <WorkforceIntelligenceView />}
+            {currentView === 'manpower' && <ManpowerIntelligenceView />}
+            {currentView === 'maintenance' && <MaintenanceIntelligenceView />}
+            {currentView === 'air' && <AirCompressorView />}
+            {currentView === 'quality' && <QualityIntelligenceView />}
+            {currentView === 'predictions' && <PredictionCenterView />}
+            {currentView === 'registry' && <DecisionRegistryView />}
+            {currentView === 'import' && <DataQualityImportView />}
+            {currentView === 'assistant' && <AskEngineView />}
+            {currentView === 'exports' && <ExportsView />}
+          </ErrorBoundary>
         </div>
 
         {/* Universal Why is Production Low Modal */}
