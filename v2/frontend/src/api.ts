@@ -7,6 +7,7 @@
  * 3. Autonomous offline/demo fallback with authentic Ashok Textile Mills factory snapshot
  */
 import { demoSnapshot } from './demoSnapshot';
+import { workforceSnapshot } from './workforceSnapshot';
 
 const RAW_API_BASE = (import.meta as any).env?.VITE_API_BASE_URL;
 export const API_BASE = RAW_API_BASE
@@ -26,11 +27,23 @@ async function safeFetchJson<T>(url: string, fallback: T, options?: RequestInit)
   try {
     const res = await fetch(url, options);
     if (res.ok) {
-      isUsingDemoSnapshot = false;
-      return await res.json();
+      const contentType = res.headers.get('content-type') || '';
+      // Critical fix for Vercel/Netlify SPA rewrites:
+      // When an API route is missing on a static host, Vercel returns HTTP 200 with index.html (text/html).
+      // Attempting to parse HTML as JSON throws:
+      // SyntaxError: Unexpected token '<', "<!doctype "... is not valid JSON
+      if (!contentType.includes('text/html')) {
+        const text = await res.text();
+        const trimmed = text.trim();
+        if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+          const data = JSON.parse(trimmed);
+          isUsingDemoSnapshot = false;
+          return data;
+        }
+      }
     }
   } catch (_err) {
-    // Network failure, CORS failure, or offline/static hosting
+    // Network failure, CORS failure, JSON parse error, or offline/static hosting
   }
   isUsingDemoSnapshot = true;
   return fallback;
@@ -1428,9 +1441,7 @@ export interface TrainingQueueResponse {
 }
 
 export async function fetchWorkforceOverview(): Promise<WorkforceOverviewResponse> {
-  const res = await fetch(`${API_BASE}/workforce/overview`);
-  if (!res.ok) throw new Error('Failed to fetch workforce overview');
-  return res.json();
+  return safeFetchJson(`${API_BASE}/workforce/overview`, workforceSnapshot.overview);
 }
 
 export async function fetchWorkforceEmployees(params?: {
@@ -1451,45 +1462,56 @@ export async function fetchWorkforceEmployees(params?: {
   if (params?.alignment_status) query.set('alignment_status', params.alignment_status);
   if (params?.search) query.set('search', params.search);
 
-  const res = await fetch(`${API_BASE}/workforce/employees?${query.toString()}`);
-  if (!res.ok) throw new Error('Failed to fetch workforce employees');
-  return res.json();
+  // Client-side filtering on snapshot if running offline or on Vercel
+  let fallbackList = workforceSnapshot.employees?.employees || [];
+  if (params) {
+    if (params.department) fallbackList = fallbackList.filter((e: any) => e.dept === params.department);
+    if (params.grade) fallbackList = fallbackList.filter((e: any) => e.grade === params.grade);
+    if (params.designation) fallbackList = fallbackList.filter((e: any) => e.desig === params.designation);
+    if (params.capability) fallbackList = fallbackList.filter((e: any) => e.capability === params.capability || e.capability_profile?.raw === params.capability);
+    if (params.promotion_status) fallbackList = fallbackList.filter((e: any) => e.promotion_assessment?.status === params.promotion_status);
+    if (params.alignment_status) fallbackList = fallbackList.filter((e: any) => e.grade_alignment?.status === params.alignment_status);
+    if (params.search) {
+      const q = params.search.toLowerCase();
+      fallbackList = fallbackList.filter((e: any) =>
+        e.name?.toLowerCase().includes(q) || String(e.emp_no).includes(q) || e.desig?.toLowerCase().includes(q)
+      );
+    }
+  }
+  const fallback = {
+    total_returned: fallbackList.length,
+    total_source: workforceSnapshot.employees?.total_source || fallbackList.length,
+    employees: fallbackList,
+  };
+
+  return safeFetchJson(`${API_BASE}/workforce/employees?${query.toString()}`, fallback);
 }
 
 export async function fetchPromotionReadyCandidates(): Promise<{ count: number; summary: string; candidates: EmployeeWorkforceItem[] }> {
-  const res = await fetch(`${API_BASE}/workforce/promotion-ready`);
-  if (!res.ok) throw new Error('Failed to fetch promotion ready candidates');
-  return res.json();
+  return safeFetchJson(`${API_BASE}/workforce/promotion-ready`, workforceSnapshot.promotionReady);
 }
 
 export async function fetchLoomCapabilityMatrix(): Promise<LoomCapabilityMatrixResponse> {
-  const res = await fetch(`${API_BASE}/workforce/loom-capability-matrix`);
-  if (!res.ok) throw new Error('Failed to fetch loom capability matrix');
-  return res.json();
+  return safeFetchJson(`${API_BASE}/workforce/loom-capability-matrix`, workforceSnapshot.capabilityMatrix);
 }
 
 export async function fetchGradeAlignmentMismatches(): Promise<GradeAlignmentResponse> {
-  const res = await fetch(`${API_BASE}/workforce/grade-alignment-mismatches`);
-  if (!res.ok) throw new Error('Failed to fetch grade alignment mismatches');
-  return res.json();
+  return safeFetchJson(`${API_BASE}/workforce/grade-alignment-mismatches`, workforceSnapshot.gradeAlignment);
 }
 
 export async function fetchPayProgression(): Promise<PayProgressionResponse> {
-  const res = await fetch(`${API_BASE}/workforce/pay-progression`);
-  if (!res.ok) throw new Error('Failed to fetch pay progression analysis');
-  return res.json();
+  return safeFetchJson(`${API_BASE}/workforce/pay-progression`, workforceSnapshot.payProgression);
 }
 
 export async function fetchTrainingQueue(): Promise<TrainingQueueResponse> {
-  const res = await fetch(`${API_BASE}/workforce/training-queue`);
-  if (!res.ok) throw new Error('Failed to fetch training queue');
-  return res.json();
+  return safeFetchJson(`${API_BASE}/workforce/training-queue`, workforceSnapshot.trainingQueue);
 }
 
 export async function fetchEmployeeProfile(empNo: string | number): Promise<EmployeeWorkforceItem> {
-  const res = await fetch(`${API_BASE}/workforce/employee/${empNo}`);
-  if (!res.ok) throw new Error(`Failed to fetch employee profile #${empNo}`);
-  return res.json();
+  const fallback = (workforceSnapshot.employees?.employees || []).find(
+    (e: any) => String(e.emp_no) === String(empNo)
+  ) || workforceSnapshot.employees?.employees?.[0];
+  return safeFetchJson(`${API_BASE}/workforce/employee/${empNo}`, fallback);
 }
 
 export async function submitManagementReviewDecision(
@@ -1498,13 +1520,26 @@ export async function submitManagementReviewDecision(
   reviewedBy: string = 'Plant Manager',
   notes?: string
 ): Promise<{ status: string; emp_no: string | number; review: any }> {
-  const res = await fetch(`${API_BASE}/workforce/employee/${empNo}/decision`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ decision, reviewed_by: reviewedBy, notes }),
-  });
-  if (!res.ok) throw new Error('Failed to submit management review decision');
-  return res.json();
+  const review = {
+    decision,
+    reviewed_by: reviewedBy,
+    reviewed_at: new Date().toISOString(),
+    notes: notes || 'Decision recorded via Workforce Intelligence Console.',
+  };
+  const fallback = {
+    status: 'recorded',
+    emp_no: empNo,
+    review,
+  };
+  return safeFetchJson(
+    `${API_BASE}/workforce/employee/${empNo}/decision`,
+    fallback,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ decision, reviewed_by: reviewedBy, notes }),
+    }
+  );
 }
 
 // ── AI & Operational Agents API ──────────────────────────────────────────────
