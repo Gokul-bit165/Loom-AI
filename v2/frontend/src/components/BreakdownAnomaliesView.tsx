@@ -17,6 +17,8 @@ import {
   X,
 } from 'lucide-react';
 
+import { BreakdownSubNav } from './BreakdownSubNav';
+
 interface BreakdownAnomaliesViewProps {
   initialLoomId?: number;
   selectedDate?: string;
@@ -96,7 +98,7 @@ export function BreakdownAnomaliesView({
           padding: '12px 18px', borderRadius: 8, boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
           display: 'flex', alignItems: 'center', gap: 10, zIndex: 9999, fontSize: '13px', fontWeight: 600,
         }}>
-          <Clock size={16} color="#38BDF8" />
+          <Clock size={16} color="#94A3B8" />
           <span>{watchToast}</span>
         </div>
       )}
@@ -125,8 +127,14 @@ export function BreakdownAnomaliesView({
         }
       />
 
+      {/* ── Universal Breakdown Sub-Navigation ── */}
+      <BreakdownSubNav
+        currentTab="abnormal"
+        onSelectTab={(tab) => onNavigateSubmodule?.(tab)}
+      />
+
       {/* ── SECTION 1: DETECTION SUMMARY (Compact Visual Severity Distribution) ── */}
-      <div style={{ margin: '0 24px 20px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px' }}>
+      <div style={{ margin: '0 24px 20px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px', boxShadow: '0 1px 2px rgba(0,0,0,0.03)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16 }}>
           <div style={{ borderRight: '1px solid #F1F5F9', paddingRight: 12 }}>
             <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
@@ -141,10 +149,10 @@ export function BreakdownAnomaliesView({
           </div>
 
           <div style={{ borderRight: '1px solid #F1F5F9', paddingRight: 12 }}>
-            <div style={{ fontSize: '11px', fontWeight: 700, color: '#DC2626', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Critical Severity
             </div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#DC2626', margin: '4px 0 2px', fontVariantNumeric: 'tabular-nums' }}>
+            <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: '4px 0 2px', fontVariantNumeric: 'tabular-nums' }}>
               {summary.critical}
             </div>
             <div style={{ fontSize: '11px', color: '#64748B' }}>
@@ -153,10 +161,10 @@ export function BreakdownAnomaliesView({
           </div>
 
           <div style={{ borderRight: '1px solid #F1F5F9', paddingRight: 12 }}>
-            <div style={{ fontSize: '11px', fontWeight: 700, color: '#EA580C', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Warning Severity
             </div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#EA580C', margin: '4px 0 2px', fontVariantNumeric: 'tabular-nums' }}>
+            <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: '4px 0 2px', fontVariantNumeric: 'tabular-nums' }}>
               {summary.warning}
             </div>
             <div style={{ fontSize: '11px', color: '#64748B' }}>
@@ -165,7 +173,7 @@ export function BreakdownAnomaliesView({
           </div>
 
           <div style={{ borderRight: '1px solid #F1F5F9', paddingRight: 12 }}>
-            <div style={{ fontSize: '11px', fontWeight: 700, color: '#2563EB', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Production Exposure
             </div>
             <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: '4px 0 2px', fontVariantNumeric: 'tabular-nums' }}>
@@ -177,10 +185,10 @@ export function BreakdownAnomaliesView({
           </div>
 
           <div>
-            <div style={{ fontSize: '11px', fontWeight: 700, color: '#DC2626', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Commercial Exposure
             </div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#DC2626', margin: '4px 0 2px', fontVariantNumeric: 'tabular-nums' }}>
+            <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: '4px 0 2px', fontVariantNumeric: 'tabular-nums' }}>
               {summary.total_rupee_exposure ? `₹${Math.round(summary.total_rupee_exposure).toLocaleString()}` : 'RATE MISSING'}
             </div>
             <div style={{ fontSize: '11px', color: '#64748B' }}>
@@ -191,7 +199,7 @@ export function BreakdownAnomaliesView({
       </div>
 
       {/* ── SECTION 2: ANOMALY TIMELINE (Horizontal Time-of-Day Progression) ── */}
-      <div style={{ margin: '0 24px 24px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px' }}>
+      <div style={{ margin: '0 24px 24px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
           <div>
             <div style={{ fontSize: '13px', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
@@ -211,8 +219,8 @@ export function BreakdownAnomaliesView({
             <div
               key={idx}
               style={{
-                background: slot.has_critical ? '#FEF2F2' : slot.count > 0 ? '#FFF7ED' : '#F8FAFC',
-                border: `1px solid ${slot.has_critical ? '#FECACA' : slot.count > 0 ? '#FED7AA' : '#E2E8F0'}`,
+                background: '#FFFFFF',
+                border: '1px solid #E2E8F0',
                 borderRadius: 6,
                 padding: '10px 8px',
                 textAlign: 'center',
@@ -224,13 +232,14 @@ export function BreakdownAnomaliesView({
               <div style={{
                 fontSize: '16px',
                 fontWeight: 800,
-                color: slot.has_critical ? '#DC2626' : slot.count > 0 ? '#EA580C' : '#94A3B8',
+                color: '#0F172A',
                 marginTop: 4,
+                fontVariantNumeric: 'tabular-nums',
               }}>
                 {slot.count > 0 ? `${slot.count} Anom` : '—'}
               </div>
               {slot.anomalies.length > 0 && (
-                <div style={{ marginTop: 4, fontSize: '10px', color: slot.has_critical ? '#991B1B' : '#C2410C', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div style={{ marginTop: 4, fontSize: '10px', color: slot.has_critical ? '#B91C1C' : '#475569', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {slot.anomalies.map((a) => a.loom).join(', ')}
                 </div>
               )}
@@ -251,7 +260,7 @@ export function BreakdownAnomaliesView({
               style={{
                 background: severityFilter === '' ? '#0F172A' : '#FFFFFF',
                 color: severityFilter === '' ? '#FFFFFF' : '#475569',
-                border: '1px solid #CBD5E1', borderRadius: 4, padding: '3px 8px', fontSize: '11px', fontWeight: 600, cursor: 'pointer',
+                border: '1px solid #CBD5E1', borderRadius: 4, padding: '4px 10px', fontSize: '11px', fontWeight: 600, cursor: 'pointer',
               }}
             >
               All Severities
@@ -259,9 +268,9 @@ export function BreakdownAnomaliesView({
             <button
               onClick={() => setSeverityFilter('CRITICAL')}
               style={{
-                background: severityFilter === 'CRITICAL' ? '#DC2626' : '#FFFFFF',
-                color: severityFilter === 'CRITICAL' ? '#FFFFFF' : '#DC2626',
-                border: '1px solid #FECACA', borderRadius: 4, padding: '3px 8px', fontSize: '11px', fontWeight: 700, cursor: 'pointer',
+                background: severityFilter === 'CRITICAL' ? '#0F172A' : '#FFFFFF',
+                color: severityFilter === 'CRITICAL' ? '#FFFFFF' : '#0F172A',
+                border: '1px solid #CBD5E1', borderRadius: 4, padding: '4px 10px', fontSize: '11px', fontWeight: 700, cursor: 'pointer',
               }}
             >
               Critical Only
@@ -271,7 +280,7 @@ export function BreakdownAnomaliesView({
 
         {anomalies.length === 0 ? (
           <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '36px', textAlign: 'center' }}>
-            <CheckCircle2 size={28} color="#16A34A" style={{ margin: '0 auto 8px' }} />
+            <CheckCircle2 size={28} color="#047857" style={{ margin: '0 auto 8px' }} />
             <div style={{ fontSize: '14px', fontWeight: 700, color: '#0F172A' }}>No Material Anomalies Detected</div>
             <div style={{ fontSize: '12px', color: '#64748B', marginTop: 4 }}>
               Machine stop frequencies and durations are operating within statistical 30-day baseline tolerances.
@@ -286,14 +295,14 @@ export function BreakdownAnomaliesView({
                   key={anom.anomaly_id}
                   style={{
                     background: '#FFFFFF',
-                    border: `1px solid ${isCrit ? '#FECACA' : '#FED7AA'}`,
-                    borderLeft: `4px solid ${isCrit ? '#DC2626' : '#EA580C'}`,
+                    border: '1px solid #E2E8F0',
                     borderRadius: 8,
                     padding: '16px 18px',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     gap: 12,
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
                   }}
                 >
                   <div>
@@ -303,9 +312,10 @@ export function BreakdownAnomaliesView({
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                           <span style={{
                             fontSize: '10px',
-                            fontWeight: 800,
-                            color: isCrit ? '#DC2626' : '#EA580C',
-                            background: isCrit ? '#FEF2F2' : '#FFF7ED',
+                            fontWeight: 700,
+                            color: isCrit ? '#B91C1C' : '#B45309',
+                            background: isCrit ? '#FEF2F2' : '#FFFBEB',
+                            border: `1px solid ${isCrit ? '#FECACA' : '#FDE68A'}`,
                             padding: '1px 6px',
                             borderRadius: 3,
                             textTransform: 'uppercase',
@@ -317,7 +327,7 @@ export function BreakdownAnomaliesView({
                           </span>
                         </div>
 
-                        <div style={{ fontSize: '14px', fontWeight: 800, color: '#0F172A', marginTop: 4 }}>
+                        <div style={{ fontSize: '14px', fontWeight: 800, color: '#0F172A', marginTop: 6 }}>
                           {anom.title}
                         </div>
                       </div>
@@ -325,13 +335,13 @@ export function BreakdownAnomaliesView({
                       <button
                         onClick={() => onSelectLoom?.(anom.affected_loom_id)}
                         style={{
-                          background: '#EFF6FF',
-                          border: '1px solid #BFDBFE',
+                          background: '#FFFFFF',
+                          border: '1px solid #CBD5E1',
                           borderRadius: 4,
                           padding: '3px 8px',
                           fontSize: '12px',
-                          fontWeight: 800,
-                          color: '#1D4ED8',
+                          fontWeight: 700,
+                          color: '#0F172A',
                           cursor: 'pointer',
                         }}
                       >
@@ -343,16 +353,16 @@ export function BreakdownAnomaliesView({
                     <div style={{ marginTop: 12, padding: '10px 12px', background: '#F8FAFC', borderRadius: 6, border: '1px solid #E2E8F0' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: 4 }}>
                         <span style={{ color: '#64748B' }}>NORMAL: {anom.normal_baseline}</span>
-                        <span style={{ color: isCrit ? '#DC2626' : '#EA580C', fontWeight: 700 }}>
+                        <span style={{ color: '#0F172A', fontWeight: 700 }}>
                           CURRENT: {anom.current_value} ({anom.deviation_label})
                         </span>
                       </div>
 
-                      <div style={{ display: 'flex', height: 8, borderRadius: 4, overflow: 'hidden', background: '#E2E8F0' }}>
+                      <div style={{ display: 'flex', height: 7, borderRadius: 4, overflow: 'hidden', background: '#E2E8F0' }}>
                         <div style={{ width: '35%', background: '#64748B' }} title="Normal baseline" />
                         <div style={{
                           width: `${Math.min(65, Math.max(20, Math.round((anom.current_value_val / Math.max(1, anom.normal_baseline_val * 2)) * 50)))}%`,
-                          background: isCrit ? '#DC2626' : '#EA580C',
+                          background: '#0F172A',
                         }} title="Deviation" />
                       </div>
                     </div>
@@ -374,7 +384,7 @@ export function BreakdownAnomaliesView({
                             style={{
                               fontSize: '10.5px',
                               background: '#F1F5F9',
-                              border: '1px solid #CBD5E1',
+                              border: '1px solid #E2E8F0',
                               borderRadius: 4,
                               padding: '2px 6px',
                               color: '#334155',
@@ -392,7 +402,7 @@ export function BreakdownAnomaliesView({
                         Loss Impact: <strong>~{anom.impact.lost_meters} m</strong>
                       </div>
                       <div>
-                        Revenue Exposure: <strong style={{ color: '#DC2626' }}>
+                        Revenue Exposure: <strong style={{ color: '#0F172A' }}>
                           {anom.impact.revenue_exposure ? `₹${Math.round(anom.impact.revenue_exposure).toLocaleString()}` : 'RATE MISSING'}
                         </strong>
                       </div>
@@ -406,11 +416,12 @@ export function BreakdownAnomaliesView({
                       style={{
                         background: 'transparent',
                         border: 'none',
-                        color: '#2563EB',
+                        color: '#0F172A',
                         fontSize: '11px',
                         fontWeight: 700,
                         cursor: 'pointer',
                         padding: 0,
+                        textDecoration: 'underline',
                       }}
                     >
                       [Why abnormal?]
@@ -436,13 +447,13 @@ export function BreakdownAnomaliesView({
                       <button
                         onClick={() => onNavigateSubmodule?.('root-cause', { loomId: anom.affected_loom_id })}
                         style={{
-                          background: '#EFF6FF',
-                          border: '1px solid #BFDBFE',
+                          background: '#FFFFFF',
+                          border: '1px solid #CBD5E1',
                           borderRadius: 4,
                           padding: '4px 8px',
                           fontSize: '11px',
                           fontWeight: 700,
-                          color: '#2563EB',
+                          color: '#0F172A',
                           cursor: 'pointer',
                         }}
                       >
@@ -452,7 +463,7 @@ export function BreakdownAnomaliesView({
                       <button
                         onClick={() => handleAddToActionPlan(anom.title)}
                         style={{
-                          background: '#2563EB',
+                          background: '#0F172A',
                           border: 'none',
                           borderRadius: 4,
                           padding: '4px 10px',
@@ -529,11 +540,11 @@ export function BreakdownAnomaliesView({
               </div>
             </div>
 
-            <div style={{ padding: '12px', background: '#EFF6FF', borderRadius: 6, border: '1px solid #BFDBFE' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: '#1D4ED8', textTransform: 'uppercase', marginBottom: 4 }}>
+            <div style={{ padding: '12px', background: '#F8FAFC', borderRadius: 6, border: '1px solid #E2E8F0' }}>
+              <div style={{ fontSize: '11px', fontWeight: 700, color: '#0F172A', textTransform: 'uppercase', marginBottom: 4 }}>
                 Recommended Action
               </div>
-              <div style={{ fontSize: '12px', color: '#1E40AF' }}>
+              <div style={{ fontSize: '12px', color: '#475569' }}>
                 {activeAnomalyDrawer.recommendation}
               </div>
             </div>
@@ -548,7 +559,7 @@ export function BreakdownAnomaliesView({
               style={{
                 flex: 1,
                 padding: '10px',
-                background: '#2563EB',
+                background: '#0F172A',
                 border: 'none',
                 borderRadius: 6,
                 color: '#FFFFFF',
@@ -569,7 +580,7 @@ export function BreakdownAnomaliesView({
                 background: '#FFFFFF',
                 border: '1px solid #CBD5E1',
                 borderRadius: 6,
-                color: '#2563EB',
+                color: '#0F172A',
                 fontWeight: 700,
                 fontSize: '12px',
                 cursor: 'pointer',

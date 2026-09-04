@@ -21,6 +21,8 @@ import {
   X,
 } from 'lucide-react';
 
+import { BreakdownSubNav } from './BreakdownSubNav';
+
 interface RootCauseInvestigationViewProps {
   initialLoomId?: number;
   initialEventId?: number;
@@ -130,7 +132,7 @@ export function RootCauseInvestigationView({
           padding: '12px 18px', borderRadius: 8, boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
           display: 'flex', alignItems: 'center', gap: 10, zIndex: 9999, fontSize: '13px', fontWeight: 600,
         }}>
-          <Clock size={16} color="#38BDF8" />
+          <Clock size={16} color="#94A3B8" />
           <span>{watchToast}</span>
         </div>
       )}
@@ -145,13 +147,13 @@ export function RootCauseInvestigationView({
             <button
               onClick={() => setIsWhyDrawerOpen(true)}
               style={{
-                background: '#EFF6FF',
-                border: '1px solid #BFDBFE',
+                background: '#FFFFFF',
+                border: '1px solid #CBD5E1',
                 borderRadius: 6,
                 padding: '6px 12px',
                 fontSize: '12px',
                 fontWeight: 700,
-                color: '#2563EB',
+                color: '#0F172A',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -166,6 +168,12 @@ export function RootCauseInvestigationView({
         }
       />
 
+      {/* ── Universal Breakdown Sub-Navigation ── */}
+      <BreakdownSubNav
+        currentTab="root-cause"
+        onSelectTab={(tab) => onNavigateSubmodule?.(tab)}
+      />
+
       {/* ── SECTION 1: SELECT EVENT (Compact Dropdown Selector) ── */}
       <div style={{
         margin: '0 24px 20px',
@@ -178,6 +186,7 @@ export function RootCauseInvestigationView({
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: 12,
+        boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
           <div>
@@ -258,7 +267,7 @@ export function RootCauseInvestigationView({
                 padding: '4px 10px',
                 fontSize: '11px',
                 fontWeight: 600,
-                color: '#475569',
+                color: '#0F172A',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -279,19 +288,20 @@ export function RootCauseInvestigationView({
             margin: '0 24px 20px',
             background: '#FFFFFF',
             border: '1px solid #E2E8F0',
-            borderLeft: `4px solid ${ev.duration_minutes >= 30 ? '#DC2626' : '#EA580C'}`,
             borderRadius: 8,
-            padding: '16px 20px',
+            padding: '18px 20px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{
-                    fontSize: '11px',
-                    fontWeight: 800,
+                    fontSize: '10px',
+                    fontWeight: 700,
                     textTransform: 'uppercase',
-                    color: ev.duration_minutes >= 30 ? '#DC2626' : '#EA580C',
-                    background: ev.duration_minutes >= 30 ? '#FEF2F2' : '#FFF7ED',
+                    color: ev.duration_minutes >= 30 ? '#B91C1C' : '#B45309',
+                    background: ev.duration_minutes >= 30 ? '#FEF2F2' : '#FFFBEB',
+                    border: `1px solid ${ev.duration_minutes >= 30 ? '#FECACA' : '#FDE68A'}`,
                     padding: '2px 8px',
                     borderRadius: 4,
                   }}>
@@ -302,7 +312,7 @@ export function RootCauseInvestigationView({
                   </span>
                 </div>
 
-                <div style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', marginTop: 6 }}>
+                <div style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', marginTop: 8 }}>
                   Loom {ev.loom_no} stopped for {ev.duration_minutes} minutes at {ev.raised_at ? ev.raised_at.slice(11, 16) : 'Shift Start'}
                 </div>
 
@@ -318,13 +328,13 @@ export function RootCauseInvestigationView({
               </div>
 
               {/* High-level Event Metrics */}
-              <div style={{ display: 'flex', gap: 20, textAlign: 'right' }}>
+              <div style={{ display: 'flex', gap: 24, textAlign: 'right' }}>
                 <div>
                   <div style={{ fontSize: '10.5px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>
                     Stop Duration
                   </div>
-                  <div style={{ fontSize: '20px', fontWeight: 800, color: '#DC2626', fontVariantNumeric: 'tabular-nums' }}>
-                    {ev.duration_minutes} <span style={{ fontSize: '12px', fontWeight: 600 }}>min</span>
+                  <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', fontVariantNumeric: 'tabular-nums', marginTop: 2 }}>
+                    {ev.duration_minutes} <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748B' }}>min</span>
                   </div>
                 </div>
 
@@ -332,8 +342,8 @@ export function RootCauseInvestigationView({
                   <div style={{ fontSize: '10.5px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>
                     Lost Production
                   </div>
-                  <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
-                    {impact?.lost_meters} <span style={{ fontSize: '12px', fontWeight: 600 }}>m</span>
+                  <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', fontVariantNumeric: 'tabular-nums', marginTop: 2 }}>
+                    {impact?.lost_meters} <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748B' }}>m</span>
                   </div>
                 </div>
 
@@ -341,7 +351,7 @@ export function RootCauseInvestigationView({
                   <div style={{ fontSize: '10.5px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>
                     ₹ Exposure
                   </div>
-                  <div style={{ fontSize: '20px', fontWeight: 800, color: '#DC2626', fontVariantNumeric: 'tabular-nums' }}>
+                  <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', fontVariantNumeric: 'tabular-nums', marginTop: 2 }}>
                     {impact?.revenue_exposure ? `₹${Math.round(impact.revenue_exposure).toLocaleString()}` : 'RATE MISSING'}
                   </div>
                 </div>
@@ -352,7 +362,7 @@ export function RootCauseInvestigationView({
           {/* ── SECTION 3 & 4: EVIDENCE TIMELINE & ROOT CAUSE CHAIN (Side-by-side) ── */}
           <div style={{ margin: '0 24px 24px', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 20 }}>
             {/* EVIDENCE TIMELINE (PRIMARY VISUALIZATION - Chronological NOT generic table) */}
-            <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '18px 20px' }}>
+            <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '18px 20px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                 <div>
                   <div style={{ fontSize: '13px', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
@@ -371,22 +381,28 @@ export function RootCauseInvestigationView({
                 {/* Vertical connecting line */}
                 <div style={{ position: 'absolute', left: 7, top: 8, bottom: 8, width: 2, background: '#E2E8F0' }} />
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   {timeline.map((item, idx) => {
-                    let dotColor = '#94A3B8';
+                    let dotColor = '#64748B';
+                    let badgeColor = '#475569';
                     let bgBadge = '#F1F5F9';
-                    if (item.type === 'NORMAL') {
-                      dotColor = '#16A34A';
-                      bgBadge = '#DCFCE7';
-                    } else if (item.type === 'WARNING') {
-                      dotColor = '#EA580C';
-                      bgBadge = '#FFEDD5';
-                    } else if (item.type === 'CRITICAL') {
+                    let borderBadge = '#E2E8F0';
+
+                    if (item.type === 'CRITICAL') {
                       dotColor = '#DC2626';
-                      bgBadge = '#FEE2E2';
+                      badgeColor = '#B91C1C';
+                      bgBadge = '#FEF2F2';
+                      borderBadge = '#FECACA';
+                    } else if (item.type === 'WARNING') {
+                      dotColor = '#D97706';
+                      badgeColor = '#B45309';
+                      bgBadge = '#FFFBEB';
+                      borderBadge = '#FDE68A';
                     } else if (item.type === 'SUCCESS') {
-                      dotColor = '#2563EB';
-                      bgBadge = '#DBEAFE';
+                      dotColor = '#059669';
+                      badgeColor = '#047857';
+                      bgBadge = '#ECFDF5';
+                      borderBadge = '#A7F3D0';
                     }
 
                     return (
@@ -413,7 +429,7 @@ export function RootCauseInvestigationView({
                             <span style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A' }}>
                               {item.label}
                             </span>
-                            <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', color: dotColor, background: bgBadge, padding: '1px 6px', borderRadius: 3 }}>
+                            <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', color: badgeColor, background: bgBadge, border: `1px solid ${borderBadge}`, padding: '1px 6px', borderRadius: 3 }}>
                               {item.status}
                             </span>
                           </div>
@@ -430,7 +446,7 @@ export function RootCauseInvestigationView({
 
             {/* ROOT CAUSE CHAIN (Causal hierarchy: OBSERVED -> INFERRED -> PREDICTED) */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '18px 20px', flex: 1 }}>
+              <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '18px 20px', flex: 1, boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
                 <div style={{ marginBottom: 14 }}>
                   <div style={{ fontSize: '13px', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                     Causal Evidence Chain
@@ -441,46 +457,45 @@ export function RootCauseInvestigationView({
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {chain.map((link, idx) => {
-                    const isObserved = link.tier === 'OBSERVED';
-                    const isInferred = link.tier === 'INFERRED';
-                    return (
-                      <div key={idx} style={{
-                        background: isObserved ? '#F8FAFC' : isInferred ? '#EFF6FF' : '#FAF5FF',
-                        border: `1px solid ${isObserved ? '#E2E8F0' : isInferred ? '#BFDBFE' : '#E9D5FF'}`,
-                        borderLeft: `4px solid ${isObserved ? '#64748B' : isInferred ? '#2563EB' : '#9333EA'}`,
-                        borderRadius: 6,
-                        padding: '10px 14px',
-                      }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-                          <span style={{
-                            fontSize: '10px',
-                            fontWeight: 800,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em',
-                            color: isObserved ? '#475569' : isInferred ? '#1D4ED8' : '#7E22CE',
-                          }}>
-                            Tier: {link.tier}
-                          </span>
-                          <span style={{ fontSize: '10px', color: '#64748B', fontWeight: 600 }}>
-                            {link.strength}
-                          </span>
-                        </div>
-                        <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#0F172A' }}>
-                          {link.title}
-                        </div>
-                        <div style={{ fontSize: '11.5px', color: '#475569', marginTop: 2 }}>
-                          {link.evidence}
-                        </div>
+                  {chain.map((link, idx) => (
+                    <div key={idx} style={{
+                      background: '#FFFFFF',
+                      border: '1px solid #E2E8F0',
+                      borderRadius: 6,
+                      padding: '12px 14px',
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <span style={{
+                          fontSize: '10px',
+                          fontWeight: 800,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.04em',
+                          color: '#475569',
+                          background: '#F1F5F9',
+                          border: '1px solid #E2E8F0',
+                          padding: '2px 6px',
+                          borderRadius: 4,
+                        }}>
+                          Tier: {link.tier}
+                        </span>
+                        <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 600 }}>
+                          {link.strength}
+                        </span>
                       </div>
-                    );
-                  })}
+                      <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>
+                        {link.title}
+                      </div>
+                      <div style={{ fontSize: '11.5px', color: '#475569', marginTop: 3, lineHeight: 1.4 }}>
+                        {link.evidence}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
               {/* ── SECTION 5: COMPARED WITH NORMAL (Baseline Duration Bar) ── */}
               {baseline && (
-                <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px' }}>
+                <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
                   <div style={{ fontSize: '12px', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 10 }}>
                     Compared with 30-Day Normal Baseline
                   </div>
@@ -497,15 +512,15 @@ export function RootCauseInvestigationView({
                     </div>
 
                     <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#DC2626', marginBottom: 3 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#0F172A', marginBottom: 3 }}>
                         <span>THIS EVENT DURATION</span>
                         <span><strong>{baseline.current_duration_min} min</strong> ({baseline.duration_ratio}x baseline)</span>
                       </div>
-                      <div style={{ height: 8, background: '#FEE2E2', borderRadius: 4, overflow: 'hidden' }}>
+                      <div style={{ height: 8, background: '#F1F5F9', borderRadius: 4, overflow: 'hidden' }}>
                         <div style={{
                           width: `${Math.min(100, Math.round((baseline.current_duration_min / Math.max(1, baseline.expected_duration_min * 2)) * 100))}%`,
                           height: '100%',
-                          background: '#DC2626',
+                          background: '#0F172A',
                         }} />
                       </div>
                     </div>
@@ -520,7 +535,7 @@ export function RootCauseInvestigationView({
           </div>
 
           {/* ── SECTION 6: CONTRIBUTING FACTORS (Ranked by Evidence Strength) ── */}
-          <div style={{ margin: '0 24px 24px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px' }}>
+          <div style={{ margin: '0 24px 24px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
             <div style={{ marginBottom: 12 }}>
               <div style={{ fontSize: '13px', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 Contributing Factors Ranked by Evidence Strength
@@ -532,7 +547,7 @@ export function RootCauseInvestigationView({
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 12 }}>
               {factors.map((f, i) => (
-                <div key={i} style={{ border: '1px solid #E2E8F0', borderRadius: 6, padding: '12px', background: '#F8FAFC' }}>
+                <div key={i} style={{ border: '1px solid #E2E8F0', borderRadius: 6, padding: '12px', background: '#FFFFFF' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                     <span style={{ fontSize: '10px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>
                       Source: {f.source}
@@ -540,10 +555,11 @@ export function RootCauseInvestigationView({
                     <span style={{
                       fontSize: '10px',
                       fontWeight: 800,
-                      padding: '1px 6px',
+                      padding: '2px 6px',
                       borderRadius: 3,
-                      color: f.evidence_strength === 'HIGH' ? '#DC2626' : f.evidence_strength === 'MEDIUM' ? '#EA580C' : '#64748B',
-                      background: f.evidence_strength === 'HIGH' ? '#FEE2E2' : f.evidence_strength === 'MEDIUM' ? '#FFEDD5' : '#E2E8F0',
+                      color: f.evidence_strength === 'HIGH' ? '#B91C1C' : '#475569',
+                      background: f.evidence_strength === 'HIGH' ? '#FEF2F2' : '#F1F5F9',
+                      border: `1px solid ${f.evidence_strength === 'HIGH' ? '#FECACA' : '#E2E8F0'}`,
                     }}>
                       {f.evidence_strength}
                     </span>
@@ -562,7 +578,7 @@ export function RootCauseInvestigationView({
           {/* ── SECTION 7 & 8: BUSINESS IMPACT & RECOMMENDED NEXT STEP ── */}
           <div style={{ margin: '0 24px 24px', display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 20 }}>
             {/* BUSINESS IMPACT */}
-            <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '18px 20px' }}>
+            <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '18px 20px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
               <div style={{ fontSize: '13px', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>
                 Business Impact
               </div>
@@ -574,16 +590,16 @@ export function RootCauseInvestigationView({
                 <div style={{ padding: '10px 12px', background: '#F8FAFC', borderRadius: 6, border: '1px solid #E2E8F0' }}>
                   <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 600 }}>LOST PHYSICAL METRES</div>
                   <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
-                    {impact?.lost_meters} <span style={{ fontSize: '12px' }}>m</span>
+                    {impact?.lost_meters} <span style={{ fontSize: '12px', color: '#64748B' }}>m</span>
                   </div>
                 </div>
 
-                <div style={{ padding: '10px 12px', background: '#FEF2F2', borderRadius: 6, border: '1px solid #FECACA' }}>
-                  <div style={{ fontSize: '11px', color: '#991B1B', fontWeight: 600 }}>REVENUE EXPOSURE (INR)</div>
-                  <div style={{ fontSize: '20px', fontWeight: 800, color: '#DC2626', fontVariantNumeric: 'tabular-nums' }}>
+                <div style={{ padding: '10px 12px', background: '#F8FAFC', borderRadius: 6, border: '1px solid #E2E8F0' }}>
+                  <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 600 }}>REVENUE EXPOSURE (INR)</div>
+                  <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
                     {impact?.revenue_exposure ? `₹${Math.round(impact.revenue_exposure).toLocaleString()}` : 'RATE MISSING'}
                   </div>
-                  <div style={{ fontSize: '10.5px', color: '#7F1D1D', marginTop: 2 }}>
+                  <div style={{ fontSize: '10.5px', color: '#64748B', marginTop: 2 }}>
                     Provenance: <strong>{impact?.rate_source}</strong>
                   </div>
                 </div>
@@ -592,13 +608,13 @@ export function RootCauseInvestigationView({
 
             {/* RECOMMENDED NEXT STEP */}
             {recommendation && (
-              <div style={{ background: '#FFFFFF', border: '1px solid #BFDBFE', borderRadius: 8, padding: '18px 20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '18px 20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                    <div style={{ fontSize: '13px', fontWeight: 800, color: '#1E40AF', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                       Recommended Managerial Next Step
                     </div>
-                    <span style={{ fontSize: '11px', background: '#EFF6FF', color: '#2563EB', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
+                    <span style={{ fontSize: '10px', background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#475569', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
                       ACTION RECOMMENDATION
                     </span>
                   </div>
@@ -607,11 +623,11 @@ export function RootCauseInvestigationView({
                     {recommendation.recommended_step}
                   </div>
 
-                  <div style={{ marginTop: 10, padding: '10px 12px', background: '#EFF6FF', borderRadius: 6, border: '1px solid #DBEAFE' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#1D4ED8', textTransform: 'uppercase' }}>
+                  <div style={{ marginTop: 10, padding: '10px 12px', background: '#F8FAFC', borderRadius: 6, border: '1px solid #E2E8F0' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#0F172A', textTransform: 'uppercase' }}>
                       Why this step?
                     </div>
-                    <div style={{ fontSize: '12px', color: '#1E40AF', marginTop: 2 }}>
+                    <div style={{ fontSize: '12px', color: '#475569', marginTop: 2 }}>
                       {recommendation.why_this_step}
                     </div>
                   </div>
@@ -628,7 +644,7 @@ export function RootCauseInvestigationView({
                       padding: '8px 14px',
                       fontSize: '12px',
                       fontWeight: 700,
-                      color: '#475569',
+                      color: '#0F172A',
                       cursor: 'pointer',
                     }}
                   >
@@ -637,7 +653,7 @@ export function RootCauseInvestigationView({
                   <button
                     onClick={() => handleAddToActionPlan(recommendation.action_title)}
                     style={{
-                      background: '#2563EB',
+                      background: '#0F172A',
                       border: 'none',
                       borderRadius: 6,
                       padding: '8px 18px',
@@ -714,11 +730,11 @@ export function RootCauseInvestigationView({
               </div>
             </div>
 
-            <div style={{ padding: '12px', background: '#EFF6FF', borderRadius: 6, border: '1px solid #BFDBFE' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: '#1D4ED8', textTransform: 'uppercase', marginBottom: 4 }}>
+            <div style={{ padding: '12px', background: '#F8FAFC', borderRadius: 6, border: '1px solid #E2E8F0' }}>
+              <div style={{ fontSize: '11px', fontWeight: 700, color: '#0F172A', textTransform: 'uppercase', marginBottom: 4 }}>
                 Next Recommended Step
               </div>
-              <div style={{ fontSize: '12px', color: '#1E40AF' }}>
+              <div style={{ fontSize: '12px', color: '#475569' }}>
                 {recommendation?.recommended_step}
               </div>
             </div>
@@ -733,7 +749,7 @@ export function RootCauseInvestigationView({
               style={{
                 width: '100%',
                 padding: '10px',
-                background: '#2563EB',
+                background: '#0F172A',
                 border: 'none',
                 borderRadius: 6,
                 color: '#FFFFFF',

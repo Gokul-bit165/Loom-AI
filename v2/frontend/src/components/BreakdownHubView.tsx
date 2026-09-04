@@ -17,6 +17,8 @@ import {
   X,
 } from 'lucide-react';
 
+import { BreakdownSubNav } from './BreakdownSubNav';
+
 export type BreakdownSubPage =
   | 'insights'
   | 'root-cause'
@@ -34,7 +36,7 @@ interface BreakdownHubViewProps {
   onNavigateSubmodule?: (tab: string, context?: any) => void;
 }
 
-export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: BreakdownHubViewProps) {
+export function BreakdownHubView({ activeTab = 'insights', onTabChange, onSelectLoom, onNavigateSubmodule }: BreakdownHubViewProps) {
   const [data, setData] = useState<BreakdownSummaryResponse | null>(null);
   const [date, setDate] = useState('2026-07-31');
   const [loading, setLoading] = useState(true);
@@ -69,6 +71,14 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
     setTimeout(() => {
       setActionPlanNotified(null);
     }, 2500);
+  };
+
+  const handleSelectTab = (tab: string) => {
+    if (onNavigateSubmodule) {
+      onNavigateSubmodule(tab);
+    } else if (onTabChange) {
+      onTabChange(tab as BreakdownSubPage);
+    }
   };
 
   if (loading) return <LoadingState message="Loading Grounded Breakdown Intelligence..." />;
@@ -140,8 +150,14 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
         }
       />
 
+      {/* ── Universal Breakdown Sub-Navigation ── */}
+      <BreakdownSubNav
+        currentTab={activeTab === 'insights' || activeTab === 'root-cause' || activeTab === 'abnormal' || activeTab === 'loss-impact' ? activeTab : 'insights'}
+        onSelectTab={handleSelectTab}
+      />
+
       {/* ── Executive Situation Summary Bar ── */}
-      <div style={{ margin: '0 24px 20px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px' }}>
+      <div style={{ margin: '0 24px 20px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px', boxShadow: '0 1px 2px rgba(0,0,0,0.03)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16 }}>
           <div style={{ borderRight: '1px solid #F1F5F9', paddingRight: 12 }}>
             <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
@@ -160,7 +176,7 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
               Breakdown vs Micro-Stops
             </div>
             <div style={{ fontSize: '16px', fontWeight: 800, color: '#0F172A', margin: '6px 0 2px', fontVariantNumeric: 'tabular-nums' }}>
-              <span style={{ color: '#DC2626' }}>{data.breakdown_count || totalEvents}</span>
+              <span>{data.breakdown_count || totalEvents}</span>
               <span style={{ fontSize: '11px', fontWeight: 500, color: '#64748B' }}> breakdowns</span>
             </div>
             <div style={{ fontSize: '11px', color: '#64748B' }}>
@@ -172,7 +188,7 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
             <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Output Loss
             </div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#DC2626', margin: '4px 0 2px', fontVariantNumeric: 'tabular-nums' }}>
+            <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: '4px 0 2px', fontVariantNumeric: 'tabular-nums' }}>
               {Math.round(totalMetersLost).toLocaleString()} <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748B' }}>m</span>
             </div>
             <div style={{ fontSize: '11px', color: '#64748B' }}>
@@ -184,11 +200,11 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
             <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Estimated Exposure
             </div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#DC2626', margin: '4px 0 2px', fontVariantNumeric: 'tabular-nums' }}>
+            <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: '4px 0 2px', fontVariantNumeric: 'tabular-nums' }}>
               ₹{Math.round(financialExposure).toLocaleString()}
             </div>
             <div style={{ fontSize: '10px', color: '#64748B', display: 'flex', alignItems: 'center', gap: 4 }}>
-              <span style={{ padding: '1px 4px', background: '#EFF6FF', color: '#2563EB', borderRadius: 3, fontWeight: 700 }}>
+              <span style={{ padding: '1px 5px', background: '#F1F5F9', color: '#475569', borderRadius: 3, fontWeight: 700, border: '1px solid #E2E8F0' }}>
                 {rateSource}
               </span>
               <span>Style-rate grounded</span>
@@ -196,10 +212,10 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
           </div>
 
           <div>
-            <div style={{ fontSize: '11px', fontWeight: 700, color: '#16A34A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <div style={{ fontSize: '11px', fontWeight: 700, color: '#047857', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Potential Recovery
             </div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#16A34A', margin: '4px 0 2px', fontVariantNumeric: 'tabular-nums' }}>
+            <div style={{ fontSize: '20px', fontWeight: 800, color: '#047857', margin: '4px 0 2px', fontVariantNumeric: 'tabular-nums' }}>
               ₹{Math.round(potentialRecovery.potential_rupees || 0).toLocaleString()}
             </div>
             <div style={{ fontSize: '11px', color: '#64748B' }}>
@@ -220,13 +236,13 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
             <button
               onClick={() => setIsCompareModalOpen(true)}
               style={{
-                background: '#EFF6FF',
-                border: '1px solid #BFDBFE',
+                background: '#FFFFFF',
+                border: '1px solid #CBD5E1',
                 borderRadius: 6,
                 padding: '5px 12px',
                 fontSize: '11px',
                 fontWeight: 700,
-                color: '#2563EB',
+                color: '#0F172A',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -241,21 +257,21 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
           {/* Highest Downtime Card */}
-          <div style={{ background: '#FFFFFF', border: '1px solid #FECACA', borderLeft: '4px solid #DC2626', borderRadius: 8, padding: '16px' }}>
+          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
-                <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', color: '#DC2626', background: '#FEF2F2', padding: '2px 6px', borderRadius: 4 }}>
+                <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', color: '#B91C1C', background: '#FEF2F2', border: '1px solid #FECACA', padding: '2px 8px', borderRadius: 4 }}>
                   Highest Downtime Today
                 </span>
-                <div style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', marginTop: 6 }}>
+                <div style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', marginTop: 8 }}>
                   Loom {highestLoom?.loom_no || '—'}
                 </div>
-                <div style={{ fontSize: '11px', color: '#64748B' }}>
+                <div style={{ fontSize: '11px', color: '#64748B', marginTop: 2 }}>
                   Model: {highestLoom?.loom_type_code || 'Airjet'} · Style: {highestLoom?.style_code ? highestLoom.style_code.slice(0, 24) + '...' : '30s VSF'}
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '20px', fontWeight: 800, color: '#DC2626', fontVariantNumeric: 'tabular-nums' }}>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
                   {highestLoom?.total_stopped_minutes || 0}m
                 </div>
                 <div style={{ fontSize: '11px', color: '#64748B' }}>
@@ -264,12 +280,12 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
               </div>
             </div>
 
-            <div style={{ marginTop: 12, padding: '8px 10px', background: '#FEF2F2', borderRadius: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ marginTop: 14, padding: '10px 12px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <div style={{ fontSize: '11px', fontWeight: 700, color: '#991B1B' }}>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: '#0F172A' }}>
                   Dominant: {highestLoom?.dominant_reason_en || 'Stoppage'}
                 </div>
-                <div style={{ fontSize: '10px', color: '#B91C1C' }}>
+                <div style={{ fontSize: '11px', color: '#64748B', marginTop: 2 }}>
                   Lost output: ~{highestLoom?.lost_meters ? Math.round(highestLoom.lost_meters) : 153} m · Exposure: ₹{highestLoom?.rupee_exposure ? Math.round(highestLoom.rupee_exposure).toLocaleString() : '6,112'}
                 </div>
               </div>
@@ -282,14 +298,15 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
                   }
                 }}
                 style={{
-                  background: '#FFFFFF',
-                  border: '1px solid #FCA5A5',
+                  background: '#0F172A',
+                  border: 'none',
                   borderRadius: 4,
-                  padding: '4px 8px',
+                  padding: '5px 10px',
                   fontSize: '11px',
                   fontWeight: 700,
-                  color: '#B91C1C',
+                  color: '#FFFFFF',
                   cursor: 'pointer',
+                  whiteSpace: 'nowrap',
                 }}
               >
                 Root Cause →
@@ -298,21 +315,21 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
           </div>
 
           {/* Best Peer Benchmark Card */}
-          <div style={{ background: '#FFFFFF', border: '1px solid #BBF7D0', borderLeft: '4px solid #16A34A', borderRadius: 8, padding: '16px' }}>
+          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
-                <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', color: '#16A34A', background: '#F0FDF4', padding: '2px 6px', borderRadius: 4 }}>
+                <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', color: '#047857', background: '#ECFDF5', border: '1px solid #A7F3D0', padding: '2px 8px', borderRadius: 4 }}>
                   Golden Peer Benchmark
                 </span>
-                <div style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', marginTop: 6 }}>
+                <div style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', marginTop: 8 }}>
                   Loom {bestPeer?.loom_no || 'AJ-162'}
                 </div>
-                <div style={{ fontSize: '11px', color: '#64748B' }}>
+                <div style={{ fontSize: '11px', color: '#64748B', marginTop: 2 }}>
                   Shed: {bestPeer?.shed_code || 'Airjet'} · Style: {bestPeer?.style_code ? bestPeer.style_code.slice(0, 24) + '...' : '30s VSF Plain'}
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '20px', fontWeight: 800, color: '#16A34A', fontVariantNumeric: 'tabular-nums' }}>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: '#047857', fontVariantNumeric: 'tabular-nums' }}>
                   {bestPeer?.total_stopped_minutes ?? 38}m
                 </div>
                 <div style={{ fontSize: '11px', color: '#64748B' }}>
@@ -321,29 +338,29 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
               </div>
             </div>
 
-            <div style={{ marginTop: 12, padding: '8px 10px', background: '#F0FDF4', borderRadius: 6 }}>
-              <div style={{ fontSize: '11px', fontWeight: 600, color: '#166534', lineHeight: 1.4 }}>
+            <div style={{ marginTop: 14, padding: '10px 12px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 6 }}>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: '#334155', lineHeight: 1.4 }}>
                 {bestPeer?.comparison_notes || 'Proves that the yarn lot and air pressure are sound for this machine class.'}
               </div>
             </div>
           </div>
 
           {/* Chronic Monthly Repeat Offender */}
-          <div style={{ background: '#FFFFFF', border: '1px solid #FED7AA', borderLeft: '4px solid #EA580C', borderRadius: 8, padding: '16px' }}>
+          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
-                <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', color: '#EA580C', background: '#FFF7ED', padding: '2px 6px', borderRadius: 4 }}>
+                <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', color: '#B45309', background: '#FFFBEB', border: '1px solid #FDE68A', padding: '2px 8px', borderRadius: 4 }}>
                   Chronic Monthly Offender
                 </span>
-                <div style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', marginTop: 6 }}>
+                <div style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', marginTop: 8 }}>
                   Loom {chronicLoom?.loom_no || 'AJ-118'}
                 </div>
-                <div style={{ fontSize: '11px', color: '#64748B' }}>
+                <div style={{ fontSize: '11px', color: '#64748B', marginTop: 2 }}>
                   Month-to-Date: {chronicLoom?.event_count || 193} cumulative stops
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '20px', fontWeight: 800, color: '#EA580C', fontVariantNumeric: 'tabular-nums' }}>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
                   {chronicLoom?.total_stopped_minutes ? Math.round(chronicLoom.total_stopped_minutes / 60) : 203}h
                 </div>
                 <div style={{ fontSize: '11px', color: '#64748B' }}>
@@ -352,12 +369,12 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
               </div>
             </div>
 
-            <div style={{ marginTop: 12, padding: '8px 10px', background: '#FFF7ED', borderRadius: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ marginTop: 14, padding: '10px 12px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <div style={{ fontSize: '11px', fontWeight: 700, color: '#9A3412' }}>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: '#0F172A' }}>
                   Repeat Pattern: Electrical / Drive Trips
                 </div>
-                <div style={{ fontSize: '10px', color: '#C2410C' }}>
+                <div style={{ fontSize: '11px', color: '#64748B', marginTop: 2 }}>
                   Requires scheduled overhaul during next beam gaiting
                 </div>
               </div>
@@ -365,13 +382,14 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
                 onClick={() => handleAddToActionPlan(`Overhaul Loom ${chronicLoom?.loom_no || 'AJ-118'}`)}
                 style={{
                   background: '#FFFFFF',
-                  border: '1px solid #FDBA74',
+                  border: '1px solid #CBD5E1',
                   borderRadius: 4,
-                  padding: '4px 8px',
+                  padding: '5px 10px',
                   fontSize: '11px',
                   fontWeight: 700,
-                  color: '#9A3412',
+                  color: '#0F172A',
                   cursor: 'pointer',
+                  whiteSpace: 'nowrap',
                 }}
               >
                 + Action
@@ -384,7 +402,7 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
       {/* ── SECTION 2 & 3: WHERE ARE WE LOSING TIME? (Q6) & ABNORMAL PATTERNS ── */}
       <div style={{ margin: '0 24px 24px', display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr)', gap: 20 }}>
         {/* LEFT: REASON PARETO (Duration & Expected Variance) */}
-        <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px' }}>
+        <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
             <div>
               <div style={{ fontSize: '13px', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
@@ -402,6 +420,7 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
               const barPct = Math.min(100, (Number(r.total_minutes) / maxMin) * 100);
               const variance = r.variance_min ?? 0;
               const isOverStandard = variance > 0;
+              const barColors = ['#DC2626', '#334155', '#475569', '#64748B', '#94A3B8', '#CBD5E1'];
 
               return (
                 <div key={i} style={{ borderBottom: i < 5 ? '1px solid #F1F5F9' : 'none', paddingBottom: 10 }}>
@@ -410,7 +429,7 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
                       <span style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A' }}>
                         {r.reason_label_en}
                       </span>
-                      <span style={{ fontSize: '10px', color: '#64748B', background: '#F1F5F9', padding: '1px 6px', borderRadius: 4, textTransform: 'uppercase' }}>
+                      <span style={{ fontSize: '10px', color: '#64748B', background: '#F1F5F9', border: '1px solid #E2E8F0', padding: '1px 6px', borderRadius: 4, textTransform: 'uppercase' }}>
                         {r.category || 'OTHER'}
                       </span>
                     </div>
@@ -424,9 +443,9 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
                     </div>
                   </div>
 
-                  {/* Horizontal Bar */}
+                  {/* Horizontal Bar - Cohesive Slate progression with critical top driver accent */}
                   <div style={{ height: 6, background: '#F1F5F9', borderRadius: 3, overflow: 'hidden', margin: '4px 0' }}>
-                    <div style={{ width: `${barPct}%`, height: '100%', background: i === 0 ? '#DC2626' : i < 3 ? '#EA580C' : '#2563EB', borderRadius: 3 }} />
+                    <div style={{ width: `${barPct}%`, height: '100%', background: barColors[i] || '#CBD5E1', borderRadius: 3 }} />
                   </div>
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: '#64748B' }}>
@@ -434,7 +453,7 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
                     <span>
                       Avg duration: <strong>{r.avg_duration_min ?? Math.round(Number(r.total_minutes) / Math.max(1, r.count))}m</strong>
                       {' '}(Std: {r.expected_duration_min ?? 15}m{' '}
-                      <span style={{ color: isOverStandard ? '#DC2626' : '#16A34A', fontWeight: 700 }}>
+                      <span style={{ color: isOverStandard ? '#B91C1C' : '#047857', fontWeight: 700 }}>
                         {isOverStandard ? `+${variance}m` : `${variance}m`}
                       </span>)
                     </span>
@@ -447,7 +466,7 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
 
         {/* RIGHT: WHAT CHANGED? (Abnormal Operational Patterns) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px', flex: 1 }}>
+          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px', flex: 1, boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
               <div>
                 <div style={{ fontSize: '13px', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
@@ -457,13 +476,13 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
                   Statistically detected abnormal patterns (Q6)
                 </div>
               </div>
-              <span style={{ fontSize: '10px', fontWeight: 700, color: '#2563EB', background: '#EFF6FF', padding: '2px 8px', borderRadius: 4 }}>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#0F172A', background: '#F1F5F9', border: '1px solid #E2E8F0', padding: '2px 8px', borderRadius: 4 }}>
                 {abnormalPatterns.length} Detected
               </span>
             </div>
 
             {abnormalPatterns.length === 0 ? (
-              <div style={{ padding: '24px', textAlign: 'center', color: '#16A34A', background: '#F0FDF4', borderRadius: 6 }}>
+              <div style={{ padding: '24px', textAlign: 'center', color: '#047857', background: '#ECFDF5', border: '1px solid #A7F3D0', borderRadius: 6 }}>
                 <CheckCircle2 size={20} style={{ margin: '0 auto 6px' }} />
                 <div style={{ fontWeight: 700, fontSize: '12px' }}>No Statistically Abnormal Stop Clusters</div>
                 <div style={{ fontSize: '11px', color: '#64748B' }}>Breakdown distribution is operating within normal 30-day baseline tolerances.</div>
@@ -474,9 +493,8 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
                   <div
                     key={idx}
                     style={{
-                      border: `1px solid ${pat.severity === 'CRITICAL' ? '#FECACA' : '#FED7AA'}`,
-                      borderLeft: `4px solid ${pat.severity === 'CRITICAL' ? '#DC2626' : '#EA580C'}`,
-                      background: pat.severity === 'CRITICAL' ? '#FEF2F2' : '#FFF7ED',
+                      border: '1px solid #E2E8F0',
+                      background: '#FFFFFF',
                       borderRadius: 6,
                       padding: '12px',
                     }}
@@ -489,11 +507,11 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
                         fontSize: '9px',
                         fontWeight: 800,
                         textTransform: 'uppercase',
-                        color: pat.severity === 'CRITICAL' ? '#DC2626' : '#EA580C',
-                        background: '#FFFFFF',
-                        padding: '1px 6px',
+                        color: pat.severity === 'CRITICAL' ? '#B91C1C' : '#B45309',
+                        background: pat.severity === 'CRITICAL' ? '#FEF2F2' : '#FFFBEB',
+                        padding: '2px 6px',
                         borderRadius: 3,
-                        border: `1px solid ${pat.severity === 'CRITICAL' ? '#FCA5A5' : '#FDBA74'}`,
+                        border: `1px solid ${pat.severity === 'CRITICAL' ? '#FECACA' : '#FDE68A'}`,
                       }}>
                         {pat.severity}
                       </span>
@@ -535,7 +553,7 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
       </div>
 
       {/* ── SECTION 4: WHICH MACHINES MATTER? (Top Outliers Ranked by Financial Exposure) ── */}
-      <div style={{ margin: '0 24px 24px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px' }}>
+      <div style={{ margin: '0 24px 24px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <div>
             <div style={{ fontSize: '13px', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
@@ -567,18 +585,18 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
               </tr>
             </thead>
             <tbody>
-              {topOutlierLooms.map((l, i) => (
+              {topOutlierLooms.map((l, _i) => (
                 <tr
                   key={l.loom_id}
                   style={{
                     borderBottom: '1px solid #F1F5F9',
-                    background: i === 0 ? '#FFFBEB' : '#FFFFFF',
+                    background: '#FFFFFF',
                   }}
                 >
                   <td style={{ padding: '10px 12px', fontWeight: 800, color: '#0F172A' }}>
                     <button
                       onClick={() => onSelectLoom && onSelectLoom(l.loom_id)}
-                      style={{ background: 'transparent', border: 'none', color: '#2563EB', fontWeight: 800, cursor: 'pointer', padding: 0 }}
+                      style={{ background: 'transparent', border: 'none', color: '#0F172A', fontWeight: 800, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
                     >
                       {l.loom_no}
                     </button>
@@ -587,19 +605,19 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
                   <td style={{ padding: '10px 12px', color: '#334155', maxWidth: 180, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={l.style_code}>
                     {l.style_code ? l.style_code.split('/')[0] : '30s VSF'}
                   </td>
-                  <td style={{ padding: '10px 12px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: (l.efficiency_pct ?? 85) < 80 ? '#DC2626' : '#0F172A' }}>
+                  <td style={{ padding: '10px 12px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: (l.efficiency_pct ?? 85) < 80 ? '#B91C1C' : '#0F172A' }}>
                     {l.efficiency_pct ?? '—'}%
                   </td>
-                  <td style={{ padding: '10px 12px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+                  <td style={{ padding: '10px 12px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: '#475569' }}>
                     {l.event_count}
                   </td>
-                  <td style={{ padding: '10px 12px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: '#DC2626' }}>
+                  <td style={{ padding: '10px 12px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: '#0F172A' }}>
                     {l.total_stopped_minutes ?? l.stopped_minutes ?? 0} min
                   </td>
                   <td style={{ padding: '10px 12px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: '#0F172A' }}>
                     {l.lost_meters ? Math.round(l.lost_meters) : '—'} m
                   </td>
-                  <td style={{ padding: '10px 12px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 800, color: '#DC2626' }}>
+                  <td style={{ padding: '10px 12px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 800, color: '#0F172A' }}>
                     ₹{l.rupee_exposure ? Math.round(l.rupee_exposure).toLocaleString() : '—'}
                   </td>
                   <td style={{ padding: '10px 12px', color: '#475569' }}>
@@ -609,13 +627,13 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
                     <button
                       onClick={() => setActiveDrawerLoom(l)}
                       style={{
-                        background: '#EFF6FF',
-                        border: '1px solid #BFDBFE',
+                        background: '#FFFFFF',
+                        border: '1px solid #CBD5E1',
                         borderRadius: 4,
-                        padding: '4px 8px',
+                        padding: '4px 10px',
                         fontSize: '11px',
                         fontWeight: 700,
-                        color: '#2563EB',
+                        color: '#0F172A',
                         cursor: 'pointer',
                       }}
                     >
@@ -630,7 +648,7 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
       </div>
 
       {/* ── SECTION 5: SHIFT BREAKDOWN MATRIX (Q7) ── */}
-      <div style={{ margin: '0 24px 24px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px' }}>
+      <div style={{ margin: '0 24px 24px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '16px 20px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
         <div style={{ fontSize: '13px', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>
           Shift Breakdown Impact Matrix (Q7)
         </div>
@@ -640,12 +658,14 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
           {shifts.map((s) => (
-            <div key={s.shift_code} style={{ border: '1px solid #E2E8F0', borderRadius: 6, padding: '12px 14px', background: '#F8FAFC' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <div key={s.shift_code} style={{ border: '1px solid #E2E8F0', borderRadius: 6, padding: '14px', background: '#F8FAFC' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                 <span style={{ fontWeight: 800, fontSize: '14px', color: '#0F172A' }}>{s.shift_code}</span>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#DC2626' }}>{s.stopped_minutes} min lost</span>
+                <span style={{ fontSize: '11px', fontWeight: 700, color: '#475569', background: '#FFFFFF', border: '1px solid #E2E8F0', padding: '2px 8px', borderRadius: 4 }}>
+                  {s.stopped_minutes} min lost
+                </span>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: '11px', color: '#475569' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: '11px', color: '#475569' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>Stop Events:</span>
                   <strong style={{ color: '#0F172A' }}>{s.event_count}</strong>
@@ -656,9 +676,9 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>Estimated ₹ Exposure:</span>
-                  <strong style={{ color: '#DC2626' }}>₹{Math.round(s.rupee_exposure).toLocaleString()}</strong>
+                  <strong style={{ color: '#0F172A' }}>₹{Math.round(s.rupee_exposure).toLocaleString()}</strong>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #E2E8F0', paddingTop: 4, marginTop: 4 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #E2E8F0', paddingTop: 6, marginTop: 4 }}>
                   <span>Dominant Failure:</span>
                   <strong style={{ color: '#0F172A' }}>{s.dominant_reason}</strong>
                 </div>
@@ -707,27 +727,27 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
             <div style={{ padding: '20px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                 {/* Outlier Column */}
-                <div style={{ border: '1px solid #FECACA', borderRadius: 8, padding: 14, background: '#FEF2F2' }}>
-                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#DC2626', textTransform: 'uppercase' }}>High Loss Outlier</div>
-                  <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: '4px 0' }}>Loom {highestLoom.loom_no}</div>
+                <div style={{ border: '1px solid #E2E8F0', borderRadius: 8, padding: 14, background: '#FFFFFF' }}>
+                  <div style={{ display: 'inline-block', fontSize: '10px', fontWeight: 700, color: '#B91C1C', background: '#FEF2F2', border: '1px solid #FECACA', padding: '2px 8px', borderRadius: 4, textTransform: 'uppercase' }}>High Loss Outlier</div>
+                  <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: '8px 0 2px' }}>Loom {highestLoom.loom_no}</div>
                   <div style={{ fontSize: '11px', color: '#64748B', marginBottom: 10 }}>Make: {highestLoom.loom_type_code}</div>
-                  <div style={{ fontSize: '12px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    <div>Downtime: <strong style={{ color: '#DC2626' }}>{highestLoom.total_stopped_minutes} min</strong></div>
+                  <div style={{ fontSize: '12px', display: 'flex', flexDirection: 'column', gap: 6, background: '#F8FAFC', padding: '10px', borderRadius: 6, border: '1px solid #E2E8F0' }}>
+                    <div>Downtime: <strong>{highestLoom.total_stopped_minutes} min</strong></div>
                     <div>Stops Count: <strong>{highestLoom.event_count}</strong></div>
-                    <div>Efficiency: <strong style={{ color: '#DC2626' }}>{highestLoom.efficiency_pct ?? 78.3}%</strong></div>
+                    <div>Efficiency: <strong>{highestLoom.efficiency_pct ?? 78.3}%</strong></div>
                     <div>Dominant: <strong>{highestLoom.dominant_reason_en || 'Power failure'}</strong></div>
                   </div>
                 </div>
 
                 {/* Best Peer Column */}
-                <div style={{ border: '1px solid #BBF7D0', borderRadius: 8, padding: 14, background: '#F0FDF4' }}>
-                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#16A34A', textTransform: 'uppercase' }}>Golden Peer Benchmark</div>
-                  <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: '4px 0' }}>Loom {bestPeer.loom_no}</div>
+                <div style={{ border: '1px solid #E2E8F0', borderRadius: 8, padding: 14, background: '#FFFFFF' }}>
+                  <div style={{ display: 'inline-block', fontSize: '10px', fontWeight: 700, color: '#047857', background: '#ECFDF5', border: '1px solid #A7F3D0', padding: '2px 8px', borderRadius: 4, textTransform: 'uppercase' }}>Golden Peer Benchmark</div>
+                  <div style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', margin: '8px 0 2px' }}>Loom {bestPeer.loom_no}</div>
                   <div style={{ fontSize: '11px', color: '#64748B', marginBottom: 10 }}>Make: {bestPeer.loom_type_code}</div>
-                  <div style={{ fontSize: '12px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    <div>Downtime: <strong style={{ color: '#16A34A' }}>{bestPeer.total_stopped_minutes} min</strong></div>
+                  <div style={{ fontSize: '12px', display: 'flex', flexDirection: 'column', gap: 6, background: '#F8FAFC', padding: '10px', borderRadius: 6, border: '1px solid #E2E8F0' }}>
+                    <div>Downtime: <strong>{bestPeer.total_stopped_minutes} min</strong></div>
                     <div>Stops Count: <strong>{bestPeer.event_count}</strong></div>
-                    <div>Efficiency: <strong style={{ color: '#16A34A' }}>{bestPeer.efficiency_pct ?? 98.6}%</strong></div>
+                    <div>Efficiency: <strong>{bestPeer.efficiency_pct ?? 98.6}%</strong></div>
                     <div>Output: <strong>{bestPeer.metres_produced ?? 303} m</strong></div>
                   </div>
                 </div>
@@ -757,7 +777,7 @@ export function BreakdownHubView({ onSelectLoom, onNavigateSubmodule }: Breakdow
                     handleAddToActionPlan(`Overhaul Drive on Loom ${highestLoom.loom_no}`);
                     setIsCompareModalOpen(false);
                   }}
-                  style={{ padding: '8px 16px', background: '#2563EB', border: 'none', borderRadius: 6, fontSize: '12px', fontWeight: 700, color: '#FFFFFF', cursor: 'pointer' }}
+                  style={{ padding: '8px 16px', background: '#0F172A', border: 'none', borderRadius: 6, fontSize: '12px', fontWeight: 700, color: '#FFFFFF', cursor: 'pointer' }}
                 >
                   + Add Overhaul to Action Plan
                 </button>
