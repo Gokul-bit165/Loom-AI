@@ -7,53 +7,53 @@ export const TOKENS = {
   // 1. Color Palette (Light Industrial Enterprise SaaS)
   colors: {
     surface: {
-      canvas: '#F6F8FA',    // Light neutral app background
-      card: '#FFFFFF',      // Pure white primary surface
-      cardAlt: '#F9FAFB',   // Secondary elevated/subtle surface
-      toolbar: '#F3F4F6',   // Table headers / filter toolbars
-      border: '#E2E6EA',    // Crisp 1px structural borders
-      borderStrong: '#D1D5DB', // Emphasized borders / dividers
-      hover: '#F1F5F9',     // Row / button hover
-      active: '#E2E8F0',    // Active / pressed state
+      canvas: '#f8fafc',       // Slate 50 neutral canvas matching RevenueLossView
+      card: '#ffffff',         // Crisp white card surface
+      cardAlt: '#f1f5f9',      // Slate 100 secondary surface
+      toolbar: '#f8fafc',      // Table header / toolbar
+      border: '#e2e8f0',       // Crisp slate-200 1px border
+      borderStrong: '#cbd5e1', // Emphasized border slate-300
+      hover: '#f8fafc',        // Hover slate-50
+      active: '#e2e8f0',       // Active slate-200
     },
     brand: {
-      900: '#0F172A',
-      800: '#1E293B',
-      700: '#1E3A5F',       // Primary industrial deep blue
-      600: '#2563EB',       // Interactive brand blue
-      500: '#3B82F6',
-      100: '#EFF6FF',       // Selected nav background
-      50: '#F8FAFC',
+      900: '#0f172a',
+      800: '#1e293b',
+      700: '#1e3a5f',          // Primary industrial deep blue
+      600: '#2563eb',          // Interactive brand blue
+      500: '#3b82f6',
+      100: '#eff6ff',          // Selected nav background
+      50: '#f8fafc',
     },
     status: {
       critical: {
-        bg: '#FEF2F2',
-        border: '#FECACA',
-        text: '#DC2626',
+        bg: '#fef2f2',
+        border: '#fecaca',
+        text: '#b91c1c',
         label: 'Critical',
       },
       warning: {
-        bg: '#FFFBEB',
-        border: '#FDE68A',
-        text: '#D97706',
+        bg: '#fffbeb',
+        border: '#fde68a',
+        text: '#b45309',
         label: 'Attention',
       },
       healthy: {
-        bg: '#ECFDF5',
-        border: '#A7F3D0',
-        text: '#059669',
+        bg: '#ecfdf5',
+        border: '#a7f3d0',
+        text: '#047857',
         label: 'Healthy',
       },
       info: {
-        bg: '#EFF6FF',
-        border: '#BFDBFE',
-        text: '#2563EB',
+        bg: '#eff6ff',
+        border: '#bfdbfe',
+        text: '#1d4ed8',
         label: 'Info',
       },
       disabled: {
-        bg: '#F3F4F6',
-        border: '#E5E7EB',
-        text: '#6B7280',
+        bg: '#f8fafc',
+        border: '#e2e8f0',
+        text: '#64748b',
         label: 'N/A',
       },
     },
@@ -84,22 +84,22 @@ export const TOKENS = {
       },
     },
     text: {
-      primary: '#17212B',   // Deep readable neutral
-      secondary: '#4B5563', // Secondary body text
-      muted: '#6B7280',     // Metadata & table headers
-      dim: '#9CA3AF',       // Subdued annotations
+      primary: '#0f172a',   // Deep slate-900 neutral matching RevenueLossView
+      secondary: '#334155', // Slate-700 secondary text
+      muted: '#64748b',     // Slate-500 metadata & table headers
+      dim: '#94a3b8',       // Slate-400 subdued annotations
     },
   },
 
-  // 2. Typography Hierarchy (Inter & Tabular Numerics)
+  // 2. Typography Hierarchy (Tabular Numerics & Inter)
   typography: {
-    fontSans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    fontSans: "'-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Inter', sans-serif",
     fontMono: "'JetBrains Mono', 'SFMono-Regular', Consolas, Menlo, monospace",
     sizes: {
       appTitle: '16px',
-      pageTitle: '20px',
+      pageTitle: '18px',
       sectionHeading: '15px',
-      cardHeading: '13px',
+      cardHeading: '14px',
       kpiPrimary: '26px',
       kpiSecondary: '18px',
       body: '13px',
@@ -129,15 +129,15 @@ export const TOKENS = {
 
   // 5. Borders & Shadows (Subtle Enterprise)
   borders: {
-    subtle: '1px solid #E2E6EA',
-    medium: '1px solid #D1D5DB',
-    strong: '1px solid #9CA3AF',
-    accent: '1px solid #BFDBFE',
+    subtle: '1px solid #e2e8f0',
+    medium: '1px solid #cbd5e1',
+    strong: '1px solid #94a3b8',
+    accent: '1px solid #bfdbfe',
   },
   shadows: {
-    card: '0 1px 2px 0 rgba(0, 0, 0, 0.04)',
-    elevated: '0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
-    modal: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    card: '0 1px 2px 0 rgba(15, 23, 42, 0.04)',
+    elevated: '0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -1px rgba(15, 23, 42, 0.03)',
+    modal: '0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04)',
   },
 } as const;
 

@@ -1,0 +1,17 @@
+.git
+.github
+.vscode
+node_modules
+**/node_modules
+__pycache__
+**/*.pyc
+.pytest_cache
+**/.pytest_cache
+*.log
+.env
+.env.local
+v2/frontend/dist
+docs
+*.xlsx
+*.jpeg
+*.png

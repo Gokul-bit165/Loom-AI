@@ -79,7 +79,21 @@ export function CommandCenterView({ onNavigateToModule, onOpenWhyModal }: Comman
   // Honest Empty / Unavailable State (DATA TRUST)
   if (!data.data_available) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: TOKENS.spacing[4], paddingBottom: TOKENS.spacing[6] }}>
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '1440px',
+          margin: '0 auto',
+          padding: '24px 32px 64px',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          background: '#f8fafc',
+          color: '#0f172a',
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '24px',
+        }}
+      >
         <PageHeader
           title="Executive Decision Console"
           subtitle="Owner's daily operational decision screen."
@@ -132,7 +146,21 @@ export function CommandCenterView({ onNavigateToModule, onOpenWhyModal }: Comman
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: TOKENS.spacing[4], paddingBottom: TOKENS.spacing[6] }}>
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '1440px',
+        margin: '0 auto',
+        padding: '24px 32px 64px',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        background: '#f8fafc',
+        color: '#0f172a',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+      }}
+    >
       {/* ── Top Header with Date Selection, Owner/Ops Toggle, and Freshness ─ */}
       <PageHeader
         title={viewMode === 'OWNER' ? 'Owner Decision Console' : 'Plant Operations Monitor'}

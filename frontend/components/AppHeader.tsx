@@ -4,12 +4,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const NAV = [
-  { href: '/',             label: 'Morning Brief',  short: 'Brief' },
-  { href: '/operations',   label: 'Operations',     short: 'Ops' },
-  { href: '/breakdown',    label: 'Breakdown',      short: 'BD' },
-  { href: '/revenue',      label: 'Revenue',        short: '₹' },
-  { href: '/import',       label: 'Import Data',    short: 'Import' },
-  { href: '/ask',          label: 'Ask AI',         short: 'Ask' },
+  { href: '/',             label: 'Morning Brief',   short: 'Brief' },
+  { href: '/operations',   label: 'Operations',      short: 'Ops' },
+  { href: '/breakdown',    label: 'Breakdown',       short: 'BD' },
+  { href: '/revenue',      label: 'Revenue & Loss',  short: '₹' },
+  { href: '/floor',        label: 'Floor Stoppages', short: 'Floor' },
+  { href: '/import',       label: 'Import Data',     short: 'Import' },
+  { href: '/ask',          label: 'Ask AI',          short: 'Ask' },
 ];
 
 export function AppHeader() {

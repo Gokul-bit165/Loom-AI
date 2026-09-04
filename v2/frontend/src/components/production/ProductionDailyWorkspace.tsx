@@ -1025,7 +1025,7 @@ export const ProductionDailyWorkspace: React.FC<ProductionDailyWorkspaceProps> =
                   cursor: 'pointer',
                 }}
               >
-                AI Diagnosis →
+                Root Cause Diagnosis →
               </button>
             </div>
           );

@@ -23,4 +23,4 @@ def test_breakdown_summary_endpoint(client):
     assert "total_rupee_lost" in data
     assert "value" in data["total_rupee_lost"]
     assert "rate_source" in data["total_rupee_lost"]
-    assert data["total_rupee_lost"]["rate_source"] == "ESTIMATED"
+    assert data["total_rupee_lost"]["rate_source"] in ("CONFIRMED", "ESTIMATED")

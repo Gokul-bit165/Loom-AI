@@ -164,10 +164,13 @@ export const ProductionIntelligenceView: React.FC<ProductionIntelligenceViewProp
 
   return (
     <div className="production-intelligence-workspace" style={{
-      background: '#F6F8FA',
+      background: '#f8fafc',
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
+      width: '100%',
+      maxWidth: '1440px',
+      margin: '0 auto',
     }}>
       {/* 1. TOP HEADER & TRIAGE BAR */}
       <ProductionHeader

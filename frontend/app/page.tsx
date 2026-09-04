@@ -215,146 +215,216 @@ export default function MorningBriefPage() {
   );
 
   return (
-    <div style={{ maxWidth: 640, margin: '0 auto', padding: '0 0 80px' }}>
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 0 60px' }}>
 
-      {/* Provenance stamp */}
-      <div style={{ padding: '8px 16px', background: 'var(--ink-100)', borderBottom: '1px solid var(--atm-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <DataStamp asOf={generatedAt} isDemo={isDemo} rows={prodData?.evidence?.production_log_ids?.length} source="CSV import" />
-        <button className="btn btn-ghost" style={{ fontSize: '0.75rem', minHeight: 28, padding: '0 8px' }} onClick={load}>↻</button>
+      {/* Provenance */}
+      <div style={{ padding: '8px 16px', background: 'var(--ink-100)', borderBottom: '1px solid var(--atm-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <DataStamp asOf={generatedAt} isDemo={isDemo} rows={prodData?.evidence?.production_log_ids?.length} source="CSV import" />
+          <span style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', fontWeight: 600 }}>
+            Morning Executive Brief · 3 Shifts · ATM
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <button
+            className="btn btn-outline"
+            style={{ fontSize: '0.75rem', minHeight: 28, padding: '0 10px' }}
+            onClick={handleCopyWhatsApp}
+            id="btn-whatsapp-copy"
+          >
+            {copied ? '✓ Copied' : '📋 Copy WhatsApp'}
+          </button>
+          <button className="btn btn-ghost" style={{ fontSize: '0.75rem', minHeight: 28, padding: '0 8px' }} onClick={load} title="Refresh data">↻</button>
+        </div>
       </div>
 
-      {/* Hero pair: Efficiency + ₹ lost */}
-      <div style={{ padding: '20px 16px 16px', borderBottom: '1px solid var(--atm-border)' }}>
+      {/* Hero Header & Connected Metric Strip */}
+      <div style={{ padding: '20px 16px', borderBottom: '1px solid var(--atm-border)' }}>
         <div style={{ fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.07em', color: 'var(--ink-500)', marginBottom: 8, textTransform: 'uppercase' }}>
-          Yesterday · All 3 Shifts · ATM
-          {prodData?.summary?.date && <span style={{ marginLeft: 6 }}>({fmtDate(prodData.summary.date)})</span>}
+          Morning Brief · {prodData?.summary?.date ? fmtDate(prodData.summary.date) : 'Yesterday'} · All 3 Shifts · ATM
         </div>
 
-        {/* Efficiency hero */}
-        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 14, marginBottom: 4 }}>
-          <span className="hero-num num" style={{ color: effStatus_ === 'ok' ? 'var(--ok)' : effStatus_ === 'warn' ? 'var(--warn)' : 'var(--critical)' }}>
-            {pct(eff)}
-          </span>
-          <div style={{ paddingBottom: 8 }}>
-            <StatusBadge status={effStatus_} label={`Target ${pct(TARGET_EFF)}`} />
-          </div>
-        </div>
-        <div style={{ fontSize: '0.8125rem', color: 'var(--ink-500)', marginBottom: 14 }}>
-          avg weaving efficiency
-          {effGap > 0 && (
-            <span style={{ color: 'var(--critical)', marginLeft: 6, fontWeight: 600 }}>
-              ▼ {pct(effGap)} below target
-            </span>
-          )}
-        </div>
-
-        {/* Revenue loss paired number */}
-        <div style={{ padding: '12px 14px', background: revLoss > 0 ? 'var(--critical-bg)' : 'var(--ok-bg)', border: `1px solid ${revLoss > 0 ? 'var(--critical-border)' : 'var(--ok-border)'}`, borderRadius: 4, marginBottom: 14 }}>
-          <div style={{ fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.05em', color: 'var(--ink-500)', textTransform: 'uppercase', marginBottom: 4 }}>
-            Estimated revenue lost yesterday
-          </div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-            <RupeeWithHint
-              value={revLoss}
-              formula="lost_metres × revenue_per_metre (by style)"
-              assumptions={revData?.revenue_loss?.methodology ?? 'Realized rev rate × breakdown downtime hours'}
-            />
-            <span className="badge badge-nodata" style={{ fontSize: '0.6875rem' }}>ESTIMATED</span>
-          </div>
-        </div>
-
-        {/* Production triple: actual / target / variance */}
-        <div style={{ display: 'flex', border: '1px solid var(--atm-border)', borderRadius: 4, overflow: 'hidden' }}>
+        {/* Hero connected metric strip matching Revenue page */}
+        <div style={{ display: 'flex', gap: 0, border: '1px solid var(--atm-border)', borderRadius: 4, overflow: 'hidden', marginBottom: 14, background: '#fff' }}>
           {[
-            { label: 'Actual', value: inr(totalActual), note: 'units' },
-            { label: 'Target', value: inr(totalTarget), note: 'units' },
-            { label: 'Variance', value: deltaPct(variancePct), note: '', isStatus: true },
+            {
+              label: 'Avg Weaving Eff',
+              value: pct(eff),
+              note: effGap > 0 ? `▼ ${pct(effGap)} below target` : `▲ ${pct(Math.abs(effGap))} on target`,
+              statusColor: effStatus_ === 'ok' ? 'var(--ok)' : effStatus_ === 'warn' ? 'var(--warn)' : 'var(--critical)',
+              badge: `Target ${pct(TARGET_EFF)}`,
+            },
+            {
+              label: 'Total Production',
+              value: inr(totalActual),
+              note: `target: ${inr(totalTarget)} units`,
+              statusColor: 'var(--ink-900)',
+            },
+            {
+              label: 'Production Variance',
+              value: deltaPct(variancePct),
+              note: `${variancePct >= 0 ? '+' : ''}${inr(totalActual - totalTarget)} units`,
+              statusColor: variancePct < 0 ? 'var(--critical)' : 'var(--ok)',
+              isStatus: true,
+              isNegative: variancePct < 0,
+            },
+            {
+              label: 'Est. Revenue Lost',
+              value: rupee(revLoss),
+              note: `${fmtMinutes(bkdData?.total_downtime_minutes ?? 0)} downtime`,
+              statusColor: revLoss > 0 ? 'var(--critical)' : 'var(--ok)',
+              isStatus: true,
+              isNegative: revLoss > 0,
+            },
           ].map((item, i) => (
-            <div key={i} style={{ flex: 1, padding: '8px 10px', borderRight: i < 2 ? '1px solid var(--atm-border)' : 'none', background: item.isStatus && variancePct < 0 ? 'var(--critical-bg)' : '#ffffff' }}>
-              <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', fontWeight: 500, marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{item.label}</div>
-              <div className="num" style={{ fontSize: '1.0625rem', fontWeight: 700, color: item.isStatus ? (variancePct < 0 ? 'var(--critical)' : 'var(--ok)') : 'var(--ink-900)' }}>
+            <div
+              key={i}
+              style={{
+                flex: 1,
+                padding: '12px 14px',
+                borderRight: i < 3 ? '1px solid var(--atm-border)' : 'none',
+                background: item.isStatus && item.isNegative ? 'var(--critical-bg)' : '#fff',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                <span style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  {item.label}
+                </span>
+                {item.badge && (
+                  <span className={`badge badge-${effStatus_}`} style={{ fontSize: '0.625rem', padding: '1px 5px' }}>
+                    {item.badge}
+                  </span>
+                )}
+              </div>
+              <div className="num" style={{ fontSize: '1.25rem', fontWeight: 700, color: item.statusColor }}>
                 {item.value}
               </div>
-              {item.note && <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)' }}>{item.note}</div>}
+              {item.note && <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', marginTop: 2 }}>{item.note}</div>}
             </div>
           ))}
         </div>
+
+        {/* Estimated revenue loss callout matching Revenue page */}
+        {revLoss > 0 && (
+          <div style={{ padding: '12px 14px', background: 'var(--critical-bg)', border: '1px solid var(--critical-border)', borderRadius: 4 }}>
+            <div style={{ fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.05em', color: 'var(--ink-500)', textTransform: 'uppercase', marginBottom: 4 }}>
+              Estimated revenue opportunity lost yesterday (downtime & shortfall)
+            </div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+              <RupeeWithHint
+                value={revLoss}
+                formula="lost_metres × revenue_per_metre (by style)"
+                assumptions={revData?.revenue_loss?.methodology ?? 'Realized revenue rate × breakdown downtime hours'}
+              />
+              <span className="badge badge-nodata" style={{ fontSize: '0.6875rem' }}>ESTIMATED</span>
+            </div>
+            {lossItems[0] && (
+              <div style={{ fontSize: '0.8125rem', color: 'var(--ink-700)', marginTop: 6 }}>
+                Primary revenue drain: <strong>{lossItems[0].label}</strong> ({rupee(lossItems[0].rupees)})
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Loss Pareto */}
-      {lossItems.length > 0 && (
+      {/* Two-Column Responsive Grid matching Revenue page */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 0 }}>
+
+        {/* Column 1: Loss Pareto by Cause */}
+        <div style={{ borderRight: '1px solid var(--atm-border)', borderBottom: '1px solid var(--atm-border)' }}>
+          <div className="card-header" style={{ borderRadius: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>Why did we lose {rupee(revLoss)}? — Cause Ranking</span>
+            <span style={{ fontSize: '0.6875rem', opacity: 0.9 }}>PARETO</span>
+          </div>
+          <div style={{ padding: '8px 16px 12px' }}>
+            {lossItems.length === 0 ? (
+              <div style={{ padding: '24px 0', textAlign: 'center', color: 'var(--ink-500)', fontSize: '0.8125rem' }}>
+                No significant revenue loss recorded.
+              </div>
+            ) : (
+              lossItems.map((item, i) => <ParetoRow key={i} item={item} maxRupees={lossItems[0].rupees} />)
+            )}
+            <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', paddingTop: 10 }}>
+              ⓘ Breakdown share calculated from downtime hours × realized revenue rate. Tagged ESTIMATED.
+            </div>
+          </div>
+        </div>
+
+        {/* Column 2: Inter-Mill Unit Benchmark */}
         <div style={{ borderBottom: '1px solid var(--atm-border)' }}>
-          <div className="card-header" style={{ borderRadius: 0 }}>
-            Why did we lose {rupee(revLoss)}? — Ranked by cause
+          <div className="card-header" style={{ borderRadius: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>Unit Comparison — Weaving Efficiency</span>
+            <span style={{ fontSize: '0.6875rem', opacity: 0.85 }}>Vendor MRM: July 2026</span>
           </div>
           <div style={{ padding: '4px 16px 8px' }}>
-            {lossItems.map((item, i) => <ParetoRow key={i} item={item} maxRupees={lossItems[0].rupees} />)}
-            <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', padding: '6px 0 2px' }}>
-              ⓘ Breakdown share calculated from downtime × realized revenue run-rate. All figures tagged ESTIMATED until cost_master is populated.
+            {units.map((u) => (
+              <UnitRow key={u.unit} unit={u.unit} eff={u.eff} target={TARGET_EFF} />
+            ))}
+            <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', paddingTop: 10 }}>
+              ⓘ Vendor mill benchmark from July 2026 Monthly Review. ATM figure updated live.
             </div>
           </div>
         </div>
-      )}
 
-      {/* Unit comparison */}
-      <div style={{ borderBottom: '1px solid var(--atm-border)' }}>
-        <div className="card-header" style={{ borderRadius: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>Unit Comparison — Efficiency %</span>
-          <span style={{ fontWeight: 400, opacity: 0.8, fontSize: '0.6875rem' }}>Vendor: July 2026 MRM · ATM: live</span>
-        </div>
-        <div style={{ padding: '0 16px' }}>
-          {units.map(u => <UnitRow key={u.unit} unit={u.unit} eff={u.eff} target={TARGET_EFF} />)}
-        </div>
-        <div style={{ padding: '6px 16px 10px', fontSize: '0.6875rem', color: 'var(--ink-500)' }}>
-          ⓘ Vendor unit data from July 2026 MRM. Not updated live. ATM figure is live.
-        </div>
       </div>
 
-      {/* Top 3 actions */}
-      <div style={{ borderBottom: '1px solid var(--atm-border)' }}>
-        <div className="card-header" style={{ borderRadius: 0 }}>Top Actions for Today</div>
-        <div style={{ padding: '12px 16px' }}>
-          {actions.length === 0 ? (
-            <div className="no-data-state">
-              <div style={{ fontWeight: 600 }}>No critical actions flagged</div>
-              <div className="reason">All looms within acceptable efficiency range</div>
-            </div>
-          ) : (
-            actions.map((action, i) => <ActionCard key={i} action={action} />)
-          )}
+      {/* Priority Actions & Breakdown summary grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 0, borderBottom: '1px solid var(--atm-border)' }}>
+        
+        {/* Top Priority Actions */}
+        <div style={{ borderRight: '1px solid var(--atm-border)' }}>
+          <div className="card-header" style={{ borderRadius: 0 }}>Priority Actions for Today</div>
+          <div style={{ padding: '12px 16px' }}>
+            {actions.length === 0 ? (
+              <div className="no-data-state">
+                <div style={{ fontWeight: 600 }}>No critical actions flagged</div>
+                <div className="reason">All looms within normal operational boundaries</div>
+              </div>
+            ) : (
+              actions.map((action, i) => <ActionCard key={i} action={action} />)
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Breakdown quick stats */}
-      {bkdData?.has_data && (
-        <div style={{ borderBottom: '1px solid var(--atm-border)' }}>
-          <div className="card-header" style={{ borderRadius: 0 }}>Breakdown at a Glance</div>
-          <div style={{ display: 'flex' }}>
+        {/* Breakdown at a Glance */}
+        <div>
+          <div className="card-header" style={{ borderRadius: 0 }}>Breakdown Telemetry at a Glance</div>
+          <div style={{ display: 'flex', borderBottom: '1px solid var(--atm-border)' }}>
             {[
-              { label: 'Total events', value: inr(bkdData.total_events) },
-              { label: 'Total downtime', value: fmtMinutes(bkdData.total_downtime_minutes) },
-              { label: 'Worst loom', value: bkdData.highest_downtime_machine?.machine_id ?? '—' },
+              { label: 'Total Events', value: inr(bkdData?.total_events ?? 0), note: 'stoppages' },
+              { label: 'Total Downtime', value: fmtMinutes(bkdData?.total_downtime_minutes ?? 0), note: 'lost hours' },
+              { label: 'Worst Loom', value: bkdData?.highest_downtime_machine?.machine_id ?? '—', note: 'highest downtime' },
             ].map((item, i) => (
-              <div key={i} style={{ flex: 1, padding: '10px 12px', borderRight: i < 2 ? '1px solid var(--atm-border)' : 'none' }}>
-                <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 3 }}>{item.label}</div>
-                <div className="num" style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--ink-900)' }}>{item.value}</div>
+              <div key={i} style={{ flex: 1, padding: '12px 14px', borderRight: i < 2 ? '1px solid var(--atm-border)' : 'none' }}>
+                <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 3 }}>
+                  {item.label}
+                </div>
+                <div className="num" style={{ fontSize: '1.25rem', fontWeight: 700, color: i === 2 ? 'var(--critical)' : 'var(--ink-900)' }}>
+                  {item.value}
+                </div>
+                {item.note && <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', marginTop: 2 }}>{item.note}</div>}
               </div>
             ))}
           </div>
-        </div>
-      )}
 
-      {/* Share / export / import actions */}
-      <div style={{ padding: '16px', display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-        <button className="btn btn-primary" style={{ flex: '1 1 180px' }} onClick={handleCopyWhatsApp} id="btn-whatsapp-copy">
-          {copied ? '✓ Copied to clipboard' : '📋 Copy WhatsApp Summary'}
-        </button>
-        <Link href="/import" className="btn btn-outline" style={{ flex: '1 1 180px', textDecoration: 'none', textAlign: 'center' }}>
-          📥 Import Daily Shifts
-        </Link>
-        <button className="btn btn-outline" style={{ flex: '1 1 120px' }} onClick={() => window.print()} id="btn-print">
-          🖨 Print
-        </button>
+          <div style={{ padding: '16px', display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <Link href="/operations" className="btn btn-outline" style={{ flex: 1, textDecoration: 'none', textAlign: 'center', fontSize: '0.8125rem' }}>
+              View Operations Table →
+            </Link>
+            <Link href="/breakdown" className="btn btn-outline" style={{ flex: 1, textDecoration: 'none', textAlign: 'center', fontSize: '0.8125rem' }}>
+              Breakdown Analysis →
+            </Link>
+            <Link href="/revenue" className="btn btn-primary" style={{ flex: 1, textDecoration: 'none', textAlign: 'center', fontSize: '0.8125rem' }}>
+              Revenue & Loss →
+            </Link>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Data footer note matching Revenue page */}
+      <div style={{ padding: '10px 16px', fontSize: '0.6875rem', color: 'var(--ink-500)', background: 'var(--ink-100)' }}>
+        ⓘ Morning briefing values aggregate Shift 1, 2, and 3 logs. Standard production target: 93.0% efficiency. All currency metrics computed from style rate cards in cost_master.
       </div>
 
     </div>

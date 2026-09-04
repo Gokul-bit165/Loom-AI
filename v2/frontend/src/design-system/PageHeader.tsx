@@ -1,4 +1,3 @@
-import { TOKENS } from './tokens';
 import { Factory, Calendar, Clock } from 'lucide-react';
 
 interface PageHeaderProps {
@@ -23,100 +22,92 @@ export function PageHeader({
   return (
     <div
       style={{
+        background: '#ffffff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '8px',
+        padding: '14px 20px',
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        paddingBottom: TOKENS.spacing[3],
-        borderBottom: `1px solid ${TOKENS.colors.surface.border}`,
-        marginBottom: TOKENS.spacing[4],
-        gap: TOKENS.spacing[4],
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: '12px',
+        boxShadow: '0 1px 2px 0 rgba(15, 23, 42, 0.04)',
       }}
     >
-      <div>
-        {breadcrumbs && breadcrumbs.length > 0 && (
-          <div
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+        <div>
+          {breadcrumbs && breadcrumbs.length > 0 && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '11px',
+                color: '#64748b',
+                marginBottom: '2px',
+                fontWeight: 500,
+              }}
+            >
+              {breadcrumbs.map((b, i) => (
+                <span key={i}>
+                  {b} {i < breadcrumbs.length - 1 && ' / '}
+                </span>
+              ))}
+            </div>
+          )}
+          <h1
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontSize: TOKENS.typography.sizes.metadata,
-              color: TOKENS.colors.text.muted,
-              marginBottom: TOKENS.spacing[1],
+              margin: 0,
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#0f172a',
+              letterSpacing: '-0.01em',
+              lineHeight: 1.2,
             }}
           >
-            {breadcrumbs.map((b, i) => (
-              <span key={i}>
-                {b} {i < breadcrumbs.length - 1 && ' / '}
-              </span>
-            ))}
-          </div>
-        )}
-
-        <h1
-          style={{
-            fontSize: TOKENS.typography.sizes.pageTitle,
-            fontWeight: 700,
-            color: TOKENS.colors.text.primary,
-            letterSpacing: '-0.01em',
-            margin: 0,
-            lineHeight: 1.2,
-          }}
-        >
-          {title}
-        </h1>
-
-        {subtitle && (
-          <p
-            style={{
-              fontSize: TOKENS.typography.sizes.bodySmall,
-              color: TOKENS.colors.text.secondary,
-              marginTop: '4px',
-              margin: '4px 0 0 0',
-              lineHeight: 1.4,
-            }}
-          >
-            {subtitle}
-          </p>
-        )}
-      </div>
-
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-end',
-          gap: '4px',
-          flexShrink: 0,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: TOKENS.typography.sizes.metadata }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: TOKENS.colors.text.secondary }}>
-            <Factory size={13} color="#2563EB" />
-            <strong>{unit}</strong>
-          </span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: TOKENS.colors.text.secondary }}>
-            <Calendar size={13} color="#6B7280" />
-            <span>{date}</span>
-          </span>
+            {title}
+          </h1>
+          {subtitle && (
+            <p
+              style={{
+                fontSize: '12px',
+                color: '#64748b',
+                margin: '3px 0 0 0',
+                lineHeight: 1.4,
+              }}
+            >
+              {subtitle}
+            </p>
+          )}
         </div>
 
-        {dataFreshness && (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              fontSize: '11px',
-              color: TOKENS.colors.text.muted,
-            }}
-          >
-            <Clock size={11} color="#9CA3AF" />
-            <span>{dataFreshness}</span>
-          </div>
-        )}
-
-        {actions && <div style={{ marginTop: '4px' }}>{actions}</div>}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontSize: '13px', color: '#64748b', borderLeft: '1px solid #e2e8f0', paddingLeft: '16px' }}>
+          {unit && (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Factory size={13} color="#2563eb" />
+              <span>Unit: <strong style={{ color: '#0f172a' }}>{unit}</strong></span>
+            </span>
+          )}
+          {date && (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Calendar size={13} color="#64748b" />
+              <span>Date: <strong style={{ color: '#0f172a' }}>{date}</strong></span>
+            </span>
+          )}
+          {dataFreshness && (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#94a3b8' }}>
+              <Clock size={11} color="#94a3b8" />
+              <span>{dataFreshness}</span>
+            </span>
+          )}
+        </div>
       </div>
+
+      {actions && (
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          {actions}
+        </div>
+      )}
     </div>
   );
 }

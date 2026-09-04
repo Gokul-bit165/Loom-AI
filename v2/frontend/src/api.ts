@@ -1,9 +1,40 @@
 /**
  * Loom AI v2 — Decision Intelligence API Client.
  * Communicates with backend endpoints under /api/v2/.
+ * Supports:
+ * 1. Live local backend (localhost:8050)
+ * 2. Remote cloud backend via VITE_API_BASE_URL (Render, Railway, Fly.io, etc.)
+ * 3. Autonomous offline/demo fallback with authentic Ashok Textile Mills factory snapshot
  */
+import { demoSnapshot } from './demoSnapshot';
 
-export const API_BASE = '/api/v2';
+const RAW_API_BASE = (import.meta as any).env?.VITE_API_BASE_URL;
+export const API_BASE = RAW_API_BASE
+  ? `${RAW_API_BASE.replace(/\/$/, '')}/api/v2`
+  : '/api/v2';
+
+export let isUsingDemoSnapshot = false;
+
+export function getDataSourceStatus(): { isDemo: boolean; apiBase: string } {
+  return {
+    isDemo: isUsingDemoSnapshot,
+    apiBase: API_BASE,
+  };
+}
+
+async function safeFetchJson<T>(url: string, fallback: T, options?: RequestInit): Promise<T> {
+  try {
+    const res = await fetch(url, options);
+    if (res.ok) {
+      isUsingDemoSnapshot = false;
+      return await res.json();
+    }
+  } catch (_err) {
+    // Network failure, CORS failure, or offline/static hosting
+  }
+  isUsingDemoSnapshot = true;
+  return fallback;
+}
 
 export interface RupeeAmount {
   value: number | null;
@@ -71,7 +102,12 @@ export interface ReasonParetoRow {
   total_minutes: number;
   pct_of_loom_downtime: number;
   vs_plant_pct: number | null;
+  avg_duration_min?: number;
+  expected_duration_min?: number;
+  variance_min?: number;
+  category?: string;
 }
+
 
 export interface WeaverRecord {
   employee_id: number;
@@ -121,11 +157,49 @@ export interface BreakdownLoomRow {
   loom_id: number;
   loom_no: string;
   loom_type_code: string;
-  stopped_minutes: number;
+  stopped_minutes?: number;
   total_stopped_minutes?: number;
   event_count: number;
-  top_reason_label: string | null;
-  rupee_lost: RupeeAmount;
+  top_reason_label?: string | null;
+  dominant_reason_en?: string | null;
+  dominant_reason_category?: string | null;
+  lost_meters?: number;
+  rupee_exposure?: number;
+  efficiency_pct?: number;
+  style_code?: string;
+  rupee_lost?: RupeeAmount;
+}
+
+export interface PeerBenchmarkRow {
+  loom_id: number;
+  loom_no: string;
+  loom_type_code: string;
+  total_stopped_minutes: number;
+  event_count: number;
+  efficiency_pct?: number;
+  metres_produced?: number;
+  style_code?: string;
+  shed_code?: string;
+  comparison_notes?: string;
+}
+
+export interface AbnormalPatternRow {
+  pattern_id: string;
+  title: string;
+  severity: 'CRITICAL' | 'WARNING' | 'WATCH';
+  scope: string;
+  detail: string;
+  evidence: string;
+  recommendation: string;
+}
+
+export interface ShiftBreakdownRow {
+  shift_code: string;
+  stopped_minutes: number;
+  event_count: number;
+  lost_meters: number;
+  rupee_exposure: number;
+  dominant_reason: string;
 }
 
 export interface BreakdownSummaryResponse {
@@ -134,14 +208,266 @@ export interface BreakdownSummaryResponse {
   today_stopped_minutes_total: number;
   today_events_count_total: number;
   today_rupee_loss_total: RupeeAmount;
+  today_financial_exposure?: RupeeAmount;
   total_rupee_lost?: RupeeAmount;
+  total_meters_lost?: number;
   avg_downtime_per_event_min?: number;
   worst_looms_today: BreakdownLoomRow[];
-  worst_looms_month: BreakdownLoomRow[];
+  worst_looms_month?: BreakdownLoomRow[];
   monthly_top_looms?: BreakdownLoomRow[];
+  highest_downtime_loom?: BreakdownLoomRow;
+  best_peer_benchmark?: PeerBenchmarkRow;
+  chronic_monthly_offender?: BreakdownLoomRow;
   reason_pareto: ReasonParetoRow[];
+  abnormal_patterns?: AbnormalPatternRow[];
+  shift_breakdown_matrix?: ShiftBreakdownRow[];
+  event_classification_summary?: Record<string, { label: string; count: number; minutes: number; lost_meters: number; rupee_exposure: number }>;
+  micro_stops_minutes?: number;
+  micro_stops_count?: number;
+  breakdown_minutes?: number;
+  breakdown_count?: number;
+  potential_recovery?: { potential_meters: number; potential_rupees: number; top_opportunity: string };
+  category_downtime_minutes?: Record<string, number>;
   data_as_of: string | null;
   source_mix: string[];
+}
+
+// ── ROOT CAUSE INVESTIGATION INTERFACES ───────────────────────────
+export interface CandidateEventRow {
+  stop_event_id: number;
+  loom_id: number;
+  loom_no: string;
+  loom_type_code: string;
+  work_date: string;
+  shift_id: number;
+  shift_code: string;
+  raised_at: string | null;
+  resolved_at: string | null;
+  duration_minutes: number;
+  status: string;
+  reason_code: string;
+  reason_label_en: string;
+  reason_category: string;
+  raw_remark: string | null;
+  failed_component: string | null;
+  fix_action: string | null;
+}
+
+export interface TimelineEventItem {
+  time: string;
+  status: string;
+  label: string;
+  detail: string;
+  type: 'NORMAL' | 'WARNING' | 'CRITICAL' | 'INFO' | 'SUCCESS';
+}
+
+export interface EvidenceChainItem {
+  tier: 'OBSERVED' | 'INFERRED' | 'PREDICTED';
+  title: string;
+  evidence: string;
+  strength: string;
+}
+
+export interface ContributingFactorItem {
+  factor: string;
+  evidence_strength: 'HIGH' | 'MEDIUM' | 'LOW';
+  source: string;
+  detail: string;
+}
+
+export interface RootCauseInvestigationResponse {
+  found: boolean;
+  error?: string;
+  event: {
+    stop_event_id: number;
+    loom_id: number;
+    loom_no: string;
+    loom_type_code: string;
+    shed_code?: string;
+    work_date: string;
+    shift_id: number;
+    shift_code: string;
+    raised_at: string | null;
+    resolved_at: string | null;
+    duration_minutes: number;
+    status: string;
+    reason_code: string;
+    reason_label_en: string;
+    reason_category: string;
+    event_class: string;
+    classification_confidence: number;
+    raw_remark?: string | null;
+    failed_component?: string | null;
+    fix_action?: string | null;
+    style_code: string;
+    efficiency_pct?: number | null;
+  };
+  timeline: TimelineEventItem[];
+  baseline_comparison: {
+    current_duration_min: number;
+    expected_duration_min: number;
+    duration_ratio: number;
+    history_30d_stops_count: number;
+    comparison_verdict: string;
+  };
+  evidence_chain: EvidenceChainItem[];
+  contributing_factors: ContributingFactorItem[];
+  business_impact: {
+    lost_meters: number;
+    revenue_exposure?: number | null;
+    revenue_per_metre?: number | null;
+    rate_source: 'CONFIRMED' | 'RATE_MISSING' | 'ESTIMATED';
+    rate_missing_reason?: string | null;
+  };
+  recommendation: {
+    action_title: string;
+    recommended_step: string;
+    why_this_step: string;
+    supporting_evidence: string;
+  };
+}
+
+// ── ANOMALIES & PATTERNS INTERFACES ───────────────────────────────
+export interface CorrelatedSignalItem {
+  name: string;
+  value: string;
+  category: string;
+}
+
+export interface AnomalyCardItem {
+  anomaly_id: string;
+  title: string;
+  severity: 'CRITICAL' | 'WARNING' | 'INFO';
+  affected_loom_no: string;
+  affected_loom_id: number;
+  loom_type: string;
+  shed_code: string;
+  time_window: string;
+  normal_baseline: string;
+  normal_baseline_val: number;
+  current_value: string;
+  current_value_val: number;
+  deviation_pct: number;
+  deviation_label: string;
+  pattern_type: string;
+  evidence: string;
+  impact: {
+    lost_meters: number;
+    revenue_exposure?: number | null;
+    rate_source: string;
+  };
+  correlated_signals: CorrelatedSignalItem[];
+  recommendation: string;
+}
+
+export interface AnomalyTimelineItem {
+  time_slot: string;
+  count: number;
+  has_critical: boolean;
+  anomalies: { id: string; title: string; loom: string; severity: string }[];
+}
+
+export interface BreakdownAnomaliesResponse {
+  summary: {
+    date: string;
+    unit_code: string;
+    total_anomalies: number;
+    critical: number;
+    warning: number;
+    info: number;
+    total_meters_exposure: number;
+    total_rupee_exposure?: number | null;
+    detection_engine_status: string;
+    evaluated_looms_count: number;
+  };
+  timeline: AnomalyTimelineItem[];
+  anomalies: AnomalyCardItem[];
+  evaluated_patterns_count: number;
+}
+
+// ── LOSS IMPACT INTERFACES ─────────────────────────────────────────
+export interface LossWaterfallStep {
+  step: string;
+  metres: number;
+  rupees?: number;
+  type: 'TOTAL_AVAILABLE' | 'SUBTRACTION' | 'FINAL_REMAINING';
+  delta: number;
+}
+
+export interface LossCategoryItem {
+  category: string;
+  label: string;
+  downtime_min: number;
+  lost_meters: number;
+  rupee_exposure: number;
+  percentage_share: number;
+}
+
+export interface TopLossMachineItem {
+  loom_id: number;
+  loom_no: string;
+  loom_type: string;
+  style_code: string;
+  lost_meters: number;
+  rupee_exposure: number;
+  downtime_min: number;
+  stop_count: number;
+  dominant_category: string;
+  share_of_total_loss_pct: number;
+}
+
+export interface ShiftLossImpactItem {
+  shift_code: string;
+  shift_name: string;
+  downtime_min: number;
+  lost_meters: number;
+  rupee_exposure: number;
+  stop_count: number;
+  is_worst_shift: boolean;
+}
+
+export interface ManagementPriorityItem {
+  rank: number;
+  category: string;
+  share_pct: number;
+  rupee_exposure: number;
+  lost_meters: number;
+  priority_rationale: string;
+}
+
+export interface BreakdownLossImpactResponse {
+  summary: {
+    date: string;
+    unit_code: string;
+    total_lost_meters: number;
+    total_rupee_exposure: number;
+    rate_provenance: string;
+    affected_looms_count: number;
+    total_stopped_minutes: number;
+    worst_shift: string;
+    worst_shift_exposure: number;
+  };
+  waterfall: LossWaterfallStep[];
+  category_breakdown: LossCategoryItem[];
+  top_loss_machines: TopLossMachineItem[];
+  shift_breakdown: ShiftLossImpactItem[];
+  recovery_opportunity: {
+    confirmed_loss_rupees: number;
+    potential_recovery_rupees: number;
+    potential_recovery_meters: number;
+    target_focus: string;
+    recovery_confidence: string;
+  };
+  trend: {
+    TODAY: number;
+    '7D_DAILY_AVG': number;
+    '30D_DAILY_AVG': number;
+    '90D_DAILY_AVG': number;
+    direction: 'IMPROVING' | 'STABLE' | 'INCREASING';
+    weekly_change_pct: number;
+  };
+  management_priorities: ManagementPriorityItem[];
+  executive_verdict: string;
 }
 
 export interface CriticalIssue {
@@ -288,9 +614,7 @@ export interface CommandCenterData {
 }
 
 export async function fetchCommandCenterToday(unit: string = 'ATM', date: string = '2026-07-31'): Promise<CommandCenterData> {
-  const res = await fetch(`${API_BASE}/command-center/today?unit=${unit}&date=${date}`);
-  if (!res.ok) throw new Error('Failed to fetch command center data');
-  return res.json();
+  return safeFetchJson(`${API_BASE}/command-center/today?unit=${unit}&date=${date}`, demoSnapshot.commandCenter);
 }
 
 export async function updateCommandCenterAction(
@@ -541,37 +865,78 @@ export async function fetchLooms(
   sortBy: string = 'loom_no',
   sortDir: 'asc' | 'desc' = 'asc'
 ): Promise<LoomsResponse> {
-  const res = await fetch(
-    `${API_BASE}/looms/?date=${date}&unit=${unit}&shift=${shift}&page=${page}&page_size=${pageSize}&sort_by=${sortBy}&sort_dir=${sortDir}`
+  const fallback = demoSnapshot.looms || { looms: [], total: 0, page: 1, page_size: 24, data_as_of: null, source_mix: [] };
+  return safeFetchJson(
+    `${API_BASE}/looms/?date=${date}&unit=${unit}&shift=${shift}&page=${page}&page_size=${pageSize}&sort_by=${sortBy}&sort_dir=${sortDir}`,
+    fallback
   );
-  if (!res.ok) throw new Error(`Looms fetch failed: ${res.statusText}`);
-  return res.json();
 }
 
 export async function fetchLoomDetail(loomId: number, date: string = '2026-07-31'): Promise<LoomDetailResponse> {
-  const res = await fetch(`${API_BASE}/looms/${loomId}/detail?date=${date}`);
-  if (!res.ok) throw new Error(`Loom detail fetch failed: ${res.statusText}`);
-  return res.json();
+  const fallback = demoSnapshot.loomDrilldowns?.[String(loomId)] || demoSnapshot.loomDrilldowns?.['104'] || {};
+  return safeFetchJson(`${API_BASE}/looms/${loomId}/detail?date=${date}`, fallback);
 }
 
 export async function fetchBreakdownSummary(date: string = '2026-07-31', unit: string = 'ATM'): Promise<BreakdownSummaryResponse> {
-  const res = await fetch(`${API_BASE}/breakdown/summary?date=${date}&unit=${unit}`);
-  if (!res.ok) throw new Error(`Breakdown summary fetch failed: ${res.statusText}`);
-  const data = await res.json();
+  const fallback = demoSnapshot.breakdownSummary;
+  const data = await safeFetchJson(`${API_BASE}/breakdown/summary?date=${date}&unit=${unit}`, fallback);
   // Ensure legacy aliases are present for BreakdownBoardView
-  if (!data.total_rupee_lost && data.today_rupee_loss_total) {
-    data.total_rupee_lost = data.today_rupee_loss_total;
-  }
-  if (data.today_events_count_total > 0 && !data.avg_downtime_per_event_min) {
-    data.avg_downtime_per_event_min = Math.round(data.today_stopped_minutes_total / data.today_events_count_total);
-  }
-  if (!data.monthly_top_looms && data.worst_looms_month) {
-    data.monthly_top_looms = data.worst_looms_month.map((l: any) => ({
-      ...l,
-      total_stopped_minutes: l.stopped_minutes,
-    }));
+  if (data) {
+    if (!data.total_rupee_lost && data.today_rupee_loss_total) {
+      data.total_rupee_lost = data.today_rupee_loss_total;
+    }
+    if (data.today_events_count_total > 0 && !data.avg_downtime_per_event_min) {
+      data.avg_downtime_per_event_min = Math.round(data.today_stopped_minutes_total / data.today_events_count_total);
+    }
+    if (!data.monthly_top_looms && data.worst_looms_month) {
+      data.monthly_top_looms = data.worst_looms_month.map((l: any) => ({
+        ...l,
+        total_stopped_minutes: l.stopped_minutes,
+      }));
+    }
   }
   return data;
+}
+
+export async function fetchRootCauseEvents(
+  date: string = '2026-07-31',
+  unit: string = 'ATM',
+  loomId?: number,
+  shiftId?: number
+): Promise<CandidateEventRow[]> {
+  let url = `${API_BASE}/breakdowns/root-cause/events?unit=${unit}&date=${date}`;
+  if (loomId) url += `&loom_id=${loomId}`;
+  if (shiftId) url += `&shift_id=${shiftId}`;
+  return safeFetchJson(url, demoSnapshot.rootCauseEvents || []);
+}
+
+export async function fetchRootCauseInvestigation(eventId: number): Promise<RootCauseInvestigationResponse> {
+  const fallback = demoSnapshot.rootCauseDetails?.[String(eventId)] || 
+                   demoSnapshot.rootCauseDetails?.['23693'] || 
+                   Object.values(demoSnapshot.rootCauseDetails || {})[0] || {};
+  return safeFetchJson(`${API_BASE}/breakdowns/root-cause/${eventId}`, fallback);
+}
+
+export async function fetchBreakdownAnomalies(
+  date: string = '2026-07-31',
+  unit: string = 'ATM',
+  shiftId?: number,
+  loomId?: number,
+  severity?: string
+): Promise<BreakdownAnomaliesResponse> {
+  let url = `${API_BASE}/breakdowns/anomalies?unit=${unit}&date=${date}`;
+  if (shiftId) url += `&shift_id=${shiftId}`;
+  if (loomId) url += `&loom_id=${loomId}`;
+  if (severity) url += `&severity=${severity}`;
+  return safeFetchJson(url, demoSnapshot.anomalies);
+}
+
+export async function fetchBreakdownLossImpact(
+  date: string = '2026-07-31',
+  unit: string = 'ATM',
+  window: string = 'TODAY'
+): Promise<BreakdownLossImpactResponse> {
+  return safeFetchJson(`${API_BASE}/breakdowns/loss-impact?unit=${unit}&date=${date}&window=${window}`, demoSnapshot.lossImpact);
 }
 
 export async function fetchManpowerAnalytics(date: string = '2026-07-31', unit: string = 'ATM'): Promise<any> {
@@ -781,9 +1146,15 @@ export async function fetchRevenueAnalytics(
   unit: string = 'ATM',
   period: PeriodFilter = 'TODAY'
 ): Promise<RevenueAnalyticsResponse> {
-  const res = await fetch(`${API_BASE}/revenue/analytics?date=${date}&unit=${unit}&period=${period}`);
-  if (!res.ok) throw new Error(`Revenue analytics fetch failed: ${res.statusText}`);
-  return res.json();
+  let fallback = demoSnapshot.revenueAnalyticsToday;
+  if (period === 'MONTH_TO_DATE' || (period as any) === 'THIS_MONTH') {
+    fallback = demoSnapshot.revenueAnalyticsMonth;
+  } else if (period === 'SEVEN_DAYS' || (period as any) === 'LAST_7D') {
+    fallback = demoSnapshot.revenueAnalytics7D;
+  } else if (period === 'YEAR_TO_DATE' || (period as any) === 'LAST_30D') {
+    fallback = demoSnapshot.revenueAnalytics30D;
+  }
+  return safeFetchJson(`${API_BASE}/revenue/analytics?date=${date}&unit=${unit}&period=${period}`, fallback);
 }
 
 export async function fetchPredictionsOverview(date: string = '2026-07-31', unit: string = 'ATM'): Promise<any> {
@@ -1731,27 +2102,21 @@ export async function fetchProductionIntelligence(
   date: string = '2026-07-31',
   unit: string = 'ATM'
 ): Promise<ProductionIntelligenceResponse> {
-  const res = await fetch(`${API_BASE}/production/intelligence?unit=${unit}&date=${date}`);
-  if (!res.ok) throw new Error('Failed to fetch production intelligence');
-  return res.json();
+  return safeFetchJson(`${API_BASE}/production/intelligence?unit=${unit}&date=${date}`, demoSnapshot.productionIntelligence);
 }
 
 export async function fetchProductionPerformance(
   date: string = '2026-07-31',
   unit: string = 'ATM'
 ): Promise<ProductionPerformanceResponse> {
-  const res = await fetch(`${API_BASE}/production/performance?unit=${unit}&date=${date}`);
-  if (!res.ok) throw new Error('Failed to fetch production performance');
-  return res.json();
+  return safeFetchJson(`${API_BASE}/production/performance?unit=${unit}&date=${date}`, demoSnapshot.productionPerformance);
 }
 
 export async function fetchProductionShifts(
   date: string = '2026-07-31',
   unit: string = 'ATM'
 ): Promise<{ unit_code: string; work_date: string; shifts: ProductionShiftItem[] }> {
-  const res = await fetch(`${API_BASE}/production/shifts?unit=${unit}&date=${date}`);
-  if (!res.ok) throw new Error('Failed to fetch shift performance');
-  return res.json();
+  return safeFetchJson(`${API_BASE}/production/shifts?unit=${unit}&date=${date}`, demoSnapshot.productionShifts);
 }
 
 export async function fetchProductionHistory(
@@ -1759,31 +2124,56 @@ export async function fetchProductionHistory(
   unit: string = 'ATM',
   window: string = '30D'
 ): Promise<ProductionHistoryResponse> {
-  const res = await fetch(`${API_BASE}/production/history?unit=${unit}&date=${date}&window=${window}`);
-  if (!res.ok) throw new Error('Failed to fetch production history');
-  return res.json();
+  return safeFetchJson(`${API_BASE}/production/history?unit=${unit}&date=${date}&window=${window}`, demoSnapshot.productionHistory);
 }
 
 export async function fetchProductionLoomDetail(
   loomId: number,
   date: string = '2026-07-31'
 ): Promise<ProductionLoomDrilldownResponse> {
-  const res = await fetch(`${API_BASE}/production/loom/${loomId}?date=${date}`);
-  if (!res.ok) throw new Error(`Failed to fetch loom ${loomId} drilldown`);
-  return res.json();
+  const fallback = demoSnapshot.loomDrilldowns?.[String(loomId)] || demoSnapshot.loomDrilldowns?.['104'] || {};
+  return safeFetchJson(`${API_BASE}/production/loom/${loomId}?date=${date}`, fallback);
 }
 
 export async function fetchProductionAiExplain(
   payload: ExplainRequestPayload,
   unit: string = 'ATM'
 ): Promise<ExplainResponse> {
-  const res = await fetch(`${API_BASE}/production/ai/explain?unit=${unit}`, {
+  const fallback: ExplainResponse = {
+    title: 'Root Cause & Anomaly Diagnosis',
+    explain: {
+      what_happened: 'Automated Root Cause Diagnosis for ATM Shed 1 & 2',
+      observed_evidence: [
+        'Weft sensor micro-stops on Loom AJ-132 contributing 42 mins loss in Shift 1.',
+        'Warp tension variance elevated on Shed 2 North bank across 6 machines.',
+        'Overall plant operating efficiency is within 1.2% of shift benchmark.'
+      ],
+      likely_contributor: 'Humidity fluctuation in early morning shift caused temporary yarn brittleness.'
+    },
+    decide: {
+      classification: 'ACTION_REQUIRED',
+      business_impact: {
+        lost_output_metres: 142.5,
+        potential_recovery_metres: 110.0,
+        revenue_exposure_inr: 4987.5,
+        potential_revenue_inr: 3850.0,
+        confirmed_rate: '₹35.00/m (Style #4102 Cotton Poplin)'
+      },
+      risk_if_ignored: 'Continued micro-stops risk compounding into warp end breakouts during shift changeover.'
+    },
+    act: {
+      recommended_action: 'Inspect weft optical sensor and blow dust accumulation; adjust damper in Section B.',
+      expected_outcome: 'Recover 35 mins downtime and 110 meters of production.',
+      assigned_role: 'Shift Weaving Master',
+      priority: 'P1',
+      controls: ['Sensor calibration log', 'Section B humidification gauge']
+    }
+  };
+  return safeFetchJson(`${API_BASE}/production/ai/explain?unit=${unit}`, fallback, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error('Failed to fetch AI explanation');
-  return res.json();
 }
 
 

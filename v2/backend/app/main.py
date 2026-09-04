@@ -67,7 +67,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://localhost:3001"],
+    allow_origin_regex=r"^https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -77,6 +77,7 @@ app.include_router(command_center.router,    prefix="/api/v2/command-center",   
 app.include_router(production.router,        prefix="/api/v2/production",        tags=["production"])
 app.include_router(loom.router,              prefix="/api/v2/looms",             tags=["looms"])
 app.include_router(breakdown.router,         prefix="/api/v2/breakdown",         tags=["breakdown"])
+app.include_router(breakdown.router,         prefix="/api/v2/breakdowns",        tags=["breakdowns"])
 app.include_router(manpower.router,          prefix="/api/v2/manpower",          tags=["manpower"])
 app.include_router(workforce.router,         prefix="/api/v2/workforce",         tags=["workforce"])
 app.include_router(maintenance.router,       prefix="/api/v2/maintenance",       tags=["maintenance"])
