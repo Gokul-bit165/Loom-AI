@@ -266,7 +266,17 @@ export function App() {
             )}
           </div>
 
-          {/* 3. REVENUE & LOSS */}
+          {/* 4. WORKFORCE INTELLIGENCE (TOP-LEVEL) */}
+          <button
+            className={`nav-item ${currentView === 'workforce' ? 'active' : ''}`}
+            onClick={() => setCurrentView('workforce')}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}
+          >
+            <Award size={16} />
+            <span style={{ fontWeight: 700 }}>Workforce Intelligence</span>
+          </button>
+
+          {/* 5. REVENUE & LOSS */}
           <button
             className={`nav-item ${currentView === 'revenue' ? 'active' : ''}`}
             onClick={() => setCurrentView('revenue')}
@@ -296,7 +306,7 @@ export function App() {
                 borderRadius: '4px',
               }}
             >
-              <span>{showAllModules ? 'Hide other workspaces' : 'Other mill workspaces (12)'}</span>
+              <span>{showAllModules ? 'Hide other workspaces' : 'Other mill workspaces (11)'}</span>
               {showAllModules ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
             </button>
 
@@ -313,10 +323,6 @@ export function App() {
                 <button className={`nav-item ${currentView === 'operations' ? 'active' : ''}`} onClick={() => setCurrentView('operations')}>
                   <LayoutGrid size={14} />
                   <span>Operations Table</span>
-                </button>
-                <button className={`nav-item ${currentView === 'workforce' ? 'active' : ''}`} onClick={() => setCurrentView('workforce')}>
-                  <Award size={14} />
-                  <span>Workforce Intelligence</span>
                 </button>
                 <button className={`nav-item ${currentView === 'manpower' ? 'active' : ''}`} onClick={() => setCurrentView('manpower')}>
                   <Users size={14} />
