@@ -60,8 +60,12 @@ export type ViewMode =
   | 'assistant'
   | 'exports';
 
+export type ProductionSubmodule = 'daily' | 'performance' | 'trends' | 'reports';
+
 export function App() {
   const [currentView, setCurrentView] = useState<ViewMode>('command-center');
+  const [productionSubmodule, setProductionSubmodule] = useState<ProductionSubmodule>('daily');
+  const [showProductionGroup, setShowProductionGroup] = useState<boolean>(true);
   const [initialAgentTab, setInitialAgentTab] = useState<AgentTab>('watchtower');
   const [selectedLoomId, setSelectedLoomId] = useState<number | null>(118);
   const [showSupportSection, setShowSupportSection] = useState<boolean>(true);
@@ -101,13 +105,113 @@ export function App() {
 
           {/* OPERATIONS */}
           <div className="nav-section-label" style={{ marginTop: '8px' }}>OPERATIONS</div>
-          <button
-            className={`nav-item ${currentView === 'production' ? 'active' : ''}`}
-            onClick={() => setCurrentView('production')}
-          >
-            <Layers size={16} />
-            <span>Production</span>
-          </button>
+          
+          {/* PRODUCTION Head Module */}
+          <div style={{ marginBottom: '4px' }}>
+            <button
+              className={`nav-item ${currentView === 'production' ? 'active' : ''}`}
+              onClick={() => {
+                setCurrentView('production');
+                setShowProductionGroup(true);
+              }}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Layers size={16} />
+                <span style={{ fontWeight: 700 }}>PRODUCTION</span>
+              </div>
+              <span
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowProductionGroup(!showProductionGroup);
+                }}
+                style={{ padding: '2px', display: 'flex' }}
+              >
+                {showProductionGroup ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
+              </span>
+            </button>
+
+            {showProductionGroup && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', paddingLeft: '22px', marginTop: '2px' }}>
+                <button
+                  onClick={() => {
+                    setCurrentView('production');
+                    setProductionSubmodule('daily');
+                  }}
+                  style={{
+                    background: (currentView === 'production' && productionSubmodule === 'daily') ? '#EFF6FF' : 'transparent',
+                    color: (currentView === 'production' && productionSubmodule === 'daily') ? '#2563EB' : 'var(--text-secondary)',
+                    fontWeight: (currentView === 'production' && productionSubmodule === 'daily') ? 700 : 500,
+                    border: 'none',
+                    padding: '5px 10px',
+                    borderRadius: '4px',
+                    fontSize: '11.5px',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Daily Production
+                </button>
+                <button
+                  onClick={() => {
+                    setCurrentView('production');
+                    setProductionSubmodule('performance');
+                  }}
+                  style={{
+                    background: (currentView === 'production' && productionSubmodule === 'performance') ? '#EFF6FF' : 'transparent',
+                    color: (currentView === 'production' && productionSubmodule === 'performance') ? '#2563EB' : 'var(--text-secondary)',
+                    fontWeight: (currentView === 'production' && productionSubmodule === 'performance') ? 700 : 500,
+                    border: 'none',
+                    padding: '5px 10px',
+                    borderRadius: '4px',
+                    fontSize: '11.5px',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Loom Performance
+                </button>
+                <button
+                  onClick={() => {
+                    setCurrentView('production');
+                    setProductionSubmodule('trends');
+                  }}
+                  style={{
+                    background: (currentView === 'production' && productionSubmodule === 'trends') ? '#EFF6FF' : 'transparent',
+                    color: (currentView === 'production' && productionSubmodule === 'trends') ? '#2563EB' : 'var(--text-secondary)',
+                    fontWeight: (currentView === 'production' && productionSubmodule === 'trends') ? 700 : 500,
+                    border: 'none',
+                    padding: '5px 10px',
+                    borderRadius: '4px',
+                    fontSize: '11.5px',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Trends & History
+                </button>
+                <button
+                  onClick={() => {
+                    setCurrentView('production');
+                    setProductionSubmodule('reports');
+                  }}
+                  style={{
+                    background: (currentView === 'production' && productionSubmodule === 'reports') ? '#EFF6FF' : 'transparent',
+                    color: (currentView === 'production' && productionSubmodule === 'reports') ? '#2563EB' : 'var(--text-secondary)',
+                    fontWeight: (currentView === 'production' && productionSubmodule === 'reports') ? 700 : 500,
+                    border: 'none',
+                    padding: '5px 10px',
+                    borderRadius: '4px',
+                    fontSize: '11.5px',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Reports
+                </button>
+              </div>
+            )}
+          </div>
 
           <button
             className={`nav-item ${currentView === 'breakdowns' ? 'active' : ''}`}
@@ -122,7 +226,7 @@ export function App() {
             onClick={() => setCurrentView('looms')}
           >
             <Cpu size={16} />
-            <span>Loom 360° Profile</span>
+            <span>Looms</span>
           </button>
 
           <button
@@ -287,7 +391,11 @@ export function App() {
           <div className="topbar-title">
             {currentView === 'command-center' && 'Command Center'}
             {currentView === 'agents' && 'AI & Operational Agents Hub · Watchtower, Loss Hunter & Action Manager'}
-            {currentView === 'production' && 'Production Operations'}
+            {currentView === 'production' && `Production Intelligence · ${
+              productionSubmodule === 'daily' ? 'Daily Production Workspace' :
+              productionSubmodule === 'performance' ? 'Loom & Weaver Performance' :
+              productionSubmodule === 'trends' ? 'Production Trends & History' : 'Management Reports'
+            }`}
             {currentView === 'breakdowns' && 'Breakdowns & Downtime'}
             {currentView === 'revenue' && 'Revenue & Loss Attribution'}
             {currentView === 'looms' && 'Loom 360° Profile'}
@@ -336,7 +444,13 @@ export function App() {
         <div className="page-body">
           {currentView === 'command-center' && <CommandCenterView onNavigateToModule={handleNavigate} />}
           {currentView === 'agents' && <AiAgentsHubView initialTab={initialAgentTab} onNavigateToModule={handleNavigate} />}
-          {currentView === 'production' && <ProductionIntelligenceView onSelectLoom={handleSelectLoom} />}
+          {currentView === 'production' && (
+            <ProductionIntelligenceView
+              submodule={productionSubmodule}
+              onSelectSubmodule={setProductionSubmodule}
+              onSelectLoom={handleSelectLoom}
+            />
+          )}
           {currentView === 'breakdowns' && <BreakdownBoardView />}
           {currentView === 'revenue' && <RevenueLossView />}
           {currentView === 'looms' && <LoomDetailView loomId={selectedLoomId || 118} onBack={() => setCurrentView('production')} />}

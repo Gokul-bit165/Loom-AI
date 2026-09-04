@@ -1191,4 +1191,418 @@ export async function fetchPersistentAlerts(date: string = '2026-07-31', unit: s
   return res.json();
 }
 
+// ── PRODUCTION INTELLIGENCE MODULE (v2 REDESIGN) ───────────────────────────
+
+export interface TodayPrimaryKpis {
+  target_metres: number;
+  actual_metres: number;
+  gap_metres: number;
+  gap_pct: number;
+  efficiency_pct: number;
+  running_efficiency_pct: number;
+}
+
+export interface TodaySupportingMetrics {
+  kilo_picks: number;
+  actual_picks: number;
+  warp_breaks: number;
+  weft_breaks: number;
+  total_breaks: number;
+  breaks_per_1000_picks: number;
+  active_looms_count: number;
+  total_running_minutes: number;
+  total_stopped_minutes: number;
+}
+
+export interface YesterdayComparison {
+  yesterday_date: string;
+  yesterday_metres: number;
+  yesterday_efficiency_pct: number | null;
+  delta_metres: number;
+  delta_pct: number;
+  delta_efficiency_pp: number;
+}
+
+export interface TriageSummary {
+  total_looms: number;
+  attention_count: number;
+  critical_count: number;
+  critical_loom_ids: number[];
+  attention_loom_ids: number[];
+}
+
+export interface TodayPositionData {
+  data_available: boolean;
+  work_date: string;
+  unit_code: string;
+  primary_kpis: TodayPrimaryKpis;
+  supporting_metrics: TodaySupportingMetrics;
+  yesterday_comparison: YesterdayComparison;
+  triage_summary: TriageSummary;
+  provenance: Record<string, string>;
+  data_availability: {
+    q1_today: string;
+    quality_score_pct: number;
+    records_counted: number;
+  };
+}
+
+export interface SituationVerdict {
+  verdict_sentence: string;
+  status: 'CRITICAL' | 'ATTENTION' | 'ON_TRACK';
+  dominant_drivers: string[];
+  primary_issue: string;
+}
+
+export interface ActNowItem {
+  priority: number;
+  loom_id: number;
+  loom_no: string;
+  loom_type: string;
+  style_code: string;
+  actual_metres: number;
+  target_metres: number;
+  lost_metres: number;
+  efficiency_pct: number;
+  stopped_minutes: number;
+  warp_breaks: number;
+  weft_breaks: number;
+  problem: string;
+  revenue_exposure_inr: number;
+  action: string;
+  action_verb: string;
+}
+
+export interface PotentialRecoveryData {
+  target_gap_metres: number;
+  recoverable_metres: number;
+  recoverable_inr: number;
+  top_opportunity_loom: string;
+  top_opportunity_action: string;
+  confidence: string;
+}
+
+export interface ShortfallCategory {
+  name: string;
+  share_pct: number;
+  description: string;
+  affected_looms: string[];
+  affected_looms_count: number;
+  primary_issue: string;
+}
+
+export interface ShortfallDecompositionData {
+  data_available: boolean;
+  target_gap_metres: number;
+  categories: ShortfallCategory[];
+}
+
+export interface AiInsightLead {
+  headline: string;
+  summary: string;
+  entity_id: string;
+  context_type: string;
+  action_required: boolean;
+}
+
+export interface ProductionIntelligenceResponse {
+  unit_code: string;
+  work_date: string;
+  today_position: TodayPositionData;
+  situation_verdict: SituationVerdict;
+  act_now_queue: ActNowItem[];
+  top_losses_all: ActNowItem[];
+  potential_recovery: PotentialRecoveryData;
+  shortfall_decomposition: ShortfallDecompositionData;
+  ai_insight_lead: AiInsightLead;
+  data_availability: {
+    q1_today: string;
+    quality_score_pct: number;
+    records_counted: number;
+  };
+}
+
+export interface ExplainResponse {
+  title: string;
+  explain: {
+    what_happened: string;
+    observed_evidence: string[];
+    likely_contributor: string;
+  };
+  decide: {
+    classification: 'ACTION_REQUIRED' | 'WATCH' | 'INFORMATION';
+    business_impact: {
+      lost_output_metres?: number;
+      potential_recovery_metres?: number;
+      revenue_exposure_inr?: number;
+      potential_revenue_inr?: number;
+      confirmed_rate?: string;
+    };
+    risk_if_ignored: string;
+  };
+  act: {
+    recommended_action: string;
+    expected_outcome?: string;
+    assigned_role: string;
+    priority: string;
+    controls: string[];
+  };
+}
+
+export interface ExplainRequestPayload {
+  context_type: string;
+  entity_id?: string | null;
+  date?: string;
+  shift_id?: string | null;
+  requested_analysis?: string;
+}
+
+export interface PerformanceRankedLoom {
+  loom_id: number;
+  loom_no: string;
+  loom_type: string;
+  style_code: string;
+  actual_metres: number;
+  target_metres: number;
+  variance_metres: number;
+  efficiency_pct: number;
+  std_efficiency_pct: number;
+  efficiency_gap_pp: number;
+  stopped_minutes: number;
+  warp_breaks: number;
+  weft_breaks: number;
+  opportunity_score: number;
+}
+
+export interface ProductionPerformanceResponse {
+  unit_code: string;
+  work_date: string;
+  loom_performance: {
+    top_output_looms: PerformanceRankedLoom[];
+    bottom_output_looms: PerformanceRankedLoom[];
+    top_efficiency_looms: PerformanceRankedLoom[];
+    bottom_efficiency_looms: PerformanceRankedLoom[];
+    potential_improvement_opportunities: PerformanceRankedLoom[];
+    total_looms_evaluated: number;
+  };
+  weaver_performance: {
+    top_weavers: Array<{
+      employee_id: number;
+      name: string;
+      code: string;
+      grade: string;
+      looms_handled: number;
+      assigned_hours: number;
+      total_metres: number;
+      efficiency_pct: number;
+      performance_label: string;
+      category: string;
+    }>;
+    attention_required_weavers: Array<{
+      employee_id: number;
+      name: string;
+      code: string;
+      grade: string;
+      looms_handled: number;
+      assigned_hours: number;
+      total_metres: number;
+      efficiency_pct: number;
+      performance_label: string;
+      category: string;
+    }>;
+    total_qualified: number;
+    unqualified_count: number;
+  };
+}
+
+export interface ProductionShiftItem {
+  shift_id: number;
+  shift_code: string;
+  start_time: string;
+  end_time: string;
+  target_metres: number;
+  actual_metres: number;
+  variance_metres: number;
+  variance_pct: number;
+  efficiency_pct: number;
+  target_efficiency_pct?: number;
+  attainment_pct?: number;
+  target_picks?: number;
+  actual_picks?: number;
+  target_pace_m_per_hr?: number;
+  actual_pace_m_per_hr?: number;
+  target_metres_per_loom?: number;
+  actual_metres_per_loom?: number;
+  scheduled_minutes?: number;
+  running_minutes: number;
+  stopped_minutes: number;
+  target_running_minutes?: number;
+  allowable_stopped_minutes?: number;
+  warp_breaks: number;
+  weft_breaks: number;
+  total_breaks: number;
+  looms_reported: number;
+  supervisor_name?: string;
+}
+
+export interface ProductionHistoryResponse {
+  unit_code: string;
+  work_date: string;
+  direction: {
+    window_days: number;
+    direction_status: 'IMPROVING' | 'STABLE' | 'DECLINING';
+    output_change_pct: number;
+    efficiency_change_pp: number;
+    downtime_change_pct: number;
+    key_changes: Array<{
+      entity: string;
+      status: string;
+      detail: string;
+    }>;
+  };
+  timeline: {
+    window: string;
+    start_date: string;
+    end_date: string;
+    data_points: Array<{
+      date: string;
+      actual_metres: number;
+      target_metres: number;
+      efficiency_pct: number;
+      warp_breaks: number;
+      weft_breaks: number;
+      total_breaks: number;
+      running_minutes: number;
+      stopped_minutes: number;
+    }>;
+    average_metres: number;
+    average_efficiency_pct: number;
+    points_count: number;
+  };
+  consistency_quadrants: {
+    quadrants: {
+      consistent_performers: Array<{
+        loom_id: number;
+        loom_no: string;
+        loom_type: string;
+        mean_efficiency_pct: number;
+        stddev: number;
+        trend_slope: number;
+      }>;
+      declining: Array<{
+        loom_id: number;
+        loom_no: string;
+        loom_type: string;
+        mean_efficiency_pct: number;
+        stddev: number;
+        trend_slope: number;
+      }>;
+      recovering: Array<{
+        loom_id: number;
+        loom_no: string;
+        loom_type: string;
+        mean_efficiency_pct: number;
+        stddev: number;
+        trend_slope: number;
+      }>;
+      volatile: Array<{
+        loom_id: number;
+        loom_no: string;
+        loom_type: string;
+        mean_efficiency_pct: number;
+        stddev: number;
+        trend_slope: number;
+      }>;
+    };
+    counts: {
+      consistent: number;
+      declining: number;
+      recovering: number;
+      volatile: number;
+      insufficient_data: number;
+    };
+  };
+}
+
+export interface ProductionLoomDrilldownResponse {
+  found: boolean;
+  loom_id: number;
+  loom_no: string;
+  loom_type: string;
+  install_date: string;
+  history_30d: Array<{
+    date: string;
+    metres: number;
+    efficiency_pct: number;
+    stopped_minutes: number;
+    warp_breaks: number;
+    weft_breaks: number;
+  }>;
+  top_stoppage_causes: Array<{
+    reason: string;
+    event_count: number;
+  }>;
+  current_status: 'CRITICAL' | 'ATTENTION' | 'ACTIVE';
+}
+
+export async function fetchProductionIntelligence(
+  date: string = '2026-07-31',
+  unit: string = 'ATM'
+): Promise<ProductionIntelligenceResponse> {
+  const res = await fetch(`${API_BASE}/production/intelligence?unit=${unit}&date=${date}`);
+  if (!res.ok) throw new Error('Failed to fetch production intelligence');
+  return res.json();
+}
+
+export async function fetchProductionPerformance(
+  date: string = '2026-07-31',
+  unit: string = 'ATM'
+): Promise<ProductionPerformanceResponse> {
+  const res = await fetch(`${API_BASE}/production/performance?unit=${unit}&date=${date}`);
+  if (!res.ok) throw new Error('Failed to fetch production performance');
+  return res.json();
+}
+
+export async function fetchProductionShifts(
+  date: string = '2026-07-31',
+  unit: string = 'ATM'
+): Promise<{ unit_code: string; work_date: string; shifts: ProductionShiftItem[] }> {
+  const res = await fetch(`${API_BASE}/production/shifts?unit=${unit}&date=${date}`);
+  if (!res.ok) throw new Error('Failed to fetch shift performance');
+  return res.json();
+}
+
+export async function fetchProductionHistory(
+  date: string = '2026-07-31',
+  unit: string = 'ATM',
+  window: string = '30D'
+): Promise<ProductionHistoryResponse> {
+  const res = await fetch(`${API_BASE}/production/history?unit=${unit}&date=${date}&window=${window}`);
+  if (!res.ok) throw new Error('Failed to fetch production history');
+  return res.json();
+}
+
+export async function fetchProductionLoomDetail(
+  loomId: number,
+  date: string = '2026-07-31'
+): Promise<ProductionLoomDrilldownResponse> {
+  const res = await fetch(`${API_BASE}/production/loom/${loomId}?date=${date}`);
+  if (!res.ok) throw new Error(`Failed to fetch loom ${loomId} drilldown`);
+  return res.json();
+}
+
+export async function fetchProductionAiExplain(
+  payload: ExplainRequestPayload,
+  unit: string = 'ATM'
+): Promise<ExplainResponse> {
+  const res = await fetch(`${API_BASE}/production/ai/explain?unit=${unit}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error('Failed to fetch AI explanation');
+  return res.json();
+}
+
+
 
