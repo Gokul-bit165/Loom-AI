@@ -31,12 +31,14 @@ interface ProductionIntelligenceViewProps {
   submodule?: ProductionSubmodule;
   onSelectSubmodule?: (submodule: ProductionSubmodule) => void;
   onSelectLoom?: (loomId: number) => void;
+  onOpenWhyModal?: () => void;
 }
 
 export const ProductionIntelligenceView: React.FC<ProductionIntelligenceViewProps> = ({
   submodule = 'daily',
   onSelectSubmodule,
   onSelectLoom,
+  onOpenWhyModal,
 }) => {
   const [selectedDate, setSelectedDate] = useState<string>('2026-07-31');
   const unitCode = 'ATM';
@@ -178,6 +180,7 @@ export const ProductionIntelligenceView: React.FC<ProductionIntelligenceViewProp
         onSelectTriageFilter={setTriageFilter}
         triage={today_position.triage_summary}
         qualityScorePct={data_availability.quality_score_pct}
+        onOpenWhyModal={onOpenWhyModal}
       />
 
       {/* 2. SUBMODULE WORKSPACE (Driven directly by sidebar selection — zero redundant tabs) */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, Factory, AlertTriangle, Zap, Calendar, ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
+import { Clock, Factory, AlertTriangle, Zap, Calendar, ChevronLeft, ChevronRight, RotateCcw, Search } from 'lucide-react';
 import type { TriageSummary } from '../../api';
 
 interface ProductionHeaderProps {
@@ -12,6 +12,7 @@ interface ProductionHeaderProps {
   onSelectTriageFilter: (filter: 'ALL' | 'ATTENTION' | 'CRITICAL' | 'RECOVERY') => void;
   triage: TriageSummary;
   qualityScorePct: number;
+  onOpenWhyModal?: () => void;
 }
 
 export const ProductionHeader: React.FC<ProductionHeaderProps> = ({
@@ -24,6 +25,7 @@ export const ProductionHeader: React.FC<ProductionHeaderProps> = ({
   onSelectTriageFilter,
   triage,
   qualityScorePct,
+  onOpenWhyModal,
 }) => {
   const isToday = workDate === '2026-07-31';
 
@@ -96,46 +98,74 @@ export const ProductionHeader: React.FC<ProductionHeaderProps> = ({
           </div>
         </div>
 
-        {/* View mode toggle */}
-        <div style={{
-          display: 'flex',
-          background: '#F1F5F9',
-          padding: '3px',
-          borderRadius: '6px',
-          border: '1px solid #E2E6EA',
-          fontSize: '12px',
-          fontWeight: 600,
-        }}>
-          <button
-            onClick={() => onToggleViewMode('OWNER')}
-            style={{
-              background: viewMode === 'OWNER' ? '#FFFFFF' : 'transparent',
-              color: viewMode === 'OWNER' ? '#0F172A' : '#64748B',
-              border: 'none',
-              padding: '5px 12px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              boxShadow: viewMode === 'OWNER' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
-              transition: 'all 0.15s ease',
-            }}
-          >
-            Owner View
-          </button>
-          <button
-            onClick={() => onToggleViewMode('OPERATIONS')}
-            style={{
-              background: viewMode === 'OPERATIONS' ? '#FFFFFF' : 'transparent',
-              color: viewMode === 'OPERATIONS' ? '#0F172A' : '#64748B',
-              border: 'none',
-              padding: '5px 12px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              boxShadow: viewMode === 'OPERATIONS' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
-              transition: 'all 0.15s ease',
-            }}
-          >
-            Operations View
-          </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {onOpenWhyModal && (
+            <button
+              onClick={onOpenWhyModal}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '5px 12px',
+                borderRadius: '6px',
+                background: '#FEF2F2',
+                border: '1.5px solid #F87171',
+                color: '#B91C1C',
+                fontSize: '11.5px',
+                fontWeight: 800,
+                cursor: 'pointer',
+                boxShadow: '0 1px 2px rgba(220, 38, 38, 0.1)',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.15s ease',
+              }}
+              title="Click to analyze why production is low today"
+            >
+              <Search size={13} color="#DC2626" />
+              <span>Why is production low?</span>
+            </button>
+          )}
+
+          {/* View mode toggle */}
+          <div style={{
+            display: 'flex',
+            background: '#F1F5F9',
+            padding: '3px',
+            borderRadius: '6px',
+            border: '1px solid #E2E6EA',
+            fontSize: '12px',
+            fontWeight: 600,
+          }}>
+            <button
+              onClick={() => onToggleViewMode('OWNER')}
+              style={{
+                background: viewMode === 'OWNER' ? '#FFFFFF' : 'transparent',
+                color: viewMode === 'OWNER' ? '#0F172A' : '#64748B',
+                border: 'none',
+                padding: '5px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                boxShadow: viewMode === 'OWNER' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              Owner View
+            </button>
+            <button
+              onClick={() => onToggleViewMode('OPERATIONS')}
+              style={{
+                background: viewMode === 'OPERATIONS' ? '#FFFFFF' : 'transparent',
+                color: viewMode === 'OPERATIONS' ? '#0F172A' : '#64748B',
+                border: 'none',
+                padding: '5px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                boxShadow: viewMode === 'OPERATIONS' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              Operations View
+            </button>
+          </div>
         </div>
       </div>
 

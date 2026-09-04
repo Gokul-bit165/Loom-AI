@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { CommandCenterView } from './components/CommandCenterView';
 import { ProductionIntelligenceView } from './components/ProductionIntelligenceView';
-import { BreakdownBoardView } from './components/BreakdownBoardView';
+import { BreakdownHubView } from './components/BreakdownHubView';
+import type { BreakdownSubPage } from './components/BreakdownHubView';
+import { WhyProductionLowModal } from './components/WhyProductionLowModal';
 import { LoomDetailView } from './components/LoomDetailView';
 import { OperationsView } from './components/OperationsView';
 import { ManpowerIntelligenceView } from './components/ManpowerIntelligenceView';
@@ -19,7 +21,9 @@ import { AiAgentsHubView } from './components/AiAgentsHubView';
 import type { AgentTab } from './components/AiAgentsHubView';
 import {
   Activity,
+  AlertTriangle,
   Award,
+  BarChart3,
   Bot,
   BrainCircuit,
   ChevronDown,
@@ -32,6 +36,7 @@ import {
   LayoutDashboard,
   LayoutGrid,
   Layers,
+  Search,
   ShieldAlert,
   UploadCloud,
   Users,
@@ -66,6 +71,9 @@ export function App() {
   const [currentView, setCurrentView] = useState<ViewMode>('command-center');
   const [productionSubmodule, setProductionSubmodule] = useState<ProductionSubmodule>('daily');
   const [showProductionGroup, setShowProductionGroup] = useState<boolean>(true);
+  const [breakdownSubPage, setBreakdownSubPage] = useState<BreakdownSubPage>('insights');
+  const [breakdownsExpanded, setBreakdownsExpanded] = useState<boolean>(true);
+  const [isWhyModalOpen, setIsWhyModalOpen] = useState<boolean>(false);
   const [initialAgentTab, setInitialAgentTab] = useState<AgentTab>('watchtower');
   const [selectedLoomId, setSelectedLoomId] = useState<number | null>(118);
   const [showSupportSection, setShowSupportSection] = useState<boolean>(true);
@@ -213,14 +221,76 @@ export function App() {
             )}
           </div>
 
+          {/* 🔧 BREAKDOWNS (EXPANDABLE PARENT MODULE) */}
           <button
             className={`nav-item ${currentView === 'breakdowns' ? 'active' : ''}`}
-            onClick={() => setCurrentView('breakdowns')}
+            onClick={() => {
+              if (currentView !== 'breakdowns') {
+                setCurrentView('breakdowns');
+                setBreakdownsExpanded(true);
+              } else {
+                setBreakdownsExpanded(!breakdownsExpanded);
+              }
+            }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
           >
-            <Wrench size={16} />
-            <span>Breakdowns</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+              <Wrench size={16} />
+              <span>Breakdowns</span>
+            </div>
+            {breakdownsExpanded ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
           </button>
 
+          {/* BREAKDOWNS SUB-PAGES */}
+          {breakdownsExpanded && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              <button
+                className={`nav-subitem ${currentView === 'breakdowns' && breakdownSubPage === 'insights' ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentView('breakdowns');
+                  setBreakdownSubPage('insights');
+                }}
+              >
+                <BarChart3 size={14} />
+                <span>Breakdown Insights</span>
+              </button>
+
+              <button
+                className={`nav-subitem ${currentView === 'breakdowns' && breakdownSubPage === 'root-cause' ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentView('breakdowns');
+                  setBreakdownSubPage('root-cause');
+                }}
+              >
+                <Search size={14} />
+                <span>Root Cause Analysis</span>
+              </button>
+
+              <button
+                className={`nav-subitem ${currentView === 'breakdowns' && breakdownSubPage === 'abnormal' ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentView('breakdowns');
+                  setBreakdownSubPage('abnormal');
+                }}
+              >
+                <AlertTriangle size={14} />
+                <span>Abnormal Events</span>
+              </button>
+
+              <button
+                className={`nav-subitem ${currentView === 'breakdowns' && breakdownSubPage === 'loss-impact' ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentView('breakdowns');
+                  setBreakdownSubPage('loss-impact');
+                }}
+              >
+                <IndianRupee size={14} />
+                <span>Production Loss Impact</span>
+              </button>
+            </div>
+          )}
+
+          {/* ⚙️ LOOM 360° PROFILE (STANDALONE PAGE - NOT INSIDE BREAKDOWNS) */}
           <button
             className={`nav-item ${currentView === 'looms' ? 'active' : ''}`}
             onClick={() => setCurrentView('looms')}
@@ -229,6 +299,7 @@ export function App() {
             <span>Looms</span>
           </button>
 
+          {/* ▦ OPERATIONS TABLE (STANDALONE PAGE - NOT INSIDE BREAKDOWNS) */}
           <button
             className={`nav-item ${currentView === 'operations' ? 'active' : ''}`}
             onClick={() => setCurrentView('operations')}
@@ -396,7 +467,14 @@ export function App() {
               productionSubmodule === 'performance' ? 'Loom & Weaver Performance' :
               productionSubmodule === 'trends' ? 'Production Trends & History' : 'Management Reports'
             }`}
-            {currentView === 'breakdowns' && 'Breakdowns & Downtime'}
+            {currentView === 'breakdowns' &&
+              (breakdownSubPage === 'insights'
+                ? 'Breakdowns · 📊 Breakdown Insights ("What happened?")'
+                : breakdownSubPage === 'root-cause'
+                ? 'Breakdowns · 🔍 Root Cause Analysis ("Why did it happen?")'
+                : breakdownSubPage === 'abnormal'
+                ? 'Breakdowns · ⚠️ Abnormal Events ("What is unusual?")'
+                : 'Breakdowns · 💰 Production Loss Impact ("What did we lose & why?")')}
             {currentView === 'revenue' && 'Revenue & Loss Attribution'}
             {currentView === 'looms' && 'Loom 360° Profile'}
             {currentView === 'operations' && 'Daily Operations Table'}
@@ -413,6 +491,31 @@ export function App() {
           </div>
 
           <div className="topbar-controls">
+            {/* Universal Header "Why is production low?" Button */}
+            <button
+              onClick={() => setIsWhyModalOpen(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '5px 12px',
+                borderRadius: '6px',
+                background: '#FEF2F2',
+                border: '1.5px solid #F87171',
+                color: '#B91C1C',
+                fontSize: '11.5px',
+                fontWeight: 800,
+                cursor: 'pointer',
+                boxShadow: '0 1px 2px rgba(220, 38, 38, 0.1)',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.15s ease',
+              }}
+              title="Click to analyze why production is low today"
+            >
+              <Search size={13} color="#DC2626" />
+              <span>Why is production low?</span>
+            </button>
+
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontSize: '12px', color: 'var(--text-secondary)' }}>
               <span>Unit: <strong>ATM Main Shed</strong></span>
               <span>Data: <strong>31 Jul 2026, 06:00</strong></span>
@@ -442,16 +545,28 @@ export function App() {
         </header>
 
         <div className="page-body">
-          {currentView === 'command-center' && <CommandCenterView onNavigateToModule={handleNavigate} />}
+          {currentView === 'command-center' && (
+            <CommandCenterView
+              onNavigateToModule={handleNavigate}
+              onOpenWhyModal={() => setIsWhyModalOpen(true)}
+            />
+          )}
           {currentView === 'agents' && <AiAgentsHubView initialTab={initialAgentTab} onNavigateToModule={handleNavigate} />}
           {currentView === 'production' && (
             <ProductionIntelligenceView
               submodule={productionSubmodule}
               onSelectSubmodule={setProductionSubmodule}
               onSelectLoom={handleSelectLoom}
+              onOpenWhyModal={() => setIsWhyModalOpen(true)}
             />
           )}
-          {currentView === 'breakdowns' && <BreakdownBoardView />}
+          {currentView === 'breakdowns' && (
+            <BreakdownHubView
+              activeTab={breakdownSubPage}
+              onTabChange={setBreakdownSubPage}
+              onSelectLoom={handleSelectLoom}
+            />
+          )}
           {currentView === 'revenue' && <RevenueLossView />}
           {currentView === 'looms' && <LoomDetailView loomId={selectedLoomId || 118} onBack={() => setCurrentView('production')} />}
           {currentView === 'operations' && <OperationsView onSelectLoom={handleSelectLoom} />}
@@ -466,6 +581,19 @@ export function App() {
           {currentView === 'assistant' && <AskEngineView />}
           {currentView === 'exports' && <ExportsView />}
         </div>
+
+        {/* Universal Why is Production Low Modal */}
+        <WhyProductionLowModal
+          isOpen={isWhyModalOpen}
+          onClose={() => setIsWhyModalOpen(false)}
+          onNavigateToLoom={handleSelectLoom}
+          onNavigateToRootCause={(_loomNo) => {
+            setCurrentView('breakdowns');
+            setBreakdownSubPage('root-cause');
+          }}
+          targetMetres={10000}
+          actualMetres={8200}
+        />
       </main>
     </div>
   );
