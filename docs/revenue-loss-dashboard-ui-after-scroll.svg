@@ -1,0 +1,124 @@
+<svg width="1600" height="1100" viewBox="0 0 1600 1100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1100" fill="#F6F8FA"/>
+
+  <rect x="32" y="24" width="1536" height="58" rx="6" fill="#FFFFFF" stroke="#E2E6EA"/>
+  <text x="56" y="60" font-family="Inter, Arial" font-size="20" font-weight="800" fill="#17212B">Revenue and Loss Decision Dashboard</text>
+  <text x="412" y="60" font-family="Inter, Arial" font-size="13" fill="#4B5563">Scrolled view: drill-down, evidence, monitoring, and commercial trust</text>
+  <rect x="1220" y="36" width="118" height="30" rx="5" fill="#F9FAFB" stroke="#E2E6EA"/>
+  <text x="1247" y="56" font-family="Inter, Arial" font-size="13" font-weight="700" fill="#4B5563">Owner view</text>
+  <rect x="1348" y="36" width="170" height="30" rx="5" fill="#2563EB"/>
+  <text x="1370" y="56" font-family="Inter, Arial" font-size="13" font-weight="800" fill="#FFFFFF">Plant assistant detail</text>
+
+  <rect x="32" y="106" width="1536" height="78" rx="8" fill="#FFFFFF" stroke="#E2E6EA"/>
+  <text x="56" y="135" font-family="Inter, Arial" font-size="13" font-weight="900" fill="#1E3A5F">SELECTED DRILL-DOWN</text>
+  <text x="56" y="163" font-family="Inter, Arial" font-size="20" font-weight="900" fill="#17212B">Electrical and power loss selected from department histogram</text>
+  <rect x="1032" y="126" width="156" height="32" rx="5" fill="#FEF2F2" stroke="#FECACA"/>
+  <text x="1050" y="147" font-family="Inter, Arial" font-size="13" font-weight="900" fill="#DC2626">Worsening trend</text>
+  <rect x="1204" y="126" width="146" height="32" rx="5" fill="#EFF6FF" stroke="#BFDBFE"/>
+  <text x="1230" y="147" font-family="Inter, Arial" font-size="13" font-weight="900" fill="#1E40AF">Calculated</text>
+  <rect x="1366" y="126" width="130" height="32" rx="5" fill="#ECFDF5" stroke="#A7F3D0"/>
+  <text x="1388" y="147" font-family="Inter, Arial" font-size="13" font-weight="900" fill="#059669">Action ready</text>
+
+  <rect x="32" y="206" width="500" height="250" rx="8" fill="#FFFFFF" stroke="#E2E6EA"/>
+  <text x="56" y="238" font-family="Inter, Arial" font-size="17" font-weight="900" fill="#17212B">Department Deep Dive</text>
+  <text x="56" y="264" font-family="Inter, Arial" font-size="12" fill="#6B7280">Only appears after touching a sector, chart point, or spike bar.</text>
+  <rect x="56" y="292" width="452" height="56" rx="6" fill="#FEF2F2" stroke="#FECACA"/>
+  <text x="76" y="316" font-family="Inter, Arial" font-size="12" font-weight="900" fill="#991B1B">Revenue impact</text>
+  <text x="76" y="340" font-family="Inter, Arial" font-size="24" font-weight="900" fill="#DC2626">₹2.01 lakh today</text>
+  <text x="318" y="340" font-family="Inter, Arial" font-size="12" fill="#6B7280">5,027 metres lost</text>
+  <text x="56" y="380" font-family="Inter, Arial" font-size="13" font-weight="900" fill="#17212B">Reason</text>
+  <text x="116" y="380" font-family="Inter, Arial" font-size="13" fill="#4B5563">Four voltage dips caused simultaneous inverter trips.</text>
+  <text x="56" y="412" font-family="Inter, Arial" font-size="13" font-weight="900" fill="#17212B">Action</text>
+  <text x="116" y="412" font-family="Inter, Arial" font-size="13" fill="#4B5563">Inspect sub-panel terminals and drive capacitors before evening shift.</text>
+  <text x="56" y="440" font-family="Inter, Arial" font-size="13" font-weight="900" fill="#17212B">Owner</text>
+  <text x="116" y="440" font-family="Inter, Arial" font-size="13" fill="#4B5563">Chief Electrical Engineer</text>
+
+  <rect x="552" y="206" width="500" height="250" rx="8" fill="#FFFFFF" stroke="#E2E6EA"/>
+  <text x="576" y="238" font-family="Inter, Arial" font-size="17" font-weight="900" fill="#17212B">Monitor After Action</text>
+  <text x="576" y="264" font-family="Inter, Arial" font-size="12" fill="#6B7280">The assistant checks if the approved fix actually improves money.</text>
+  <line x1="606" y1="396" x2="996" y2="396" stroke="#D1D5DB"/>
+  <line x1="606" y1="300" x2="606" y2="396" stroke="#D1D5DB"/>
+  <polyline points="620,328 672,340 724,336 776,358 828,352 880,374 932,386 980,382" fill="none" stroke="#DC2626" stroke-width="4"/>
+  <polyline points="620,360 672,354 724,348 776,336 828,330 880,320 932,312 980,306" fill="none" stroke="#059669" stroke-width="4"/>
+  <circle cx="980" cy="306" r="6" fill="#FFFFFF" stroke="#059669" stroke-width="3"/>
+  <text x="616" y="426" font-family="Inter, Arial" font-size="12" font-weight="900" fill="#059669">Target after fix: electrical stoppage minutes down, revenue loss down</text>
+  <rect x="786" y="224" width="12" height="4" fill="#DC2626"/>
+  <text x="804" y="230" font-family="Inter, Arial" font-size="11" fill="#4B5563">Before action</text>
+  <rect x="900" y="224" width="12" height="4" fill="#059669"/>
+  <text x="918" y="230" font-family="Inter, Arial" font-size="11" fill="#4B5563">After action</text>
+
+  <rect x="1072" y="206" width="496" height="250" rx="8" fill="#FFFFFF" stroke="#E2E6EA"/>
+  <text x="1096" y="238" font-family="Inter, Arial" font-size="17" font-weight="900" fill="#17212B">Action Approval Card</text>
+  <text x="1096" y="264" font-family="Inter, Arial" font-size="12" fill="#6B7280">One clear approval instead of many text blocks.</text>
+  <rect x="1096" y="292" width="448" height="50" rx="6" fill="#1E3A5F"/>
+  <text x="1120" y="323" font-family="Inter, Arial" font-size="15" font-weight="900" fill="#FFFFFF">Approve electrical inspection before evening shift</text>
+  <g font-family="Inter, Arial" font-size="13" fill="#4B5563">
+    <text x="1096" y="376">Expected recovery:</text>
+    <text x="1244" y="376" font-weight="900" fill="#059669">₹1.30 lakh</text>
+    <text x="1096" y="408">Deadline:</text>
+    <text x="1244" y="408" font-weight="900" fill="#17212B">Before Shift 2 peak load</text>
+    <text x="1096" y="440">Monitor:</text>
+    <text x="1244" y="440" font-weight="900" fill="#17212B">Electrical loss per shift</text>
+  </g>
+
+  <rect x="32" y="482" width="1536" height="236" rx="8" fill="#FFFFFF" stroke="#E2E6EA"/>
+  <text x="56" y="514" font-family="Inter, Arial" font-size="17" font-weight="900" fill="#17212B">Problem Matrix: Count vs Money Impact</text>
+  <text x="56" y="538" font-family="Inter, Arial" font-size="12" fill="#6B7280">Shows which departments have many problems and which have fewer problems but high rupee impact.</text>
+  <line x1="140" y1="660" x2="1430" y2="660" stroke="#D1D5DB"/>
+  <line x1="140" y1="562" x2="140" y2="660" stroke="#D1D5DB"/>
+  <text x="670" y="696" font-family="Inter, Arial" font-size="12" fill="#6B7280">Problem count</text>
+  <text x="92" y="632" font-family="Inter, Arial" font-size="12" fill="#6B7280" transform="rotate(-90 92 632)">Rupee impact</text>
+  <circle cx="1130" cy="582" r="28" fill="#DC2626" opacity="0.9"/>
+  <text x="1090" y="544" font-family="Inter, Arial" font-size="12" font-weight="900" fill="#DC2626">Electrical and power</text>
+  <circle cx="760" cy="612" r="18" fill="#F59E0B" opacity="0.9"/>
+  <text x="708" y="646" font-family="Inter, Arial" font-size="12" fill="#92400E">Mechanical maintenance</text>
+  <circle cx="610" cy="620" r="18" fill="#2563EB" opacity="0.9"/>
+  <text x="560" y="596" font-family="Inter, Arial" font-size="12" fill="#1E40AF">Weaving efficiency</text>
+  <circle cx="330" cy="642" r="10" fill="#7E22CE" opacity="0.9"/>
+  <text x="280" y="620" font-family="Inter, Arial" font-size="12" fill="#7E22CE">Quality</text>
+  <rect x="1210" y="616" width="286" height="70" rx="6" fill="#FEF2F2" stroke="#FECACA"/>
+  <text x="1230" y="642" font-family="Inter, Arial" font-size="12" font-weight="900" fill="#991B1B">Decision insight</text>
+  <text x="1230" y="668" font-family="Inter, Arial" font-size="13" fill="#4B5563">Electrical has both high count and high money impact. Fix first.</text>
+
+  <rect x="32" y="744" width="748" height="292" rx="8" fill="#FFFFFF" stroke="#E2E6EA"/>
+  <text x="56" y="776" font-family="Inter, Arial" font-size="17" font-weight="900" fill="#17212B">Commercial Trust and Cost Layer</text>
+  <text x="56" y="800" font-family="Inter, Arial" font-size="12" fill="#6B7280">Shown in assistant view, not forced on the owner.</text>
+  <g font-family="Inter, Arial">
+    <rect x="56" y="826" width="328" height="44" rx="5" fill="#FFFBEB" stroke="#FDE68A"/>
+    <text x="74" y="854" font-size="13" font-weight="900" fill="#B45309">Style selling rate: Estimated</text>
+    <rect x="408" y="826" width="328" height="44" rx="5" fill="#ECFDF5" stroke="#A7F3D0"/>
+    <text x="426" y="854" font-size="13" font-weight="900" fill="#059669">Production metres: Calculated</text>
+    <text x="56" y="910" font-size="13" fill="#4B5563">Raw yarn cost</text>
+    <text x="660" y="910" font-size="13" font-weight="900" text-anchor="end" fill="#17212B">₹10.35 lakh</text>
+    <text x="56" y="940" font-size="13" fill="#4B5563">Power and energy cost</text>
+    <text x="660" y="940" font-size="13" font-weight="900" text-anchor="end" fill="#17212B">₹2.19 lakh</text>
+    <text x="56" y="970" font-size="13" fill="#4B5563">Direct labour cost</text>
+    <text x="660" y="970" font-size="13" font-weight="900" text-anchor="end" fill="#17212B">₹85,000</text>
+    <text x="56" y="1000" font-size="13" fill="#4B5563">Maintenance spares and oil</text>
+    <text x="660" y="1000" font-size="13" font-weight="900" text-anchor="end" fill="#17212B">₹14,500</text>
+  </g>
+
+  <rect x="800" y="744" width="768" height="292" rx="8" fill="#FFFFFF" stroke="#E2E6EA"/>
+  <text x="824" y="776" font-family="Inter, Arial" font-size="17" font-weight="900" fill="#17212B">Evidence Table Preview</text>
+  <text x="824" y="800" font-family="Inter, Arial" font-size="12" fill="#6B7280">Compact proof. Full details open only when the assistant clicks a row.</text>
+  <rect x="824" y="826" width="720" height="34" fill="#F9FAFB" stroke="#E2E6EA"/>
+  <text x="844" y="848" font-family="Inter, Arial" font-size="11" font-weight="900" fill="#6B7280">SOURCE</text>
+  <text x="1030" y="848" font-family="Inter, Arial" font-size="11" font-weight="900" fill="#6B7280">FINDING</text>
+  <text x="1320" y="848" font-family="Inter, Arial" font-size="11" font-weight="900" fill="#6B7280">ACTION</text>
+  <g font-family="Inter, Arial" font-size="12">
+    <rect x="824" y="860" width="720" height="44" fill="#FFFFFF" stroke="#E2E6EA"/>
+    <text x="844" y="886" fill="#17212B">Energy log</text>
+    <text x="1030" y="886" fill="#4B5563">4 voltage dips at evening peak</text>
+    <text x="1320" y="886" fill="#1E40AF" font-weight="800">Panel inspection</text>
+    <rect x="824" y="904" width="720" height="44" fill="#FFFFFF" stroke="#E2E6EA"/>
+    <text x="844" y="930" fill="#17212B">Stop events</text>
+    <text x="1030" y="930" fill="#4B5563">Inverter trips across loom group</text>
+    <text x="1320" y="930" fill="#1E40AF" font-weight="800">Drive check</text>
+    <rect x="824" y="948" width="720" height="44" fill="#FFFFFF" stroke="#E2E6EA"/>
+    <text x="844" y="974" fill="#17212B">Production log</text>
+    <text x="1030" y="974" fill="#4B5563">5,027 metres capacity loss</text>
+    <text x="1320" y="974" fill="#1E40AF" font-weight="800">Monitor output</text>
+  </g>
+
+  <text x="56" y="1070" font-family="Inter, Arial" font-size="12" fill="#6B7280">Lower page rule: details exist, but only after scroll or click. Owner view remains short; assistant view carries proof and follow-up.</text>
+</svg>

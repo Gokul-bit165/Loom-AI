@@ -16,6 +16,7 @@ import { DataQualityImportView } from './components/DataQualityImportView';
 import { AskEngineView } from './components/AskEngineView';
 import { ExportsView } from './components/ExportsView';
 import { AiAgentsHubView } from './components/AiAgentsHubView';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import type { AgentTab } from './components/AiAgentsHubView';
 import {
   Activity,
@@ -289,7 +290,7 @@ export function App() {
             {currentView === 'agents' && 'AI & Operational Agents Hub · Watchtower, Loss Hunter & Action Manager'}
             {currentView === 'production' && 'Production Operations'}
             {currentView === 'breakdowns' && 'Breakdowns & Downtime'}
-            {currentView === 'revenue' && 'Revenue & Loss Attribution'}
+            {currentView === 'revenue' && 'Revenue & Financial Loss Decision Room'}
             {currentView === 'looms' && 'Loom 360° Profile'}
             {currentView === 'operations' && 'Daily Operations Table'}
             {currentView === 'workforce' && 'Weaving Workforce Intelligence · Grade, Skill & Pay Progression'}
@@ -334,23 +335,25 @@ export function App() {
         </header>
 
         <div className="page-body">
-          {currentView === 'command-center' && <CommandCenterView onNavigateToModule={handleNavigate} />}
-          {currentView === 'agents' && <AiAgentsHubView initialTab={initialAgentTab} onNavigateToModule={handleNavigate} />}
-          {currentView === 'production' && <ProductionIntelligenceView onSelectLoom={handleSelectLoom} />}
-          {currentView === 'breakdowns' && <BreakdownBoardView />}
-          {currentView === 'revenue' && <RevenueLossView />}
-          {currentView === 'looms' && <LoomDetailView loomId={selectedLoomId || 118} onBack={() => setCurrentView('production')} />}
-          {currentView === 'operations' && <OperationsView onSelectLoom={handleSelectLoom} />}
-          {currentView === 'workforce' && <WorkforceIntelligenceView />}
-          {currentView === 'manpower' && <ManpowerIntelligenceView />}
-          {currentView === 'maintenance' && <MaintenanceIntelligenceView />}
-          {currentView === 'air' && <AirCompressorView />}
-          {currentView === 'quality' && <QualityIntelligenceView />}
-          {currentView === 'predictions' && <PredictionCenterView />}
-          {currentView === 'registry' && <DecisionRegistryView />}
-          {currentView === 'import' && <DataQualityImportView />}
-          {currentView === 'assistant' && <AskEngineView />}
-          {currentView === 'exports' && <ExportsView />}
+          <ErrorBoundary key={currentView}>
+            {currentView === 'command-center' && <CommandCenterView onNavigateToModule={handleNavigate} />}
+            {currentView === 'agents' && <AiAgentsHubView initialTab={initialAgentTab} onNavigateToModule={handleNavigate} />}
+            {currentView === 'production' && <ProductionIntelligenceView onSelectLoom={handleSelectLoom} />}
+            {currentView === 'breakdowns' && <BreakdownBoardView />}
+            {currentView === 'revenue' && <RevenueLossView />}
+            {currentView === 'looms' && <LoomDetailView loomId={selectedLoomId || 118} onBack={() => setCurrentView('production')} />}
+            {currentView === 'operations' && <OperationsView onSelectLoom={handleSelectLoom} />}
+            {currentView === 'workforce' && <WorkforceIntelligenceView />}
+            {currentView === 'manpower' && <ManpowerIntelligenceView />}
+            {currentView === 'maintenance' && <MaintenanceIntelligenceView />}
+            {currentView === 'air' && <AirCompressorView />}
+            {currentView === 'quality' && <QualityIntelligenceView />}
+            {currentView === 'predictions' && <PredictionCenterView />}
+            {currentView === 'registry' && <DecisionRegistryView />}
+            {currentView === 'import' && <DataQualityImportView />}
+            {currentView === 'assistant' && <AskEngineView />}
+            {currentView === 'exports' && <ExportsView />}
+          </ErrorBoundary>
         </div>
       </main>
     </div>

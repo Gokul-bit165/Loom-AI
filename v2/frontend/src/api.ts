@@ -598,8 +598,190 @@ export async function fetchQualityAnalytics(date: string = '2026-07-31', unit: s
   return res.json();
 }
 
-export async function fetchRevenueAnalytics(date: string = '2026-07-31', unit: string = 'ATM'): Promise<any> {
-  const res = await fetch(`${API_BASE}/revenue/analytics?date=${date}&unit=${unit}`);
+export type PeriodFilter = 'TODAY' | 'SEVEN_DAYS' | 'MONTH_TO_DATE' | 'YEAR_TO_DATE';
+
+export interface DailyTrendPoint {
+  date: string;
+  day_label: string;
+  revenue_inr: number;
+  potential_revenue_inr: number;
+  loss_inr: number;
+  efficiency_pct: number;
+  is_spike: boolean;
+  spike_reason: string | null;
+  dominant_department: string;
+  mechanical_loss_inr: number;
+  electrical_loss_inr: number;
+  efficiency_loss_inr: number;
+  quality_loss_inr: number;
+}
+
+export interface DepartmentSector {
+  sector_id: string;
+  sector_name: string;
+  loss_inr: number;
+  affected_metres: number;
+  problem_count: number;
+  main_reason: string;
+  recommended_action: string;
+  owner: string;
+  urgency: 'CRITICAL' | 'WARNING' | 'HEALTHY';
+  trend_status: 'IMPROVING' | 'STABLE' | 'WORSENING';
+  is_repeating: boolean;
+  repeating_note?: string;
+  loss_per_metre: number;
+  loss_per_hour: number;
+  provenance: string;
+}
+
+export interface OwnerSummary {
+  one_sentence_verdict: string;
+  three_key_numbers: Array<{
+    label: string;
+    value: string;
+    provenance: string;
+  }>;
+  one_biggest_reason: string;
+  one_action_to_approve: string;
+  one_recovery_amount_inr: number;
+  overall_trend: 'IMPROVING' | 'STABLE' | 'WORSENING';
+  recoverable_revenue_inr: number;
+  potential_max_revenue_inr: number;
+  dominant_problem_department: string;
+  primary_action_owner: string;
+  urgency: 'CRITICAL' | 'WARNING' | 'HEALTHY';
+}
+
+export interface BusinessIntelligence {
+  highest_revenue_style: {
+    style_code: string;
+    revenue_inr: number;
+    metres: number;
+  };
+  lowest_revenue_style: {
+    style_code: string;
+    revenue_inr: number;
+    metres: number;
+  };
+  best_recovery_opportunity: {
+    title: string;
+    recovery_inr: number;
+    department: string;
+  };
+  biggest_recurring_problem: {
+    title: string;
+    department: string;
+    frequency: string;
+  };
+  most_problem_count_department: {
+    department: string;
+    event_count: number;
+    loss_inr: number;
+  };
+  highest_rupee_loss_department: {
+    department: string;
+    loss_inr: number;
+    share_pct: number;
+  };
+  low_count_high_impact_department: {
+    department: string;
+    count: number;
+    loss_inr: number;
+    insight: string;
+  };
+  revenue_protected_if_top_action_succeeds: number;
+  month_end_target_risk_inr: number;
+  loss_per_metre_inr: number;
+  loss_per_hour_inr: number;
+}
+
+export interface RepeatingProblemAlert {
+  sector: string;
+  alert_type: string;
+  headline: string;
+  detail: string;
+  urgency: 'CRITICAL' | 'WARNING' | 'HEALTHY';
+}
+
+export interface RevenueAnalyticsResponse {
+  work_date: string;
+  unit_code: string;
+  selected_period: PeriodFilter;
+  today_total_revenue_inr: number;
+  month_to_date_revenue_inr: number;
+  period_total_revenue_inr: number;
+  potential_max_revenue_inr: number;
+  total_revenue_loss_inr: number;
+  recoverable_revenue_inr: number;
+  style_revenues: Array<{
+    style_id: number;
+    style_code: string;
+    metres_produced: number;
+    rate_per_metre: number;
+    revenue_inr: number;
+    active_looms: number;
+  }>;
+  profitability: {
+    is_cost_data_available: boolean;
+    net_revenue_inr: number;
+    yarn_cost_inr: number;
+    power_energy_cost_inr: number;
+    direct_labour_cost_inr: number;
+    maintenance_spares_inr: number;
+    total_direct_costs_inr: number;
+    contribution_profit_inr: number;
+    profit_margin_pct: number;
+  };
+  loss_attribution_waterfall: {
+    potential_max_revenue: number;
+    realized_revenue: number;
+    realized_metres: number;
+    waterfall_components: Array<{
+      category: string;
+      lost_metres: number;
+      lost_revenue_inr: number;
+      share_pct: number;
+      provenance: string;
+    }>;
+    total_revenue_loss_inr: number;
+  };
+  period_summary: Array<{
+    label: string;
+    period_code: string;
+    start_date: string;
+    end_date: string;
+    metres: number;
+    revenue_inr: number;
+    loss_inr: number;
+    potential_revenue_inr: number;
+    dominant_reason: string;
+    dominant_reason_loss_inr: number;
+    records_analyzed: number;
+  }>;
+  daily_trend: DailyTrendPoint[];
+  department_sectors: DepartmentSector[];
+  owner_summary: OwnerSummary;
+  repeating_problems: RepeatingProblemAlert[];
+  business_intelligence: BusinessIntelligence;
+  evidence_items?: Array<{
+    source: string;
+    finding: string;
+    action: string;
+  }>;
+  provenance: {
+    revenue: string;
+    profitability: string;
+    loss_waterfall: string;
+    rate_card: string;
+  };
+}
+
+export async function fetchRevenueAnalytics(
+  date: string = '2026-07-31',
+  unit: string = 'ATM',
+  period: PeriodFilter = 'TODAY'
+): Promise<RevenueAnalyticsResponse> {
+  const res = await fetch(`${API_BASE}/revenue/analytics?date=${date}&unit=${unit}&period=${period}`);
   if (!res.ok) throw new Error(`Revenue analytics fetch failed: ${res.statusText}`);
   return res.json();
 }
