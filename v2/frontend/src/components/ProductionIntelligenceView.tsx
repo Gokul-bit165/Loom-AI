@@ -31,11 +31,14 @@ import { ContextualAiDrawer } from './ContextualAiDrawer';
 import type { ContextualAiPayload } from './ContextualAiDrawer';
 import { ShiftLossReasonModal } from './ShiftLossReasonModal';
 
+import { Search } from 'lucide-react';
+
 interface ProductionIntelligenceViewProps {
   onSelectLoom: (loomId: number) => void;
+  onOpenWhyModal?: () => void;
 }
 
-export function ProductionIntelligenceView({ onSelectLoom }: ProductionIntelligenceViewProps) {
+export function ProductionIntelligenceView({ onSelectLoom, onOpenWhyModal }: ProductionIntelligenceViewProps) {
   const [summary, setSummary] = useState<ProductionSummaryResponse | null>(null);
   const [comparison, setComparison] = useState<ProductionComparisonResponse | null>(null);
   const [loomsData, setLoomsData] = useState<LoomsResponse | null>(null);
@@ -228,6 +231,29 @@ export function ProductionIntelligenceView({ onSelectLoom }: ProductionIntellige
         date={date}
         actions={
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {onOpenWhyModal && (
+              <button
+                onClick={onOpenWhyModal}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  padding: '5px 12px',
+                  borderRadius: '6px',
+                  background: '#FEF2F2',
+                  border: '1.5px solid #F87171',
+                  color: '#B91C1C',
+                  fontSize: '11.5px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: '0 1px 2px rgba(220, 38, 38, 0.1)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <Search size={13} color="#DC2626" />
+                <span>Why is production low?</span>
+              </button>
+            )}
             <input
               type="date"
               value={date}
