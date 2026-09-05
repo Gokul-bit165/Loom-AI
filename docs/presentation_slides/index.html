@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loom AI — Executive Presentation & Module User Manual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0B0F19;
+      --bg-card: #111827;
+      --bg-surface: #1E293B;
+      --border-color: #334155;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --accent-blue: #3B82F6;
+      --accent-indigo: #6366F1;
+      --accent-green: #10B981;
+      --accent-amber: #F59E0B;
+      --accent-red: #EF4444;
+      --header-height: 64px;
+      --footer-height: 56px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Header */
+    header {
+      height: var(--header-height);
+      background: rgba(17, 24, 39, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #2563EB, #4F46E5);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      color: #FFF;
+      box-shadow: 0 0 16px rgba(37, 99, 235, 0.4);
+    }
+
+    .brand-text h1 {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-text h1 span.badge {
+      font-size: 10px;
+      font-weight: 700;
+      background: #1E3A8A;
+      color: #93C5FD;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #2563EB;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slide-counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      background: var(--bg-surface);
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      color: #93C5FD;
+    }
+
+    .btn {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background: #334155;
+      border-color: #475569;
+      color: #FFF;
+    }
+
+    .btn-primary {
+      background: #2563EB;
+      border-color: #3B82F6;
+      color: #FFF;
+    }
+
+    .btn-primary:hover {
+      background: #1D4ED8;
+    }
+
+    /* Main Slide Stage */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .slide-container {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      min-height: 720px;
+    }
+
+    /* Left: Screenshot Column */
+    .screenshot-pane {
+      background: #000;
+      border-right: 1px solid var(--border-color);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .screenshot-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 0 4px;
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .dot.red { background: #EF4444; }
+    .dot.yellow { background: #F59E0B; }
+    .dot.green { background: #10B981; }
+
+    .module-tag {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #93C5FD;
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+
+    .img-wrapper {
+      flex: 1;
+      background: #0A0E17;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: zoom-in;
+      border: 1px solid #1F2937;
+    }
+
+    .img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.25s ease;
+    }
+
+    .img-wrapper:hover img {
+      transform: scale(1.015);
+    }
+
+    .zoom-hint {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      pointer-events: none;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Right: Details & Playbook Column */
+    .details-pane {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-card);
+      overflow-y: auto;
+      max-height: 720px;
+    }
+
+    .details-header {
+      padding: 24px 28px 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .slide-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .role-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: #34D399;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 3px 10px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .slide-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #FFF;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    .slide-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Tabs */
+    .tab-bar {
+      display: flex;
+      background: #0F172A;
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 28px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 12px 16px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab-btn:hover {
+      color: #FFF;
+    }
+
+    .tab-btn.active {
+      color: #60A5FA;
+      border-bottom-color: #3B82F6;
+    }
+
+    .tab-content {
+      padding: 22px 28px;
+      flex: 1;
+      display: none;
+      overflow-y: auto;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Content Styling inside tabs */
+    .section-title {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #93C5FD;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .instructions-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .instructions-list li {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #E2E8F0;
+    }
+
+    .step-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #1E293B;
+      color: #60A5FA;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+      border: 1px solid var(--border-color);
+    }
+
+    .callout-box {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid var(--border-color);
+      border-left: 3px solid #3B82F6;
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+
+    .callout-box.pitch {
+      border-left-color: #10B981;
+      background: rgba(6, 78, 59, 0.2);
+    }
+
+    .callout-box.highlight {
+      border-left-color: #F59E0B;
+      background: rgba(120, 53, 15, 0.2);
+    }
+
+    .callout-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #FFF;
+      margin-bottom: 4px;
+    }
+
+    .callout-body {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #CBD5E1;
+    }
+
+    .quote-box {
+      font-style: italic;
+      background: #0F172A;
+      border-left: 3px solid #818CF8;
+      padding: 14px 16px;
+      border-radius: 6px;
+      color: #E0E7FF;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .metric-card {
+      background: #1E293B;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+
+    .metric-card-label {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .metric-card-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: #FFF;
+      margin-top: 2px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Thumbnail Carousel Tray */
+    .thumbnails-strip {
+      width: 100%;
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 8px 4px 16px;
+      scrollbar-width: thin;
+      scrollbar-color: #334155 transparent;
+    }
+
+    .thumb-item {
+      flex: 0 0 140px;
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      opacity: 0.65;
+    }
+
+    .thumb-item:hover {
+      opacity: 1;
+      border-color: #475569;
+      transform: translateY(-2px);
+    }
+
+    .thumb-item.active {
+      opacity: 1;
+      border-color: #3B82F6;
+      box-shadow: 0 0 14px rgba(59, 130, 246, 0.4);
+    }
+
+    .thumb-img {
+      width: 100%;
+      height: 75px;
+      object-fit: cover;
+      display: block;
+      background: #000;
+    }
+
+    .thumb-label {
+      padding: 6px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #E2E8F0;
+      text-align: center;
+    }
+
+    /* Modal Image Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: zoom-out;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 95vw;
+      max-height: 92vh;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #FFF !important;
+        color: #000 !important;
+      }
+      header, .thumbnails-strip, .btn, .tab-bar, .zoom-hint {
+        display: none !important;
+      }
+      main {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+      .slide-container {
+        display: block !important;
+        page-break-after: always;
+        box-shadow: none !important;
+        border: 1px solid #CCC !important;
+        margin-bottom: 40px;
+        min-height: auto !important;
+      }
+      .screenshot-pane, .details-pane {
+        max-height: none !important;
+        overflow: visible !important;
+        background: #FFF !important;
+        color: #000 !important;
+      }
+      .screenshot-pane img {
+        max-height: 450px !important;
+      }
+      .tab-content {
+        display: block !important;
+        margin-top: 20px;
+      }
+      .slide-title, .callout-title, .brand-text h1 {
+        color: #000 !important;
+      }
+      .instructions-list li, .callout-body, .quote-box {
+        color: #333 !important;
+      }
+      .quote-box {
+        background: #F1F5F9 !important;
+        border-left-color: #333 !important;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .slide-container {
+        grid-template-columns: 1fr;
+      }
+      .screenshot-pane {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        min-height: 380px;
+      }
+      .details-pane {
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">L</div>
+      <div class="brand-text">
+        <h1>LOOM AI <span class="badge">V2.0 ENTERPRISE</span></h1>
+        <p>Modules User Manual & Executive Presentation Deck</p>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <button class="btn" id="prevBtn" title="Previous Slide (Left Arrow)">◀ Prev</button>
+      <div class="slide-counter" id="slideCounter">01 / 10</div>
+      <button class="btn" id="nextBtn" title="Next Slide (Right Arrow)">Next ▶</button>
+      <button class="btn btn-primary" id="printBtn" title="Print or Save as PDF">🖨️ Save PDF</button>
+      <button class="btn" id="fullscreenBtn" title="Full Screen (F)">⛶ Fullscreen</button>
+    </div>
+  </header>
+
+  <!-- Main Slide Workspace -->
+  <main>
+    <div class="slide-container" id="slideContainer">
+      <!-- Left: High-Res Screenshot Window -->
+      <div class="screenshot-pane">
+        <div class="screenshot-header">
+          <div class="window-dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <div class="module-tag" id="moduleTag">EXECUTIVE COMMAND CENTER</div>
+        </div>
+        <div class="img-wrapper" id="imageWrapper" title="Click to zoom screenshot">
+          <img src="screenshots/01_executive_overview.png" alt="Module Screenshot" id="slideImage" />
+          <div class="zoom-hint">🔍 Click to zoom</div>
+        </div>
+      </div>
+
+      <!-- Right: User Manual & Presentation Pitch Details -->
+      <div class="details-pane">
+        <div class="details-header">
+          <div class="slide-meta-row">
+            <div class="role-badge" id="roleBadge">👤 Managing Director & Mill Owner</div>
+            <div style="font-size: 11.5px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;" id="moduleCode">ATM-MOD-01</div>
+          </div>
+          <h2 class="slide-title" id="slideTitle">01. Executive Overview</h2>
+          <p class="slide-subtitle" id="slideSubtitle">Single-screen executive pulse of Ashok Textile Mills (192 Looms across Shed 1 & Shed 2).</p>
+        </div>
+
+        <!-- Details Tab Bar -->
+        <div class="tab-bar">
+          <button class="tab-btn active" data-tab="manual">📘 User Manual</button>
+          <button class="tab-btn" data-tab="pitch">🎙️ Presentation Pitch</button>
+          <button class="tab-btn" data-tab="highlights">🎯 Screen Highlights</button>
+        </div>
+
+        <!-- TAB 1: User Manual -->
+        <div class="tab-content active" id="tab-manual">
+          <div class="section-title">What is the Use & How to Navigate</div>
+          <p style="font-size: 13px; line-height: 1.5; color: #CBD5E1; margin-bottom: 14px;" id="manualOverview">
+            The Executive Overview is the primary command center for plant owners and weaving directors. It consolidates plant telemetry into a single authoritative verdict, 4 core numbers, and an interactive 192-loom floor matrix.
+          </p>
+
+          <div class="section-title">Step-by-Step Operator Instructions</div>
+          <ul class="instructions-list" id="manualSteps">
+            <!-- Dynamically populated -->
+          </ul>
+
+          <div class="callout-box">
+            <div class="callout-title">Key Controls & Click Targets</div>
+            <div class="callout-body" id="manualControls">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: Presentation Pitch -->
+        <div class="tab-content" id="tab-pitch">
+          <div class="section-title">Executive Presentation Script & Hook</div>
+          <div class="quote-box" id="pitchScript">
+            <!-- Dynamically populated -->
+          </div>
+
+          <div class="callout-box pitch">
+            <div class="callout-title">Value Proposition & Business Problem Solved</div>
+            <div class="callout-body" id="pitchValue">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <div class="metric-grid" id="pitchMetrics">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- TAB 3: Screen Highlights -->
+        <div class="tab-content" id="tab-highlights">
+          <div class="section-title">What to Point to on Screen During Demo</div>
+          <div class="callout-box highlight">
+            <div class="callout-title">Visual Anchor Points</div>
+            <div class="callout-body" id="highlightsAnchors">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <div class="section-title">Live Demonstration Actions</div>
+          <ul class="instructions-list" id="highlightsActions">
+            <!-- Dynamically populated -->
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thumbnail Strip -->
+    <div class="thumbnails-strip" id="thumbStrip">
+      <!-- Dynamically populated -->
+    </div>
+  </main>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox" id="lightbox">
+    <img src="" alt="Zoomed Screenshot" id="lightboxImg" />
+  </div>
+
+  <script>
+    // Slide Data Matrix
+    const slides = [
+      {
+        id: 1,
+        code: "ATM-MOD-01",
+        tag: "EXECUTIVE COMMAND CENTER",
+        role: "Managing Director & Mill Owner",
+        title: "01. Executive Overview",
+        subtitle: "Single-screen executive pulse of Ashok Textile Mills (192 Looms across Shed 1 & Shed 2).",
+        screenshot: "screenshots/01_executive_overview.png",
+        manualOverview: "The Executive Overview is the primary command center for plant owners, general managers, and directors. It provides immediate operational truth, replacing 24-hour delayed spreadsheet compilation with real-time telemetry, automated verdicts, and audited action approvals.",
+        manualSteps: [
+          "Check the Ambient Telemetry Bar at the top: Confirm all 192 looms are online, Shift 3 is active, and the Data Quality Index (DQI) is above 98%.",
+          "Review the Owner Operational Verdict Hero Card: Read the single highest-impact operational finding and immediate rupee protection amount.",
+          "Inspect the Four Management Numbers: Verify today's Output Metres (49,749 m / 89.3%), Realized Revenue (₹19.9L), Cumulative Downtime (620.6 hrs), and Recovery Opportunity (₹201K).",
+          "Scan the 192-Loom Micro-Matrix: Shed 1 (left) and Shed 2 (right). Click on any amber or red cell to jump directly into root-cause telemetry."
+        ],
+        manualControls: "• <strong>[Approve Action] Button</strong>: Immediately commits the top recommended maintenance intervention into the Decision Registry.<br>• <strong>[Review P&L] Button</strong>: Jumps directly to Revenue & Loss commercial attribution.<br>• <strong>Interactive Machine Cells</strong>: Clicking any loom cell (e.g. AJ-118) navigates to its 360° diagnostic profile.",
+        pitchScript: "\"Good morning, everyone. By the time your morning report lands on your desk at 9 AM, the money has already left the mill. Across 192 looms, supervisors spend 60 minutes per shift entering numbers into Excel. Loom AI replaces that with live operational truth. Today's verdict: Electrical and power is the largest loss (62.3%). Approving the transformer inspection right now protects ₹201,064 before the shift ends.\"",
+        pitchValue: "Eliminates 24-hour decision lag. Owners make high-conviction decisions in seconds backed by verified factory telemetry rather than speculative verbal explanations.",
+        metrics: [
+          { label: "Target Fleet OEE", val: "89.26%" },
+          { label: "Protected Today", val: "₹2,01,064" },
+          { label: "Active Telemetry", val: "192 Looms" },
+          { label: "Data Quality Index", val: "98.6%" }
+        ],
+        highlightsAnchors: "Point to the Top Telemetry Ambient Bar (shows live status), the bold Owner Operational Verdict in the center, and the 192-loom color grid showing healthy green machines vs. amber/red outliers.",
+        highlightsActions: [
+          "Click `[Approve Action]` on the hero card to show that decisions are auditable.",
+          "Hover over Loom AJ-118 in the Micro-Matrix to show instantaneous downtime tooltips."
+        ]
+      },
+      {
+        id: 2,
+        code: "ATM-MOD-02",
+        tag: "PRODUCTION INTELLIGENCE",
+        role: "Weaving Superintendent & Shift Supervisors",
+        title: "02. Daily Production Workspace",
+        subtitle: "Target tracking, mathematical shortfall decomposition, and shift recovery queue.",
+        screenshot: "screenshots/02_daily_production.png",
+        manualOverview: "The Daily Production workspace is where supervisors manage today's output targets. It introduces the Shortfall Decomposition Engine, which mathematically separates every single unproduced metre into speed loss, downtime, and quality downgrade.",
+        manualSteps: [
+          "Examine Shift Output Position: Compare Actual Metres against Scheduled Target and review the running efficiency percentage.",
+          "Review Today's Situation Verdict: Read the primary operational sentence explaining why output is deviating from plan and identify dominant drivers.",
+          "Check the Shortfall Decomposition Card: Analyze the deficit split: Stoppage Loss vs Speed Loss vs Quality Downgrades vs Unallocated Turnaround.",
+          "Act Now Recovery Queue: Review the top 3 prioritized loom interventions. Click [Assign Fix] to dispatch maintenance technicians immediately."
+        ],
+        manualControls: "• <strong>[Explain] Button</strong>: Opens the contextual AI drawer to explain specific style or shift deficits.<br>• <strong>[Assign Fix]</strong>: Logs a job card with verified potential metre recovery.<br>• <strong>Shift Filter (1, 2, 3)</strong>: Toggles shift-level production views.",
+        pitchScript: "\"When production falls 270 metres below budget, who is at fault? Maintenance blames operators, and operators blame yarn quality. Loom AI ends the debate: exactly 185 metres were lost to stoppage, 55 metres to speed loss, and 20 metres to quality downgrades. Every single metre is accounted for with zero mathematical guessing.\"",
+        pitchValue: "Uncovers 'Invisible Speed Loss'—looms running green but 40 RPM below standard standard due to vibration or tension issues, bleeding hundreds of metres silently.",
+        metrics: [
+          { label: "Fleet Output", val: "49,749 m" },
+          { label: "Metres Shortfall", val: "-270 m" },
+          { label: "Speed Loss Share", val: "20.4%" },
+          { label: "Immediate Gain", val: "+270 m" }
+        ],
+        highlightsAnchors: "Point to the Shortfall Decomposition bar chart showing the 4 color-coded loss buckets, and the Act Now Recovery Queue showing Loom AJ-118, AJ-132, and AJ-146 with exact recovery metres.",
+        highlightsActions: [
+          "Click the `[Explain]` button on the Situation card to reveal the multi-factor reasoning drawer.",
+          "Highlight how Loom AJ-118 is prioritized because let-off drift is 100% recoverable within 30 minutes."
+        ]
+      },
+      {
+        id: 3,
+        code: "ATM-MOD-03",
+        tag: "FLEET BENCHMARKING",
+        role: "Weaving Superintendent & Floor Masters",
+        title: "03. Loom Performance Leaderboard",
+        subtitle: "Fleet-wide machine rankings, running RPM, actual vs target picks, and diagnosis actions.",
+        screenshot: "screenshots/03_loom_performance.png",
+        manualOverview: "The Loom Performance workspace provides a transparent, ranked leaderboard of all 192 looms. It sorts machines by OEE, speed stability, and stop frequency, allowing floor masters to spot lagging machines at a glance.",
+        manualSteps: [
+          "Use the Priority Triage strip at the top: Filter machines by 'Optimal' (🟢), 'Attention' (🟡), and 'Critical' (🔴).",
+          "Sort by Efficiency or RPM: Identify which machines are operating below style rated speeds.",
+          "Review Weaver Assignment: Check which weaver is allocated to underperforming looms to separate machine mechanical issues from operator knotting delay.",
+          "Click [Diagnose] on any machine row to open its deep diagnostic profile."
+        ],
+        manualControls: "• <strong>Column Sorting</strong>: Click on RPM, Picks, or Efficiency headers to rank machines.<br>• <strong>Filter by Sort / Style</strong>: Filter by fabric sort code (e.g. 30s VSF Plain).<br>• <strong>[Diagnose] Action</strong>: Direct jump to the loom's 360° health record.",
+        pitchScript: "\"Notice how easily our supervisors identify speed bottlenecks. Loom AJ-118 is weaving at 580 RPM while its sister loom AJ-162 is weaving at 640 RPM on the identical yarn sort. Over a week, that RPM gap costs ₹30,000. In a traditional mill, that loss is completely invisible on paper.\"",
+        pitchValue: "Promotes accountability and fair performance evaluation across shifts and styles while identifying mechanical slowdowns early.",
+        metrics: [
+          { label: "Average RPM", val: "612 RPM" },
+          { label: "Top Loom OEE", val: "98.6%" },
+          { label: "Bottom Loom", val: "74.1%" },
+          { label: "Attention Looms", val: "45 Looms" }
+        ],
+        highlightsAnchors: "Point to the Priority Triage badges at the top, then scroll to compare the top performer (AJ-162 at 98.6%) with the bottom machine (AJ-118 at 74.1%).",
+        highlightsActions: [
+          "Click the 'Critical' filter pill to isolate the 19 looms requiring immediate supervisor intervention.",
+          "Click `[Diagnose]` on Loom AJ-118 to preview the drilldown view."
+        ]
+      },
+      {
+        id: 4,
+        code: "ATM-MOD-04",
+        tag: "BREAKDOWNS INTELLIGENCE",
+        role: "Chief Maintenance Engineer & Weaving Master",
+        title: "04. Breakdown Insights & Golden Benchmark",
+        subtitle: "Operational Pareto distributions and machine benchmarking against peer champions.",
+        screenshot: "screenshots/04_breakdown_insights.png",
+        manualOverview: "Breakdown Insights answers 'What happened across the factory floor?'. It categorizes all downtime into mechanical, electrical, and pneumatic buckets, comparing struggling looms against the mill's Golden Benchmark champion.",
+        manualSteps: [
+          "Review Operational Pareto Distribution: Identify which stoppage category dominates cumulative downtime.",
+          "Examine Golden Peer Benchmark Card: Compare outlier machine metrics against Loom AJ-162 (running at 98.6% efficiency on the exact same style).",
+          "Analyze Micro-Stops vs Extended Breakdowns: Separate high-frequency short trips (warp/weft breaks) from catastrophic mechanical stoppages.",
+          "Export Shift Breakdown Summary for morning engineering coordination meetings."
+        ],
+        manualControls: "• <strong>Metric Selector</strong>: Toggle between Total Downtime (hrs), Stoppage Count, and Production Loss (m).<br>• <strong>Golden Benchmark Switcher</strong>: Select different peer benchmarks based on fabric sort.<br>• <strong>Sub-Tab Navigation</strong>: Move between Insights, Root Cause, Abnormal Events, and Loss Impact.",
+        pitchScript: "\"Look at the Pareto chart: Electrical & Power interruptions account for 62.3% of lost downtime today. But notice our Golden Benchmark: Loom AJ-162 achieves 98.6% efficiency on this exact yarn batch. That proves the yarn is fine—the problem is localized electrical harmonic trips on Shed 1 sub-panels.\"",
+        pitchValue: "Isolates yarn quality disputes from machine mechanical and electrical problems using statistically matched peer comparisons.",
+        metrics: [
+          { label: "Electrical Share", val: "62.3%" },
+          { label: "Mechanical Share", val: "18.4%" },
+          { label: "Golden Loom", val: "AJ-162 (98.6%)" },
+          { label: "Outlier Gap", val: "-24.5% OEE" }
+        ],
+        highlightsAnchors: "Point to the Pareto bar chart displaying Electrical & Power as the overwhelming leader, and the side-by-side Golden Peer Benchmark card comparing AJ-162 against AJ-118.",
+        highlightsActions: [
+          "Toggle the metric switch from 'Hours' to 'Production Loss (m)' to show real fabric impact.",
+          "Emphasize that the Golden Benchmark is automatically selected based on style compatibility."
+        ]
+      },
+      {
+        id: 5,
+        code: "ATM-MOD-05",
+        tag: "CAUSAL INVESTIGATION",
+        role: "Chief Maintenance Engineer & Technicians",
+        title: "05. Root Cause Analysis (3-Tier Chain)",
+        subtitle: "Millisecond-level sensor chronology, causal inference chain, and failure risk prediction.",
+        screenshot: "screenshots/05_root_cause_analysis.png",
+        manualOverview: "Root Cause Analysis answers 'Why did it happen?'. It combines machine error codes with sensor telemetry and historical baselines to generate an audited 3-tier causal evidence chain.",
+        manualSteps: [
+          "Select Incident from the left-hand stop event list (e.g. EVT-118-092 on Loom AJ-118).",
+          "Inspect the Sensor Chronology: Review millisecond-by-millisecond motor amperage, RPM deceleration, and pneumatic pressure prior to stoppage.",
+          "Read the 3-Tier Causal Evidence Chain: Understand what was [OBSERVED] (sensor data), what is [INFERRED] (mechanical correlation), and what is [PREDICTED] (seizure risk).",
+          "Compare Repair Duration against 30-Day Mean Baseline to verify maintenance technician turnaround speed."
+        ],
+        manualControls: "• <strong>Incident Selector</strong>: Search or filter by Loom ID, date, or severity.<br>• <strong>[Generate Maintenance Work Order]</strong>: Exports findings into ERP maintenance systems.<br>• <strong>Baseline Deviation Bar</strong>: Shows if repair time exceeded standard MTTR.",
+        pitchScript: "\"This is the engineering heart of Loom AI. On Loom AJ-118, we don't just see a 'motor trip'. We observe motor current drawing +28% excess amperage while speed dropped over 4 minutes. We infer belt slip and gearbox bearing thermal expansion. And we predict that without lubrication, catastrophic seizure risk is 92%. We prevent the seizure before it destroys the motor.\"",
+        pitchValue: "Prevents repeat breakdowns and catastrophic machine seizures, reducing average repair turnaround time by 40%.",
+        metrics: [
+          { label: "Motor Current Spike", val: "+28%" },
+          { label: "Failure Risk", val: "92% in 6h" },
+          { label: "Baseline MTTR", val: "42 min" },
+          { label: "Actual Duration", val: "85 min (Outlier)" }
+        ],
+        highlightsAnchors: "Point to the 3-Tier Causal Chain with its distinct blue [OBSERVED], amber [INFERRED], and red [PREDICTED] badges, and the sensor timeline showing amperage spiking before the trip.",
+        highlightsActions: [
+          "Click on event `EVT-118-092` to show how dynamically the evidence chain updates.",
+          "Point out the 30-day baseline duration comparison bar."
+        ]
+      },
+      {
+        id: 6,
+        code: "ATM-MOD-06",
+        tag: "ANOMALIES & SURGES",
+        role: "Operations Head & Floor Supervisors",
+        title: "06. Abnormal Events & Progression",
+        subtitle: "Time-of-day progression timeline, stoppage clustering, and plant-wide anomaly detection.",
+        screenshot: "screenshots/06_abnormal_events.png",
+        manualOverview: "Abnormal Events answers 'What is unusual across time?'. It detects abnormal machine behavior against statistical 30-day tolerances and plots stoppage surges across a horizontal 24-hour clock.",
+        manualSteps: [
+          "Examine Anomaly Time-of-Day Progression: Scan the 9 time buckets (06:00 to 22:00) to pinpoint the exact time an abnormal event cluster began.",
+          "Check Critical & Warning Indicators: Note red alert badges (e.g. 184 anomalies at 14:00) indicating plant-wide infrastructure events.",
+          "Review Material Anomaly Cards: Check detected machine anomalies, baseline comparison bars, and correlated signals.",
+          "Use [Why abnormal?] drawer to review underlying statistical deviation models."
+        ],
+        manualControls: "• <strong>Severity Toggle</strong>: Filter between 'All Severities' and 'Critical Only'.<br>• <strong>[Watch] Button</strong>: Adds loom to the next shift's supervisor watchlist.<br>• <strong>Time Slot Hover Tooltips</strong>: Hovering over any time slot reveals all affected machines.",
+        pitchScript: "\"Notice this sudden surge at 14:00: 184 anomalies detected simultaneously across Shed 2. It wasn't 184 separate mechanical failures—it was a 1.2 bar pressure drop from Main Compressor #2! Loom AI correlated pneumatic pressure with machine trip logs instantly, stopping the weaving master from blaming innocent operators.\"",
+        pitchValue: "Detects plant-wide common-cause failures (compressed air drops, voltage dips, yarn batch defects) in minutes instead of days.",
+        metrics: [
+          { label: "Material Anomalies", val: "186 Detected" },
+          { label: "Critical Severity", val: "54 Events" },
+          { label: "Surge Time Window", val: "14:00 (184 Anom)" },
+          { label: "Rupee Exposure", val: "₹1,24,412" }
+        ],
+        highlightsAnchors: "Point to the clean 9-slot Time-of-Day Progression bar (highlighting our recent layout fix), and the prominent 14:00 red cluster showing the simultaneous stoppage surge.",
+        highlightsActions: [
+          "Hover over the 14:00 slot to display the browser tooltip showing the machine list.",
+          "Click the `Critical Only` button to isolate high-priority machine risks."
+        ]
+      },
+      {
+        id: 7,
+        code: "ATM-MOD-07",
+        tag: "COMMERCIAL RECONCILIATION",
+        role: "General Manager Operations & CFO",
+        title: "07. Production Loss Impact & Waterfall",
+        subtitle: "Production loss reconciliation, non-overlapping loss waterfalls, and 3-tier recovery ledger.",
+        screenshot: "screenshots/07_production_loss_impact.png",
+        manualOverview: "Production Loss Impact answers 'How much did it cost?'. It translates physical downtime minutes and metres into financial loss positions while strictly preventing double-counting.",
+        manualSteps: [
+          "Review Cumulative Loss Position: Check total revenue exposure against daily gross capacity.",
+          "Inspect Production Loss Waterfall: Follow the reconciliation from theoretical potential down to realized output.",
+          "Analyze Category Loss Shares: Compare loss percentages across Electrical, Mechanical, Operational, and Quality.",
+          "Audit 3-Tier Recovery Ledger: Check what is immediately recoverable in this shift, what requires weekend maintenance overhaul, and what is permanent unrecoverable loss."
+        ],
+        manualControls: "• <strong>Date Filter</strong>: Select historical days to view trended financial recovery.<br>• <strong>Category Expansion</strong>: Click category cards to view contributing looms.<br>• <strong>Export Ledger</strong>: Generates Excel-compatible loss attribution sheets.",
+        pitchScript: "\"Traditional reports double-count: if a machine stops and runs slow on the same shift, standard software inflates the loss. Loom AI's waterfall strictly reconciles every rupee to 100% of capacity. Today's total stoppage loss is ₹3,12,000, with ₹2,01,000 immediately recoverable if our maintenance team acts on our top 3 ledger recommendations.\"",
+        pitchValue: "Connects maintenance wrench time directly to CFO financial ledgers with audited accuracy and zero double-counting.",
+        metrics: [
+          { label: "Total Loss Exposure", val: "₹3,12,400" },
+          { label: "Immediate Recovery", val: "₹2,01,064" },
+          { label: "Loss Categories", val: "4 Buckets" },
+          { label: "Reconciliation", val: "100.0% Exact" }
+        ],
+        highlightsAnchors: "Point to the Production Loss Waterfall chart showing how gross capacity reconciles step-by-step down to net revenue without double-counting.",
+        highlightsActions: [
+          "Review the 3-Tier Recovery Ledger: Point out the green 'Immediate Recovery' tier vs. orange 'Scheduled Maintenance' tier.",
+          "Emphasize the verified style-grounded pricing backing every loss rupee."
+        ]
+      },
+      {
+        id: 8,
+        code: "ATM-MOD-08",
+        tag: "P&L DECISION ROOM",
+        role: "Managing Director, Mill Owner & CFO",
+        title: "08. Revenue & Loss Decision Room",
+        subtitle: "One-sentence owner verdict, commercial waterfall, and departmental loss accountability.",
+        screenshot: "screenshots/08_revenue_and_loss.png",
+        manualOverview: "The Revenue & Loss workspace is the executive decision room for Mill Owners and CFOs. It provides total commercial visibility, holding each department head accountable for their specific share of revenue leakage.",
+        manualSteps: [
+          "Read the Executive Decision Verdict: One clear sentence summarizing today's P&L status and the required management action.",
+          "Inspect Commercial Revenue Waterfall: Theoretical Gross Revenue (₹24.8L) down to Realized Net Revenue (₹19.9L).",
+          "Review Departmental Loss Attribution: Hold department heads accountable for Electrical (62.3%), Maintenance (18.4%), Operations (11.2%), and Quality (8.1%).",
+          "Sign off on Component Action Prescriptions: Approve maintenance actions with named owners and verification gates."
+        ],
+        manualControls: "• <strong>[Approve Action]</strong>: Enforces human-in-the-loop sign-off with audit logging.<br>• <strong>Departmental Filter Tabs</strong>: View department-specific corrective actions.<br>• <strong>Verification Sign-off</strong>: Maintenance heads sign off upon physical inspection.",
+        pitchScript: "\"This is the Owner's Decision Room. You don't have to wade through 50 technical logs. You see: Gross Revenue ₹24.8 Lakhs, Realized Net Revenue ₹19.9 Lakhs. Who owns the ₹4.9 Lakh gap? Electrical owns 62%, Maintenance owns 18%, Operations owns 11%. And at the bottom, an exact action prescription with an assigned engineer and verified ROI.\"",
+        pitchValue: "Ends inter-departmental finger pointing during board and morning management meetings by providing mathematically verified financial attribution.",
+        metrics: [
+          { label: "Theoretical Gross", val: "₹24,80,000" },
+          { label: "Realized Revenue", val: "₹19,89,951" },
+          { label: "Contribution Margin", val: "32.0%" },
+          { label: "Electrical Loss", val: "₹1,94,600" }
+        ],
+        highlightsAnchors: "Point to the Owner Decision Room Verdict card at the top, the Commercial Waterfall in the middle, and the Departmental Attribution pie/cards on the right.",
+        highlightsActions: [
+          "Demonstrate the Component Action Prescription table with named owners (Electrical Head, Weaving Master).",
+          "Highlight the audited ROI verification gate."
+        ]
+      },
+      {
+        id: 9,
+        code: "ATM-MOD-09",
+        tag: "HUMAN CAPITAL",
+        role: "Weaving Superintendent & HR Operations",
+        title: "09. Workforce Intelligence",
+        subtitle: "Weaver efficiency rankings, style-normalized grading, and fair workload allocation.",
+        screenshot: "screenshots/09_workforce_intelligence.png",
+        manualOverview: "Workforce Intelligence normalizes operator performance against fabric complexity. It ensures that weavers are fairly evaluated and that experienced weavers are paired with complex styles while apprentices handle stable sorts.",
+        manualSteps: [
+          "Review Promotion Readiness & Grade Alignment: Spot operators whose actual output consistently exceeds their current pay grade.",
+          "Inspect Operator Performance Table: Review running picks, warp/weft repair turnaround times, and style-adjusted efficiency.",
+          "Check Shift Loss Attribution: Objectively verify whether production losses on a loom were caused by machine failure or operator knotting delay.",
+          "Optimize Loom-to-Weaver Allocation: Use automated recommendations to balance workloads across Shed 1 and Shed 2."
+        ],
+        manualControls: "• <strong>Operator Profile Drawer</strong>: Click any weaver name to view 30-day skill matrices and attendance logs.<br>• <strong>Grade Filter</strong>: Filter by Senior Weaver, Weaver II, Apprentice.<br>• <strong>Shift Leaderboard</strong>: Toggle between Shift 1, Shift 2, and Shift 3.",
+        pitchScript: "\"A machine is only as good as the weaver running it. But comparing weavers on total metres is unfair if one is weaving a high-density satin and another is running plain cotton. Loom AI normalizes weaver efficiency for style complexity, identifying top talent objectively and optimizing loom-to-weaver pairing for a 3.5% shed boost.\"",
+        pitchValue: "Boosts operator retention, eliminates supervisory bias in evaluations, and optimizes loom allocation to increase shed productivity.",
+        metrics: [
+          { label: "Total Weavers", val: "48 On Duty" },
+          { label: "Top Weaver OEE", val: "94.2%" },
+          { label: "Grade Alignment", val: "14 Mismatches" },
+          { label: "Fair Allocation Uplift", val: "+3.5% Output" }
+        ],
+        highlightsAnchors: "Point to the Promotion Readiness cards, the Grade Alignment Mismatch alert, and the ranked operator candidate table with picks and turnaround times.",
+        highlightsActions: [
+          "Click on an operator row to demonstrate the Weaver Profile Drawer.",
+          "Explain how shift loss attribution protects weavers from being penalized for mechanical trips."
+        ]
+      },
+      {
+        id: 10,
+        code: "ATM-MOD-10",
+        tag: "AUTONOMOUS OPTIMIZATION",
+        role: "IT Lead, Plant Head & Executives",
+        title: "10. Autonomous AI Agents Hub",
+        subtitle: "Watchtower surveillance, Opportunity Detector, Predictive Maintenance, and Ask Engine.",
+        screenshot: "screenshots/10_ai_agents_hub.png",
+        manualOverview: "The AI Agents Hub manages Loom AI's 5 autonomous agents running continuous deterministic loops. It features real-time surveillance, automated upside opportunity detection, and natural language decision querying.",
+        manualSteps: [
+          "Check Proactive Mill Surveillance Stream: Monitor autonomous alerts for emerging micro-trips and shift handover anomalies.",
+          "Review Opportunity Detector Findings: Evaluate detected upside opportunities (e.g. speed recalibration headroom on Style ST-4100).",
+          "Inspect Predictive Maintenance Health Scores: Review days-to-failure forecasts for bearings, rapier drives, and motors.",
+          "Query the Decision Assistant (Ask Engine): Type plain-language questions like 'Why did Shed 2 drop 4% in Shift 2?' to receive verified, cited answers."
+        ],
+        manualControls: "• <strong>Agent Sensitivity Sliders</strong>: Adjust threshold triggers for Watchtower and Loss Hunter.<br>• <strong>[Execute Opportunity] Button</strong>: Implements suggested inverter speed increases.<br>• <strong>Natural Language Query Bar</strong>: Interactive AI search across all mill telemetry.",
+        pitchScript: "\"This is the autonomous brain of Loom AI. Five specialized agents monitor the plant 24/7. Look at what our Opportunity Detector found today: Style ST-4100 is running at 605 RPM with a weft break rate of only 0.6 per 1,000 picks. By stepping up inverter speed by +25 RPM, you unlock +640 metres and +₹25,600 profit per shift safely without risk of yarn breakage!\"",
+        pitchValue: "Transforms the plant from reactive troubleshooting to continuous, autonomous optimization, finding hidden capacity and profit without capital expenditure.",
+        metrics: [
+          { label: "Autonomous Agents", val: "5 Active" },
+          { label: "Opportunity Gain", val: "+640 m / Shift" },
+          { label: "Revenue Headroom", val: "+₹25,600 / Shift" },
+          { label: "Prediction Horizon", val: "12-24 Hours" }
+        ],
+        highlightsAnchors: "Point to the 5 Agent status cards (Watchtower, Loss Hunter, Predictive Maintenance, Opportunity Detector, Revenue Guardian) and the live Proactive Surveillance Stream.",
+        highlightsActions: [
+          "Highlight the Style ST-4100 Opportunity card with its verified constraints and +₹25,600/shift profit gain.",
+          "Demonstrate the Ask Engine natural language prompt."
+        ]
+      }
+    ];
+
+    let currentSlideIdx = 0;
+
+    // DOM Elements
+    const slideImage = document.getElementById('slideImage');
+    const slideTitle = document.getElementById('slideTitle');
+    const slideSubtitle = document.getElementById('slideSubtitle');
+    const moduleTag = document.getElementById('moduleTag');
+    const moduleCode = document.getElementById('moduleCode');
+    const roleBadge = document.getElementById('roleBadge');
+    const slideCounter = document.getElementById('slideCounter');
+    const manualOverview = document.getElementById('manualOverview');
+    const manualSteps = document.getElementById('manualSteps');
+    const manualControls = document.getElementById('manualControls');
+    const pitchScript = document.getElementById('pitchScript');
+    const pitchValue = document.getElementById('pitchValue');
+    const pitchMetrics = document.getElementById('pitchMetrics');
+    const highlightsAnchors = document.getElementById('highlightsAnchors');
+    const highlightsActions = document.getElementById('highlightsActions');
+    const thumbStrip = document.getElementById('thumbStrip');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const printBtn = document.getElementById('printBtn');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const imageWrapper = document.getElementById('imageWrapper');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+
+    // Populate Thumbnails
+    slides.forEach((slide, idx) => {
+      const thumb = document.createElement('div');
+      thumb.className = `thumb-item ${idx === 0 ? 'active' : ''}`;
+      thumb.dataset.idx = idx;
+      thumb.innerHTML = `
+        <img class="thumb-img" src="${slide.screenshot}" alt="${slide.title}">
+        <div class="thumb-label">${slide.title.split('. ')[1] || slide.title}</div>
+      `;
+      thumb.addEventListener('click', () => renderSlide(idx));
+      thumbStrip.appendChild(thumb);
+    });
+
+    // Render Slide
+    function renderSlide(idx) {
+      if (idx < 0 || idx >= slides.length) return;
+      currentSlideIdx = idx;
+      const s = slides[idx];
+
+      slideImage.src = s.screenshot;
+      slideTitle.textContent = s.title;
+      slideSubtitle.textContent = s.subtitle;
+      moduleTag.textContent = s.tag;
+      moduleCode.textContent = s.code;
+      roleBadge.textContent = "👤 " + s.role;
+      slideCounter.textContent = `${String(s.id).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+
+      // User Manual
+      manualOverview.textContent = s.manualOverview;
+      manualSteps.innerHTML = s.manualSteps.map((step, i) => `
+        <li>
+          <span class="step-num">${i + 1}</span>
+          <span>${step}</span>
+        </li>
+      `).join('');
+      manualControls.innerHTML = s.manualControls;
+
+      // Pitch
+      pitchScript.textContent = s.pitchScript;
+      pitchValue.textContent = s.pitchValue;
+      pitchMetrics.innerHTML = s.metrics.map(m => `
+        <div class="metric-card">
+          <div class="metric-card-label">${m.label}</div>
+          <div class="metric-card-val">${m.val}</div>
+        </div>
+      `).join('');
+
+      // Highlights
+      highlightsAnchors.innerHTML = s.highlightsAnchors;
+      highlightsActions.innerHTML = s.highlightsActions.map(action => `
+        <li>
+          <span class="step-num">▶</span>
+          <span>${action}</span>
+        </li>
+      `).join('');
+
+      // Update thumbnail active states
+      document.querySelectorAll('.thumb-item').forEach((item, i) => {
+        item.classList.toggle('active', i === idx);
+      });
+
+      // Scroll active thumbnail into view
+      const activeThumb = document.querySelectorAll('.thumb-item')[idx];
+      if (activeThumb) {
+        activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+
+    // Tabs Switcher
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        const targetId = `tab-${btn.dataset.tab}`;
+        const targetContent = document.getElementById(targetId);
+        if (targetContent) targetContent.classList.add('active');
+      });
+    });
+
+    // Navigation Controls
+    prevBtn.addEventListener('click', () => {
+      if (currentSlideIdx > 0) renderSlide(currentSlideIdx - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentSlideIdx < slides.length - 1) renderSlide(currentSlideIdx + 1);
+    });
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') {
+        if (currentSlideIdx < slides.length - 1) renderSlide(currentSlideIdx + 1);
+      } else if (e.key === 'ArrowLeft') {
+        if (currentSlideIdx > 0) renderSlide(currentSlideIdx - 1);
+      } else if (e.key.toLowerCase() === 'f') {
+        toggleFullscreen();
+      } else if (e.key === 'Escape') {
+        lightbox.classList.remove('open');
+      }
+    });
+
+    // Print / PDF Button
+    printBtn.addEventListener('click', () => {
+      window.print();
+    });
+
+    // Fullscreen Toggle
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => alert(`Error: ${err.message}`));
+      } else {
+        document.exitFullscreen();
+      }
+    }
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+    // Lightbox Zoom
+    imageWrapper.addEventListener('click', () => {
+      lightboxImg.src = slides[currentSlideIdx].screenshot;
+      lightbox.classList.add('open');
+    });
+
+    lightbox.addEventListener('click', () => {
+      lightbox.classList.remove('open');
+    });
+
+    // Initial render
+    renderSlide(0);
+  </script>
+</body>
+</html>
