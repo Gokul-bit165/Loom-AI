@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import { TOKENS } from './tokens';
 import { ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react';
 
 export interface ColumnDef<T> {
@@ -79,11 +78,11 @@ export function IndustrialTable<T>({
   return (
     <div
       style={{
-        background: TOKENS.colors.surface.card,
-        border: `1px solid ${TOKENS.colors.surface.border}`,
-        borderRadius: TOKENS.radius.md,
+        background: '#ffffff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '8px',
         overflow: 'hidden',
-        boxShadow: TOKENS.shadows.card,
+        boxShadow: '0 1px 2px 0 rgba(15, 23, 42, 0.04)',
       }}
     >
       <div style={{ overflowX: 'auto' }}>
@@ -91,15 +90,15 @@ export function IndustrialTable<T>({
           style={{
             width: '100%',
             borderCollapse: 'collapse',
-            fontSize: TOKENS.typography.sizes.bodySmall,
+            fontSize: '13px',
             textAlign: 'left',
           }}
         >
           <thead>
             <tr
               style={{
-                background: TOKENS.colors.surface.cardAlt,
-                borderBottom: `1px solid ${TOKENS.colors.surface.border}`,
+                background: '#f8fafc',
+                borderBottom: '1px solid #e2e8f0',
                 position: stickyHeader ? 'sticky' : 'static',
                 top: 0,
                 zIndex: 2,
@@ -112,12 +111,12 @@ export function IndustrialTable<T>({
                     key={col.key}
                     onClick={() => handleSort(col)}
                     style={{
-                      padding: '8px 12px',
-                      fontSize: '11px',
-                      fontWeight: 700,
+                      padding: '10px 14px',
+                      fontSize: '11.5px',
+                      fontWeight: 600,
                       textTransform: 'uppercase',
                       letterSpacing: '0.04em',
-                      color: isSorted ? TOKENS.colors.brand[600] : TOKENS.colors.text.muted,
+                      color: isSorted ? '#2563eb' : '#64748b',
                       textAlign: col.align || 'left',
                       width: col.width,
                       cursor: col.sortable ? 'pointer' : 'default',
@@ -164,10 +163,10 @@ export function IndustrialTable<T>({
                 <td
                   colSpan={columns.length}
                   style={{
-                    padding: '24px',
+                    padding: '32px',
                     textAlign: 'center',
-                    color: TOKENS.colors.text.muted,
-                    fontSize: TOKENS.typography.sizes.bodySmall,
+                    color: '#64748b',
+                    fontSize: '13px',
                   }}
                 >
                   {emptyMessage}
@@ -179,12 +178,12 @@ export function IndustrialTable<T>({
                   key={keyExtractor(row, idx)}
                   onClick={() => onRowClick && onRowClick(row)}
                   style={{
-                    borderBottom: `1px solid ${TOKENS.colors.surface.border}`,
+                    borderBottom: '1px solid #f1f5f9',
                     cursor: onRowClick ? 'pointer' : 'default',
-                    transition: 'background-color 0.1s ease',
+                    transition: 'background-color 0.12s ease',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = TOKENS.colors.surface.hover;
+                    e.currentTarget.style.backgroundColor = '#f8fafc';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = 'transparent';
@@ -194,11 +193,11 @@ export function IndustrialTable<T>({
                     <td
                       key={col.key}
                       style={{
-                        padding: '7px 12px',
+                        padding: '10px 14px',
                         textAlign: col.align || 'left',
-                        color: TOKENS.colors.text.primary,
+                        color: '#0f172a',
                         verticalAlign: 'middle',
-                        fontFamily: col.align === 'right' ? TOKENS.typography.fontMono : 'inherit',
+                        fontVariantNumeric: 'tabular-nums',
                       }}
                     >
                       {col.render ? col.render(row, idx) : (row as any)[col.key]}
@@ -217,11 +216,11 @@ export function IndustrialTable<T>({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            padding: '8px 14px',
-            background: TOKENS.colors.surface.cardAlt,
-            borderTop: `1px solid ${TOKENS.colors.surface.border}`,
-            fontSize: TOKENS.typography.sizes.metadata,
-            color: TOKENS.colors.text.muted,
+            padding: '10px 16px',
+            background: '#f8fafc',
+            borderTop: '1px solid #e2e8f0',
+            fontSize: '12px',
+            color: '#64748b',
           }}
         >
           <span>
@@ -230,14 +229,15 @@ export function IndustrialTable<T>({
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             style={{
-              background: '#FFFFFF',
-              border: `1px solid ${TOKENS.colors.surface.border}`,
-              borderRadius: TOKENS.radius.sm,
-              padding: '3px 8px',
-              fontSize: TOKENS.typography.sizes.metadata,
-              color: TOKENS.colors.brand[600],
-              fontWeight: 600,
+              background: '#ffffff',
+              border: '1px solid #cbd5e1',
+              borderRadius: '4px',
+              padding: '4px 10px',
+              fontSize: '12px',
+              color: '#2563eb',
+              fontWeight: 500,
               cursor: 'pointer',
+              transition: 'background-color 0.12s ease',
             }}
           >
             {isExpanded ? `Show Top ${initialLimit}` : `View All (${sortedData.length})`}

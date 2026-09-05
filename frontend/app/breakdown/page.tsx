@@ -59,30 +59,43 @@ export default function BreakdownPage() {
 
       {/* Provenance + period toggle */}
       <div style={{ padding: '8px 16px', background: 'var(--ink-100)', borderBottom: '1px solid var(--atm-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-        <DataStamp asOf={generatedAt} isDemo={isDemo} source="CSV import" />
-        <div style={{ display: 'flex', gap: 6 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <DataStamp asOf={generatedAt} isDemo={isDemo} source="CSV import" />
+          <span style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', fontWeight: 600 }}>
+            Breakdowns & Stoppage Pareto · ATM
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           {(['today', 'month'] as const).map(p => (
-            <button key={p} className={`btn ${period === p ? 'btn-primary' : 'btn-outline'}`} style={{ minHeight: 32, padding: '0 12px', fontSize: '0.8125rem' }} onClick={() => setPeriod(p)}>
+            <button key={p} className={`btn ${period === p ? 'btn-primary' : 'btn-outline'}`} style={{ minHeight: 28, padding: '0 12px', fontSize: '0.75rem' }} onClick={() => setPeriod(p)}>
               {p === 'today' ? 'Today' : 'This Month'}
             </button>
           ))}
+          <button className="btn btn-ghost" style={{ fontSize: '0.75rem', minHeight: 28, padding: '0 8px' }} onClick={load} title="Refresh data">↻</button>
         </div>
       </div>
 
-      {/* Summary stats */}
+      {/* Hero Header & Connected Metric Strip */}
       {data?.has_data && (
-        <div style={{ display: 'flex', borderBottom: '1px solid var(--atm-border)', overflowX: 'auto' }}>
-          {[
-            { label: 'Total events', value: inr(data.total_events) },
-            { label: 'Total downtime', value: fmtMinutes(data.total_downtime_minutes) },
-            { label: 'Avg event', value: fmtMinutes(Math.round(data.average_event_duration ?? 0)) },
-            { label: 'Worst loom', value: data.highest_downtime_machine?.machine_id ?? '—' },
-          ].map((item, i) => (
-            <div key={i} style={{ flex: '1 1 100px', padding: '10px 14px', borderRight: i < 3 ? '1px solid var(--atm-border)' : 'none' }}>
-              <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 3 }}>{item.label}</div>
-              <div className="num" style={{ fontSize: '1.25rem', fontWeight: 700, color: i === 3 ? 'var(--critical)' : 'var(--ink-900)' }}>{item.value}</div>
-            </div>
-          ))}
+        <div style={{ padding: '20px 16px 14px', borderBottom: '1px solid var(--atm-border)' }}>
+          <div style={{ fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.07em', color: 'var(--ink-500)', marginBottom: 8, textTransform: 'uppercase' }}>
+            Breakdown Telemetry · {period === 'today' ? 'Today' : 'This Month'} · All Stoppages · ATM
+          </div>
+
+          <div style={{ display: 'flex', gap: 0, border: '1px solid var(--atm-border)', borderRadius: 4, overflow: 'hidden', background: '#fff' }}>
+            {[
+              { label: 'Total Events', value: inr(data.total_events), note: 'logged machine stops' },
+              { label: 'Total Downtime', value: fmtMinutes(data.total_downtime_minutes), note: `${(data.total_downtime_minutes / 60).toFixed(1)} machine-hours` },
+              { label: 'Avg Event Duration', value: fmtMinutes(Math.round(data.average_event_duration ?? 0)), note: 'mean response time' },
+              { label: 'Highest Downtime Loom', value: data.highest_downtime_machine?.machine_id ?? '—', note: `${fmtMinutes(data.highest_downtime_machine?.downtime_minutes ?? 0)} downtime`, isWarn: true },
+            ].map((item, i) => (
+              <div key={i} style={{ flex: 1, padding: '12px 14px', borderRight: i < 3 ? '1px solid var(--atm-border)' : 'none', background: item.isWarn ? 'var(--critical-bg)' : '#fff' }}>
+                <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>{item.label}</div>
+                <div className="num" style={{ fontSize: '1.25rem', fontWeight: 700, color: item.isWarn ? 'var(--critical)' : 'var(--ink-900)' }}>{item.value}</div>
+                {item.note && <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', marginTop: 2 }}>{item.note}</div>}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -199,6 +212,11 @@ export default function BreakdownPage() {
           </div>
         </div>
       )}
+
+      {/* Data footer note matching Revenue page */}
+      <div style={{ padding: '10px 16px', fontSize: '0.6875rem', color: 'var(--ink-500)', background: 'var(--ink-100)', borderTop: '1px solid var(--atm-border)' }}>
+        ⓘ Breakdown telemetry derived from breakdown_events log. Cumulative 80% line marks Pareto stoppage thresholds.
+      </div>
     </div>
   );
 }

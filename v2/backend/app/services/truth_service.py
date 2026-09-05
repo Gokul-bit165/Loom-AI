@@ -32,7 +32,9 @@ from app.db_models import (
     StopEvent,
     Style,
     Unit,
+    Shed,
 )
+from app.domain.classification import classify_stop_event, EventClass
 
 
 class ProductionService:
@@ -788,6 +790,23 @@ class ProductionService:
 
 
 class BreakdownService:
+    EXPECTED_DURATIONS_MIN: Dict[str, float] = {
+        "WARP_BREAK": 3.0,
+        "WEFT_BREAK": 1.5,
+        "WEFT_FEEDER_FAULT": 15.0,
+        "AIR_PRESSURE_LOW": 15.0,
+        "POWER_FAILURE": 30.0,
+        "VOLTAGE_FLUCTUATION": 10.0,
+        "SORT_BEAM_CHANGE": 120.0,
+        "KNOTTING": 60.0,
+        "GAITING": 180.0,
+        "PREVENTIVE_MAINTENANCE": 120.0,
+        "MECHANICAL_BREAKDOWN": 45.0,
+        "ELECTRICAL_BREAKDOWN": 45.0,
+        "NO_WEAVER": 30.0,
+        "ROLL_DOFFING": 10.0,
+    }
+
     @staticmethod
     def get_breakdown_summary(
         session: Session, unit_code: str, work_date: datetime.date
@@ -796,7 +815,71 @@ class BreakdownService:
         if not unit:
             return {"data_available": False, "reason": f"Unit {unit_code} not found."}
 
-        # 1. Fetch all StopEvents for today
+        # 1. Fetch active style and loom run metadata for today from ProductionLog
+        prod_runs = session.execute(
+            select(
+                ProductionLog.loom_id,
+                ProductionLog.shift_id,
+                ProductionLog.running_minutes,
+                ProductionLog.scheduled_minutes,
+                ProductionLog.metres,
+                ProductionLog.actual_picks,
+                Loom.loom_no,
+                Loom.loom_type_code,
+                Loom.shed_id,
+                Shed.code.label("shed_code"),
+                Style.style_code,
+                Style.picks_per_metre,
+                Style.std_rpm,
+                Style.std_efficiency_pct,
+                Style.revenue_per_metre,
+                Style.revenue_rate_source,
+            )
+            .join(Loom, Loom.loom_id == ProductionLog.loom_id)
+            .outerjoin(Shed, Shed.shed_id == Loom.shed_id)
+            .join(Style, Style.style_id == ProductionLog.style_id)
+            .where(
+                Loom.unit_id == unit.unit_id,
+                ProductionLog.work_date == work_date,
+            )
+        ).all()
+
+        loom_style_map: Dict[int, Dict[str, Any]] = {}
+        loom_prod_stats: Dict[int, Dict[str, Any]] = {}
+
+        for p in prod_runs:
+            lid = p.loom_id
+            rpm = float(p.std_rpm or 600.0)
+            ppm = float(p.picks_per_metre or 2000.0)
+            rev_rate = float(p.revenue_per_metre) if p.revenue_per_metre is not None else None
+            rate_src = str(p.revenue_rate_source.value if hasattr(p.revenue_rate_source, "value") else p.revenue_rate_source or "ESTIMATED")
+
+            loom_style_map[lid] = {
+                "rpm": rpm,
+                "ppm": ppm,
+                "rev_rate": rev_rate,
+                "rate_source": rate_src,
+                "style_code": p.style_code,
+                "loom_no": p.loom_no,
+                "loom_type_code": p.loom_type_code,
+                "shed_code": p.shed_code or "Shed 1",
+            }
+
+            if lid not in loom_prod_stats:
+                loom_prod_stats[lid] = {
+                    "total_metres": Decimal("0.0"),
+                    "running_min": 0,
+                    "scheduled_min": 0,
+                    "loom_no": p.loom_no,
+                    "loom_type_code": p.loom_type_code,
+                    "shed_code": p.shed_code or "Shed 1",
+                    "style_code": p.style_code,
+                }
+            loom_prod_stats[lid]["total_metres"] += Decimal(str(p.metres or 0.0))
+            loom_prod_stats[lid]["running_min"] += int(p.running_minutes or 0)
+            loom_prod_stats[lid]["scheduled_min"] += int(p.scheduled_minutes or 480)
+
+        # 2. Fetch all StopEvents for today
         day_events = (
             session.execute(
                 select(
@@ -805,6 +888,8 @@ class BreakdownService:
                     StopEvent.raised_at,
                     StopEvent.resolved_at,
                     StopEvent.shift_id,
+                    StopEvent.raw_remark,
+                    StopEvent.resolved_by,
                     Loom.loom_no,
                     Loom.loom_type_code,
                     ReasonCode.code.label("reason_code"),
@@ -817,10 +902,12 @@ class BreakdownService:
                     Loom.unit_id == unit.unit_id,
                     StopEvent.work_date == work_date,
                 )
+                .order_by(StopEvent.raised_at.asc())
             )
             .all()
         )
 
+        # 3. Month events for chronic frequency ranking
         month_start = work_date.replace(day=1)
         month_events = (
             session.execute(
@@ -845,10 +932,29 @@ class BreakdownService:
             .all()
         )
 
-        # Cross-DB reliable Python duration math
         total_stopped_min = Decimal("0.0")
+        total_lost_meters = 0.0
+        total_rupee_exposure = 0.0
+        confirmed_rate_count = 0
+
+        micro_stops_count = 0
+        micro_stops_min = Decimal("0.0")
+        breakdown_count = 0
+        breakdown_min = Decimal("0.0")
+
         loom_today_map: Dict[int, Dict[str, Any]] = {}
         reason_pareto_map: Dict[str, Dict[str, Any]] = {}
+        shift_breakdown_map: Dict[int, Dict[str, Any]] = {
+            1: {"shift_code": "Shift 1", "stopped_minutes": 0, "event_count": 0, "lost_meters": 0.0, "rupee_exposure": 0.0, "reasons": {}},
+            2: {"shift_code": "Shift 2", "stopped_minutes": 0, "event_count": 0, "lost_meters": 0.0, "rupee_exposure": 0.0, "reasons": {}},
+            3: {"shift_code": "Shift 3", "stopped_minutes": 0, "event_count": 0, "lost_meters": 0.0, "rupee_exposure": 0.0, "reasons": {}},
+        }
+
+        classification_summary_map: Dict[str, Dict[str, Any]] = {
+            cls.value: {"label": cls.value.replace("_", " ").title(), "count": 0, "minutes": 0.0, "lost_meters": 0.0, "rupee_exposure": 0.0}
+            for cls in EventClass
+        }
+
         category_downtime_map: Dict[str, Decimal] = {
             "MECHANICAL": Decimal("0.0"),
             "ELECTRICAL": Decimal("0.0"),
@@ -859,20 +965,83 @@ class BreakdownService:
             "OTHER": Decimal("0.0"),
         }
 
+        # Track event timing for abnormal cluster detection
+        loom_event_times: Dict[int, List[datetime.datetime]] = {}
+        utility_events_count = 0
+
         for ev in day_events:
             dur = Decimal("0.0")
+            dur_float = 0.0
             if ev.resolved_at and ev.raised_at:
-                dur = Decimal(str(max(0.0, (ev.resolved_at - ev.raised_at).total_seconds() / 60.0)))
+                dur_float = max(0.0, (ev.resolved_at - ev.raised_at).total_seconds() / 60.0)
+                dur = Decimal(str(dur_float))
             total_stopped_min += dur
 
-            cat = str(ev.reason_category.value if hasattr(ev.reason_category, "value") else ev.reason_category or "OTHER")
-            if cat in category_downtime_map:
-                category_downtime_map[cat] += dur
+            # Classify event using multi-dimensional rules
+            r_code = ev.reason_code or "UNCLASSIFIED"
+            r_cat = str(ev.reason_category.value if hasattr(ev.reason_category, "value") else ev.reason_category or "OTHER")
+            ev_class = classify_stop_event(
+                reason_code=r_code,
+                category=r_cat,
+                duration_min=dur_float,
+                technician=ev.resolved_by,
+                raw_remark=ev.raw_remark,
+            )
+
+            # Micro-stop vs Breakdown separation
+            if ev_class == EventClass.MICRO_STOP:
+                micro_stops_count += 1
+                micro_stops_min += dur
+            else:
+                breakdown_count += 1
+                breakdown_min += dur
+
+            if r_cat in category_downtime_map:
+                category_downtime_map[r_cat] += dur
             else:
                 category_downtime_map["OTHER"] += dur
 
-            # Loom breakdown map
+            # Style-grounded physical lost meters and rupee exposure
             lid = ev.loom_id
+            style_info = loom_style_map.get(lid, {
+                "rpm": 600.0,
+                "ppm": 2000.0,
+                "rev_rate": None,
+                "rate_source": "ESTIMATED",
+                "style_code": "Standard",
+                "loom_no": ev.loom_no,
+                "loom_type_code": ev.loom_type_code,
+                "shed_code": "Shed 1",
+            })
+
+            # Lost meters = (duration_min * RPM) / PPM
+            event_lost_m = (dur_float * style_info["rpm"]) / style_info["ppm"]
+            event_rupee = 0.0
+            if style_info["rev_rate"] is not None and style_info["rev_rate"] > 0:
+                event_rupee = event_lost_m * style_info["rev_rate"]
+                confirmed_rate_count += 1
+
+            total_lost_meters += event_lost_m
+            total_rupee_exposure += event_rupee
+
+            # Classification summary accumulation
+            cls_key = ev_class.value
+            if cls_key in classification_summary_map:
+                classification_summary_map[cls_key]["count"] += 1
+                classification_summary_map[cls_key]["minutes"] += dur_float
+                classification_summary_map[cls_key]["lost_meters"] += event_lost_m
+                classification_summary_map[cls_key]["rupee_exposure"] += event_rupee
+
+            # Shift accumulation
+            s_id = ev.shift_id if ev.shift_id in shift_breakdown_map else 1
+            shift_breakdown_map[s_id]["stopped_minutes"] += int(round(dur_float))
+            shift_breakdown_map[s_id]["event_count"] += 1
+            shift_breakdown_map[s_id]["lost_meters"] += event_lost_m
+            shift_breakdown_map[s_id]["rupee_exposure"] += event_rupee
+            r_lbl = ev.reason_label or "Unclassified Stoppage"
+            shift_breakdown_map[s_id]["reasons"][r_lbl] = shift_breakdown_map[s_id]["reasons"].get(r_lbl, 0) + 1
+
+            # Loom accumulation
             if lid not in loom_today_map:
                 loom_today_map[lid] = {
                     "loom_id": lid,
@@ -880,29 +1049,44 @@ class BreakdownService:
                     "loom_type_code": ev.loom_type_code,
                     "total_stopped_minutes": Decimal("0.0"),
                     "event_count": 0,
+                    "lost_meters": 0.0,
+                    "rupee_exposure": 0.0,
+                    "style_code": style_info["style_code"],
                     "reasons": {},
                 }
             loom_today_map[lid]["total_stopped_minutes"] += dur
             loom_today_map[lid]["event_count"] += 1
-            r_lbl = ev.reason_label or "Unclassified Stoppage"
+            loom_today_map[lid]["lost_meters"] += event_lost_m
+            loom_today_map[lid]["rupee_exposure"] += event_rupee
             loom_today_map[lid]["reasons"][r_lbl] = loom_today_map[lid]["reasons"].get(r_lbl, 0) + 1
 
-            # Reason pareto
-            r_code = ev.reason_code or "UNCLASSIFIED"
+            # Abnormal tracking
+            if ev.raised_at:
+                loom_event_times.setdefault(lid, []).append(ev.raised_at)
+            if "pressure" in r_code.lower() or "voltage" in r_code.lower() or ev_class == EventClass.UTILITY_STOP:
+                utility_events_count += 1
+
+            # Reason pareto accumulation
             if r_code not in reason_pareto_map:
                 reason_pareto_map[r_code] = {
                     "reason_code": r_code,
                     "reason_label_en": r_lbl,
+                    "category": r_cat,
                     "count": 0,
                     "total_minutes": Decimal("0.0"),
                 }
             reason_pareto_map[r_code]["count"] += 1
             reason_pareto_map[r_code]["total_minutes"] += dur
 
-        # Rank worst looms today (by duration)
+        # Worst looms today (sorted by financial exposure, then duration)
         worst_looms_today = []
-        for l in sorted(loom_today_map.values(), key=lambda x: x["total_stopped_minutes"], reverse=True):
+        for l in sorted(loom_today_map.values(), key=lambda x: (x["rupee_exposure"], x["total_stopped_minutes"]), reverse=True):
             dominant_r = max(l["reasons"].items(), key=lambda x: x[1])[0] if l["reasons"] else "General Stoppage"
+            prod_stat = loom_prod_stats.get(l["loom_id"])
+            eff_pct = None
+            if prod_stat and prod_stat["scheduled_min"] > 0:
+                eff_pct = round((prod_stat["running_min"] / prod_stat["scheduled_min"]) * 100.0, 1)
+
             worst_looms_today.append({
                 "loom_id": l["loom_id"],
                 "loom_no": l["loom_no"],
@@ -911,9 +1095,57 @@ class BreakdownService:
                 "event_count": l["event_count"],
                 "dominant_reason_en": dominant_r,
                 "dominant_reason_category": "ELECTRICAL" if "voltage" in dominant_r.lower() or "drive" in dominant_r.lower() else "MECHANICAL",
+                "lost_meters": float(round(l["lost_meters"], 1)),
+                "rupee_exposure": float(round(l["rupee_exposure"], 0)),
+                "efficiency_pct": eff_pct,
+                "style_code": l["style_code"],
             })
 
-        # Rank worst looms month (by frequency)
+        # Q5 Highest Downtime Loom
+        highest_dt_loom = worst_looms_today[0] if worst_looms_today else None
+
+        # Q5 Best Peer Benchmark (active running loom with lowest stoppage)
+        best_peer_benchmark = None
+        candidate_peers = []
+        for lid, pstat in loom_prod_stats.items():
+            if pstat["total_metres"] > 50:  # Confirmed actively weaving
+                dt_record = loom_today_map.get(lid, {"total_stopped_minutes": Decimal("0.0"), "event_count": 0})
+                stopped_min = int(round(dt_record["total_stopped_minutes"]))
+                eff = round((pstat["running_min"] / max(1, pstat["scheduled_min"])) * 100.0, 1)
+                candidate_peers.append({
+                    "loom_id": lid,
+                    "loom_no": pstat["loom_no"],
+                    "loom_type_code": pstat["loom_type_code"],
+                    "shed_code": pstat["shed_code"],
+                    "style_code": pstat["style_code"],
+                    "total_stopped_minutes": stopped_min,
+                    "event_count": dt_record["event_count"],
+                    "efficiency_pct": eff,
+                    "metres_produced": float(round(pstat["total_metres"], 1)),
+                })
+
+        if candidate_peers:
+            candidate_peers.sort(key=lambda x: (x["total_stopped_minutes"], -x["efficiency_pct"]))
+            best = candidate_peers[0]
+            comp_notes = (
+                f"Loom {best['loom_no']} achieved {best['efficiency_pct']}% efficiency with only "
+                f"{best['total_stopped_minutes']}m downtime on style {best['style_code']} in {best['shed_code']}. "
+                f"Proves that the yarn lot and air pressure are sound for this machine class."
+            )
+            best_peer_benchmark = {
+                "loom_id": best["loom_id"],
+                "loom_no": best["loom_no"],
+                "loom_type_code": best["loom_type_code"],
+                "total_stopped_minutes": best["total_stopped_minutes"],
+                "event_count": best["event_count"],
+                "efficiency_pct": best["efficiency_pct"],
+                "metres_produced": best["metres_produced"],
+                "style_code": best["style_code"],
+                "shed_code": best["shed_code"],
+                "comparison_notes": comp_notes,
+            }
+
+        # Monthly top looms (chronic repeat frequency)
         loom_month_map: Dict[int, Dict[str, Any]] = {}
         for ev in month_events:
             dur = Decimal("0.0")
@@ -939,30 +1171,92 @@ class BreakdownService:
                 "loom_type_code": l["loom_type_code"],
                 "total_stopped_minutes": int(round(l["total_stopped_minutes"])),
                 "event_count": l["event_count"],
-                "dominant_reason_en": "Chronic Stop Pattern",
+                "dominant_reason_en": "Chronic Repeat Stoppages",
                 "dominant_reason_category": "MECHANICAL",
             })
 
-        # Pareto list
+        chronic_monthly_offender = monthly_top_looms[0] if monthly_top_looms else None
+
+        # Q6 Reason Pareto with duration variance
         total_ev_count = len(day_events) or 1
         pareto_list = []
-        for r_code, pr in sorted(reason_pareto_map.items(), key=lambda x: x[1]["count"], reverse=True):
+        for r_code, pr in sorted(reason_pareto_map.items(), key=lambda x: x[1]["total_minutes"], reverse=True):
+            avg_d = float(round(pr["total_minutes"] / Decimal(pr["count"]), 1)) if pr["count"] > 0 else 0.0
+            expected_d = BreakdownService.EXPECTED_DURATIONS_MIN.get(r_code, 15.0)
+            var_d = float(round(avg_d - expected_d, 1))
+
             pareto_list.append({
                 "reason_code": r_code,
                 "reason_label_en": pr["reason_label_en"],
+                "category": pr.get("category", "OTHER"),
                 "count": pr["count"],
                 "total_minutes": float(round(pr["total_minutes"], 1)),
                 "pct_of_loom_downtime": float(round(Decimal(pr["count"] * 100) / Decimal(total_ev_count), 1)),
+                "avg_duration_min": avg_d,
+                "expected_duration_min": expected_d,
+                "variance_min": var_d,
                 "vs_plant_pct": 0.0,
+            })
+
+        # Q6 Abnormal Pattern Detection
+        abnormal_patterns = []
+        for lid, t_list in loom_event_times.items():
+            if len(t_list) >= 3:
+                t_list.sort()
+                for i in range(len(t_list) - 2):
+                    gap_min = (t_list[i + 2] - t_list[i]).total_seconds() / 60.0
+                    if gap_min <= 60.0:
+                        l_info = loom_today_map.get(lid, {})
+                        abnormal_patterns.append({
+                            "pattern_id": f"cluster-{lid}",
+                            "title": f"Chronic Repeat Stops on {l_info.get('loom_no', f'Loom {lid}')}",
+                            "severity": "CRITICAL",
+                            "scope": f"Loom {l_info.get('loom_no', lid)}",
+                            "detail": f"Experienced 3+ stops within a 60-minute window ({int(gap_min)}m span).",
+                            "evidence": f"Total {l_info.get('event_count', 0)} stops logged today ({int(l_info.get('total_stopped_minutes', 0))}m lost).",
+                            "recommendation": "Inspect mechanical feeder/gripper calibration; check yarn unwinding tension.",
+                        })
+                        break
+
+        if utility_events_count >= 2:
+            abnormal_patterns.append({
+                "pattern_id": "utility-fluctuation",
+                "title": "Pneumatic / Grid Voltage Instability Wave",
+                "severity": "WARNING",
+                "scope": "Central Utilities / Sub-Header",
+                "detail": f"{utility_events_count} utility-related stop events recorded across the fleet.",
+                "evidence": "Correlates with compressor duty cycle or EB line voltage fluctuations.",
+                "recommendation": "Inspect Shed 2 receiver tank pressure and check main breaker incoming voltage.",
+            })
+
+        # Q7 Shift Matrix list
+        shift_matrix = []
+        for s_id in sorted(shift_breakdown_map.keys()):
+            sm = shift_breakdown_map[s_id]
+            dom_r = max(sm["reasons"].items(), key=lambda x: x[1])[0] if sm["reasons"] else "Routine Cycle"
+            shift_matrix.append({
+                "shift_code": sm["shift_code"],
+                "stopped_minutes": sm["stopped_minutes"],
+                "event_count": sm["event_count"],
+                "lost_meters": float(round(sm["lost_meters"], 1)),
+                "rupee_exposure": float(round(sm["rupee_exposure"], 0)),
+                "dominant_reason": dom_r,
             })
 
         total_ev = len(day_events)
         avg_downtime_min = float(round(total_stopped_min / Decimal(total_ev), 1)) if total_ev > 0 else 0.0
 
-        # Estimated revenue loss from downtime
-        # Standard: 650 RPM, 1968.5 PPM, Rs.40.00/m standard rate
-        lost_m = (total_stopped_min * Decimal("650.0")) / Decimal("1968.5")
-        rupee_loss = round(lost_m * Decimal("40.00"), 0)
+        rate_src = "CONFIRMED" if confirmed_rate_count > 0 else "RATE_MISSING"
+        rate_basis = "Calculated from active Style masters" if confirmed_rate_count > 0 else "Commercial rate unassigned in Style master"
+
+        # Potential recovery: 60% of top 3 outlier losses
+        top3_loss = sum(w["rupee_exposure"] for w in worst_looms_today[:3])
+        top3_meters = sum(w["lost_meters"] for w in worst_looms_today[:3])
+        pot_recovery = {
+            "potential_meters": float(round(top3_meters * 0.6, 1)),
+            "potential_rupees": float(round(top3_loss * 0.6, 0)),
+            "top_opportunity": worst_looms_today[0]["loom_no"] if worst_looms_today else "None",
+        }
 
         return {
             "data_available": True,
@@ -972,21 +1266,39 @@ class BreakdownService:
             "today_events_count_total": total_ev,
             "avg_downtime_per_event_min": avg_downtime_min,
             "today_rupee_loss_total": {
-                "value": float(rupee_loss),
-                "rate_source": "ESTIMATED",
-                "rate_basis": "Rs.40.00/metre std price",
+                "value": float(round(total_rupee_exposure, 0)),
+                "rate_source": rate_src,
+                "rate_basis": rate_basis,
             },
+            "today_financial_exposure": {
+                "value": float(round(total_rupee_exposure, 0)),
+                "rate_source": rate_src,
+                "rate_basis": rate_basis,
+            },
+            "total_meters_lost": float(round(total_lost_meters, 1)),
+            "potential_recovery": pot_recovery,
             "category_downtime_minutes": {k: float(round(v, 1)) for k, v in category_downtime_map.items()},
             "worst_looms_today": worst_looms_today[:10],
+            "highest_downtime_loom": highest_dt_loom,
+            "best_peer_benchmark": best_peer_benchmark,
             "monthly_top_looms": monthly_top_looms,
+            "chronic_monthly_offender": chronic_monthly_offender,
             "reason_pareto": pareto_list,
+            "abnormal_patterns": abnormal_patterns[:3],
+            "shift_breakdown_matrix": shift_matrix,
+            "event_classification_summary": classification_summary_map,
+            "micro_stops_minutes": int(round(micro_stops_min)),
+            "micro_stops_count": micro_stops_count,
+            "breakdown_minutes": int(round(breakdown_min)),
+            "breakdown_count": breakdown_count,
             "provenance": {
                 "downtime": "ACTUAL",
                 "events_count": "ACTUAL",
                 "avg_downtime": "CALCULATED",
-                "rupee_loss": "ESTIMATED",
+                "rupee_loss": rate_src,
             },
         }
+
 
 
 class RevenueService:

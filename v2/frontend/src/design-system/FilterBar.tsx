@@ -23,40 +23,40 @@ export function FilterBar({ filters, onReset, activeCount, rightSlot }: FilterBa
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        background: TOKENS.colors.surface.card,
-        border: `1px solid ${TOKENS.colors.surface.border}`,
-        borderRadius: TOKENS.radius.md,
-        padding: '8px 14px',
-        marginBottom: TOKENS.spacing[4],
-        gap: TOKENS.spacing[3],
+        background: '#ffffff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '8px',
+        padding: '10px 16px',
+        marginBottom: '16px',
+        gap: '12px',
         flexWrap: 'wrap',
-        boxShadow: TOKENS.shadows.card,
+        boxShadow: '0 1px 2px 0 rgba(15, 23, 42, 0.04)',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '5px',
-            fontSize: TOKENS.typography.sizes.metadata,
-            color: TOKENS.colors.text.secondary,
-            fontWeight: 700,
+            gap: '6px',
+            fontSize: '11.5px',
+            color: '#334155',
+            fontWeight: 600,
             textTransform: 'uppercase',
             letterSpacing: '0.04em',
           }}
         >
-          <Filter size={13} color="#2563EB" />
+          <Filter size={13} color="#2563eb" />
           <span>Filters</span>
           {activeCount !== undefined && activeCount > 0 && (
             <span
               style={{
-                background: TOKENS.colors.brand[600],
-                color: '#FFF',
-                padding: '1px 5px',
-                borderRadius: TOKENS.radius.pill,
+                background: '#2563eb',
+                color: '#ffffff',
+                padding: '1px 6px',
+                borderRadius: '9999px',
                 fontSize: '10px',
-                fontWeight: 700,
+                fontWeight: 600,
               }}
             >
               {activeCount}
@@ -65,20 +65,20 @@ export function FilterBar({ filters, onReset, activeCount, rightSlot }: FilterBa
         </div>
 
         {filters.map((f) => (
-          <div key={f.id} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <label style={{ fontSize: TOKENS.typography.sizes.metadata, color: TOKENS.colors.text.muted, fontWeight: 500 }}>
+          <div key={f.id} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <label style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>
               {f.label}:
             </label>
             <select
               value={f.value}
               onChange={(e) => f.onChange(e.target.value)}
               style={{
-                background: '#FFFFFF',
-                color: TOKENS.colors.text.primary,
-                border: `1px solid ${TOKENS.colors.surface.border}`,
-                borderRadius: TOKENS.radius.sm,
-                padding: '5px 8px',
-                fontSize: TOKENS.typography.sizes.bodySmall,
+                background: '#ffffff',
+                color: '#0f172a',
+                border: '1px solid #cbd5e1',
+                borderRadius: '6px',
+                padding: '6px 12px',
+                fontSize: '13px',
                 cursor: 'pointer',
                 outline: 'none',
                 fontFamily: 'inherit',

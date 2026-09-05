@@ -72,7 +72,36 @@ export default function AskPage() {
   };
 
   return (
-    <div style={{ maxWidth: 760, margin: '0 auto', padding: '0 0 60px' }}>
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 0 60px' }}>
+
+      {/* Provenance */}
+      <div style={{ padding: '8px 16px', background: 'var(--ink-100)', borderBottom: '1px solid var(--atm-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span className="data-stamp">
+            <span>●</span>
+            <span>AI Natural Language Engine</span>
+          </span>
+          <span style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', fontWeight: 600 }}>
+            Ashok Textile Mills Assistant
+          </span>
+        </div>
+        <span className="badge badge-ok" style={{ fontSize: '0.6875rem' }}>
+          Deterministic Analytics Online
+        </span>
+      </div>
+
+      {/* Hero Header */}
+      <div style={{ padding: '20px 16px 16px', borderBottom: '1px solid var(--atm-border)' }}>
+        <div style={{ fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.07em', color: 'var(--ink-500)', marginBottom: 6, textTransform: 'uppercase' }}>
+          Decision Intelligence · Executive Q&A · ATM
+        </div>
+        <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--ink-900)', marginBottom: 4 }}>
+          Ask Factory Operations AI
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--ink-700)' }}>
+          Natural language intelligence powered by plant logs. Instant answers for daily production variance, downtime causes, revenue loss, and machine comparisons.
+        </div>
+      </div>
 
       {/* Search bar */}
       <div style={{ padding: '16px', borderBottom: '1px solid var(--atm-border)', background: '#fff', position: 'sticky', top: 0, zIndex: 10 }}>
@@ -82,13 +111,13 @@ export default function AskPage() {
             type="text"
             value={query}
             onChange={e => setQuery(e.target.value)}
-            placeholder="Ask about production, breakdowns, or revenue…"
+            placeholder="Ask about production efficiency, worst loom, downtime causes, or revenue loss…"
             style={{
               flex: 1,
               padding: '10px 14px',
               border: '1px solid var(--atm-border)',
               borderRadius: 4,
-              fontSize: '0.9375rem',
+              fontSize: '0.875rem',
               outline: 'none',
               color: 'var(--ink-900)',
               background: '#fff',
@@ -100,49 +129,52 @@ export default function AskPage() {
             className="btn btn-primary"
             disabled={loading || !query.trim()}
             id="ask-submit"
+            style={{ minWidth: 90 }}
           >
-            {loading ? '…' : 'Ask'}
+            {loading ? '…' : 'Ask AI'}
           </button>
         </form>
       </div>
 
-      {/* Answer */}
+      {/* Loading state */}
       {loading && (
-        <div style={{ padding: '32px 16px', textAlign: 'center', color: 'var(--ink-500)', fontSize: '0.875rem' }}>
-          Querying analytics…
+        <div style={{ padding: '48px 16px', textAlign: 'center', color: 'var(--ink-500)', fontSize: '0.875rem' }}>
+          Querying plant intelligence telemetry…
         </div>
       )}
 
+      {/* Error state */}
       {error && (
         <div style={{ padding: '16px' }}>
           <div className="no-data-state">
-            <div style={{ fontWeight: 600 }}>Could not get answer</div>
+            <div style={{ fontWeight: 600 }}>Could not retrieve answer</div>
             <div className="reason">{error}</div>
           </div>
         </div>
       )}
 
+      {/* Answer Box */}
       {answer && (
-        <div style={{ borderBottom: '1px solid var(--atm-border)' }}>
-          <div style={{ padding: '12px 16px', background: 'var(--ink-100)', borderBottom: '1px solid var(--atm-border)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 6 }}>
-            <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--ink-700)' }}>
+        <div style={{ borderBottom: '1px solid var(--atm-border)', background: '#fff' }}>
+          <div style={{ padding: '12px 16px', background: 'var(--ink-100)', borderBottom: '1px solid var(--atm-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
+            <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--ink-900)' }}>
               Q: {answer.question}
             </span>
             {aiStatus && statusLabel[aiStatus] && (
               <StatusBadge status={statusLabel[aiStatus].status} label={statusLabel[aiStatus].label} />
             )}
           </div>
-          <div style={{ padding: '16px', fontSize: '0.9375rem', lineHeight: 1.6, color: 'var(--ink-900)', whiteSpace: 'pre-wrap' }}>
+          <div style={{ padding: '18px 16px', fontSize: '0.9375rem', lineHeight: 1.6, color: 'var(--ink-900)', whiteSpace: 'pre-wrap' }}>
             {answer.response.answer}
           </div>
 
           {/* Key findings */}
           {answer.response.key_findings?.length > 0 && (
-            <div style={{ padding: '0 16px 12px' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--atm-accent)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>
+            <div style={{ padding: '0 16px 14px' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--atm-accent)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
                 Key Findings
               </div>
-              <ul style={{ paddingLeft: 16 }}>
+              <ul style={{ paddingLeft: 18 }}>
                 {answer.response.key_findings.map((f, i) => (
                   <li key={i} style={{ fontSize: '0.875rem', color: 'var(--ink-700)', marginBottom: 4, lineHeight: 1.5 }}>{f}</li>
                 ))}
@@ -151,7 +183,7 @@ export default function AskPage() {
           )}
 
           {/* Evidence row count */}
-          <div style={{ padding: '8px 16px 12px', fontSize: '0.75rem', color: 'var(--ink-500)', borderTop: '1px solid var(--atm-border)' }}>
+          <div style={{ padding: '10px 16px', fontSize: '0.75rem', color: 'var(--ink-500)', borderTop: '1px solid var(--atm-border)', background: 'var(--ink-50)' }}>
             ⓘ Based on {answer.response.data_quality?.records_analyzed?.toLocaleString('en-IN') ?? '—'} records
             {' · '}{answer.response.scope}
             {answer.response.evidence?.length > 0 && (
@@ -161,64 +193,81 @@ export default function AskPage() {
         </div>
       )}
 
-      {/* Question presets */}
-      <div style={{ padding: '12px 16px 0' }}>
-        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--atm-accent)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
-          The 23 Management Questions
+      {/* Question presets in a clean 2-column responsive grid */}
+      <div style={{ padding: '20px 16px' }}>
+        <div className="card-header" style={{ borderRadius: '4px 4px 0 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>The 23 Management Questions</span>
+          <span style={{ fontSize: '0.6875rem', opacity: 0.9 }}>TAP TO QUERY</span>
         </div>
-        {QUESTIONS.map(q => (
-          <div key={q.id} style={{ marginBottom: 4 }}>
-            {q.available ? (
-              <button
-                id={`q-${q.id.toLowerCase()}`}
-                onClick={() => { setQuery(q.text); ask(q.text); }}
-                style={{
-                  display: 'block',
-                  width: '100%',
-                  textAlign: 'left',
-                  padding: '9px 12px',
-                  border: '1px solid var(--atm-border)',
-                  borderRadius: 3,
-                  background: '#fff',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  color: 'var(--ink-900)',
-                  lineHeight: 1.4,
-                  transition: 'background 0.1s',
-                  minHeight: 44,
-                }}
-                onMouseEnter={e => (e.currentTarget.style.background = 'var(--ink-100)')}
-                onMouseLeave={e => (e.currentTarget.style.background = '#fff')}
-              >
-                <span style={{ fontWeight: 700, color: 'var(--atm-accent)', marginRight: 6 }}>{q.id}</span>
-                {q.text}
-              </button>
-            ) : (
-              <div style={{
-                padding: '9px 12px',
-                border: '1px solid var(--nodata-border)',
-                borderRadius: 3,
-                background: 'var(--nodata-bg)',
-                fontSize: '0.875rem',
-                color: 'var(--nodata)',
-                lineHeight: 1.4,
-                minHeight: 44,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}>
-                <div>
-                  <span style={{ fontWeight: 700, marginRight: 6 }}>{q.id}</span>
-                  {q.text}
-                </div>
-                <div style={{ fontSize: '0.75rem', marginTop: 3, color: '#9ca3af' }}>
-                  ⚠ Awaiting data source: {q.blockedBy}
-                </div>
+        <div style={{ border: '1px solid var(--atm-border)', borderTop: 'none', borderRadius: '0 0 4px 4px', background: '#fff', padding: 14 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 8 }}>
+            {QUESTIONS.map(q => (
+              <div key={q.id}>
+                {q.available ? (
+                  <button
+                    id={`q-${q.id.toLowerCase()}`}
+                    onClick={() => { setQuery(q.text); ask(q.text); }}
+                    style={{
+                      display: 'block',
+                      width: '100%',
+                      textAlign: 'left',
+                      padding: '10px 12px',
+                      border: '1px solid var(--atm-border)',
+                      borderRadius: 4,
+                      background: '#fff',
+                      cursor: 'pointer',
+                      fontSize: '0.8125rem',
+                      color: 'var(--ink-900)',
+                      lineHeight: 1.4,
+                      transition: 'background 0.12s, border-color 0.12s',
+                      minHeight: 52,
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = 'var(--ink-100)';
+                      e.currentTarget.style.borderColor = 'var(--atm-accent)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = '#fff';
+                      e.currentTarget.style.borderColor = 'var(--atm-border)';
+                    }}
+                  >
+                    <span style={{ fontWeight: 700, color: 'var(--atm-accent)', marginRight: 6 }}>{q.id}</span>
+                    {q.text}
+                  </button>
+                ) : (
+                  <div style={{
+                    padding: '10px 12px',
+                    border: '1px solid var(--nodata-border)',
+                    borderRadius: 4,
+                    background: 'var(--nodata-bg)',
+                    fontSize: '0.8125rem',
+                    color: 'var(--nodata)',
+                    lineHeight: 1.4,
+                    minHeight: 52,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}>
+                    <div>
+                      <span style={{ fontWeight: 700, marginRight: 6 }}>{q.id}</span>
+                      {q.text}
+                    </div>
+                    <div style={{ fontSize: '0.6875rem', marginTop: 3, color: '#9ca3af' }}>
+                      ⚠ Awaiting feed: {q.blockedBy}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
-        ))}
+        </div>
       </div>
+
+      {/* Data footer note matching Revenue page */}
+      <div style={{ padding: '10px 16px', fontSize: '0.6875rem', color: 'var(--ink-500)', background: 'var(--ink-100)', borderTop: '1px solid var(--atm-border)' }}>
+        ⓘ Natural Language engine performs semantic matching over SQLite data marts. In-scope questions query production, breakdown, and revenue tables deterministically.
+      </div>
+
     </div>
   );
 }

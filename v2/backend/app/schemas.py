@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import datetime
 from decimal import Decimal
-from typing import Optional
+from typing import Optional, Any
 
 from pydantic import BaseModel, ConfigDict
 
@@ -130,7 +130,11 @@ class ReasonParetoRow(BaseModel):
     count: int
     total_minutes: Decimal
     pct_of_loom_downtime: Decimal
-    vs_plant_pct: Optional[Decimal]    # difference vs plant-wide share
+    vs_plant_pct: Optional[Decimal] = None    # difference vs plant-wide share
+    avg_duration_min: Optional[float] = None
+    expected_duration_min: Optional[float] = None
+    variance_min: Optional[float] = None
+    category: Optional[str] = None
 
 
 class WeaverRecord(BaseModel):
@@ -195,8 +199,45 @@ class BreakdownLoomRow(BaseModel):
     loom_type_code: str
     total_stopped_minutes: int
     event_count: int
-    dominant_reason_en: Optional[str]
-    dominant_reason_category: Optional[str]
+    dominant_reason_en: Optional[str] = None
+    dominant_reason_category: Optional[str] = None
+    lost_meters: Optional[float] = None
+    rupee_exposure: Optional[float] = None
+    efficiency_pct: Optional[float] = None
+    style_code: Optional[str] = None
+
+
+class PeerBenchmarkRow(BaseModel):
+    loom_id: int
+    loom_no: str
+    loom_type_code: str
+    total_stopped_minutes: int
+    event_count: int
+    efficiency_pct: Optional[float] = None
+    metres_produced: Optional[float] = None
+    style_code: Optional[str] = None
+    shed_code: Optional[str] = None
+    comparison_notes: Optional[str] = None
+
+
+
+class AbnormalPatternRow(BaseModel):
+    pattern_id: str
+    title: str
+    severity: str     # CRITICAL | WARNING | WATCH
+    scope: str        # e.g. "Loom AJ-118" or "Shed 2 Pneumatic"
+    detail: str
+    evidence: str
+    recommendation: str
+
+
+class ShiftBreakdownRow(BaseModel):
+    shift_code: str
+    stopped_minutes: int
+    event_count: int
+    lost_meters: float
+    rupee_exposure: float
+    dominant_reason: str
 
 
 class BreakdownSummaryResponse(DataEnvelope):
@@ -211,6 +252,26 @@ class BreakdownSummaryResponse(DataEnvelope):
     avg_downtime_per_event_min: Optional[Decimal] = None  # Q6
     reason_pareto: list[ReasonParetoRow] = []           # Q6
     total_rupee_lost: RupeeAmount = RupeeAmount()
+
+    # Q5 Industrial extensions
+    highest_downtime_loom: Optional[BreakdownLoomRow] = None
+    best_peer_benchmark: Optional[PeerBenchmarkRow] = None
+    chronic_monthly_offender: Optional[BreakdownLoomRow] = None
+
+    # Multi-dimensional classification summary
+    event_classification_summary: dict[str, dict[str, Any]] = {}
+    micro_stops_minutes: int = 0
+    micro_stops_count: int = 0
+    breakdown_minutes: int = 0
+    breakdown_count: int = 0
+
+    # Q6 & Q7 Industrial extensions
+    abnormal_patterns: list[AbnormalPatternRow] = []
+    shift_breakdown_matrix: list[ShiftBreakdownRow] = []
+    total_meters_lost: float = 0.0
+    today_financial_exposure: RupeeAmount = RupeeAmount()
+    potential_recovery: dict[str, Any] = {}
+
 
 
 # ── Ingest preview ───────────────────────────────────────────────────────────

@@ -51,32 +51,51 @@ export default function ImportPage() {
   }
 
   return (
-    <div style={{ maxWidth: 860, margin: '0 auto', padding: '24px 16px 80px' }}>
-      
-      {/* Page Title */}
-      <div style={{ marginBottom: 20 }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--atm-header)', marginBottom: 4 }}>
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 0 60px' }}>
+
+      {/* Provenance */}
+      <div style={{ padding: '8px 16px', background: 'var(--ink-100)', borderBottom: '1px solid var(--atm-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span className="data-stamp">
+            <span>●</span>
+            <span>Data Ingestion Engine</span>
+          </span>
+          <span style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', fontWeight: 600 }}>
+            Daily Shift File Import · ATM
+          </span>
+        </div>
+        <span style={{ fontSize: '0.6875rem', color: 'var(--critical)', fontWeight: 600 }}>
+          ⚠ Floor Controller / Admin Access
+        </span>
+      </div>
+
+      {/* Hero Header */}
+      <div style={{ padding: '20px 16px 16px', borderBottom: '1px solid var(--atm-border)' }}>
+        <div style={{ fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.07em', color: 'var(--ink-500)', marginBottom: 6, textTransform: 'uppercase' }}>
+          Data Ingestion · Shift 1, 2, 3 Telemetry · ATM
+        </div>
+        <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--ink-900)', marginBottom: 4 }}>
           Import Daily Shift Data
-        </h1>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ink-700)' }}>
-          Download pre-formatted templates for Shift 1, 2, and 3, enter real factory numbers, and upload Excel (.xlsx) or CSV files.
-        </p>
+        </div>
+        <div style={{ fontSize: '0.8125rem', color: 'var(--ink-700)' }}>
+          Download pre-formatted templates for Shift 1, 2, and 3, enter factory output numbers, and upload completed Excel (.xlsx) or CSV files directly into the production database.
+        </div>
       </div>
 
       {/* ── Section 1: Template Download ── */}
-      <div className="card" style={{ marginBottom: 24 }}>
-        <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ borderBottom: '1px solid var(--atm-border)', background: '#fff' }}>
+        <div className="card-header" style={{ borderRadius: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span>1. Download Shift 1, 2, 3 Data Template</span>
-          <span style={{ fontSize: '0.6875rem', opacity: 0.9 }}>3 shifts per machine</span>
+          <span style={{ fontSize: '0.6875rem', opacity: 0.9 }}>3 shifts per loom</span>
         </div>
-        <div className="card-body">
-          <p style={{ fontSize: '0.875rem', color: 'var(--ink-700)', marginBottom: 14 }}>
+        <div style={{ padding: '16px' }}>
+          <p style={{ fontSize: '0.8125rem', color: 'var(--ink-700)', marginBottom: 14 }}>
             The template generates 3 rows (Shift 1, 2, 3) for every active machine in the mill for the selected date. Fill in target, actual, breaks, and downtime.
           </p>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center', marginBottom: 14 }}>
             <div>
-              <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--ink-500)', marginBottom: 4, textTransform: 'uppercase' }}>
+              <label style={{ display: 'block', fontSize: '0.6875rem', fontWeight: 600, color: 'var(--ink-500)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 Target Date
               </label>
               <input
@@ -98,7 +117,7 @@ export default function ImportPage() {
               <a
                 href={api.getTemplateDownloadUrl('xlsx', templateDate)}
                 className="btn btn-primary"
-                style={{ textDecoration: 'none' }}
+                style={{ textDecoration: 'none', fontSize: '0.8125rem', minHeight: 36 }}
                 download
               >
                 📥 Download Excel (.xlsx) Template
@@ -106,7 +125,7 @@ export default function ImportPage() {
               <a
                 href={api.getTemplateDownloadUrl('csv', templateDate)}
                 className="btn btn-outline"
-                style={{ textDecoration: 'none' }}
+                style={{ textDecoration: 'none', fontSize: '0.8125rem', minHeight: 36 }}
                 download
               >
                 📥 Download CSV Template
@@ -114,18 +133,18 @@ export default function ImportPage() {
             </div>
           </div>
 
-          <div style={{ fontSize: '0.75rem', color: 'var(--ink-500)', background: 'var(--ink-100)', padding: '8px 12px', borderRadius: 4 }}>
+          <div style={{ fontSize: '0.75rem', color: 'var(--ink-500)', background: 'var(--ink-100)', padding: '8px 12px', borderRadius: 4, border: '1px solid var(--atm-border)' }}>
             <strong>Template Columns:</strong> <code>date</code>, <code>shift</code> (1, 2, 3), <code>machine_id</code>, <code>department</code>, <code>machine_type</code>, <code>fabric_style</code>, <code>target_qty</code>, <code>actual_qty</code>, <code>running_hours</code>, <code>warp_breaks</code>, <code>weft_breaks</code>, <code>downtime_minutes</code>, <code>breakdown_reason</code>, <code>revenue</code>
           </div>
         </div>
       </div>
 
       {/* ── Section 2: Upload Real Data ── */}
-      <div className="card" style={{ marginBottom: 24 }}>
-        <div className="card-header">
+      <div style={{ borderBottom: '1px solid var(--atm-border)', background: '#fff' }}>
+        <div className="card-header" style={{ borderRadius: 0 }}>
           2. Upload Completed Excel or CSV
         </div>
-        <div className="card-body">
+        <div style={{ padding: '16px' }}>
           <form onSubmit={handleUpload}>
             <div
               onDragOver={e => { e.preventDefault(); setDragActive(true); }}
@@ -249,6 +268,10 @@ export default function ImportPage() {
           </div>
         </div>
       )}
+      {/* Data footer note matching Revenue page */}
+      <div style={{ padding: '10px 16px', fontSize: '0.6875rem', color: 'var(--ink-500)', background: 'var(--ink-100)', borderTop: '1px solid var(--atm-border)', marginTop: 24 }}>
+        ⓘ Shift files ingested via this terminal populate SQLite production_log and breakdown_events tables. Audit logs maintained for each batch ID.
+      </div>
 
     </div>
   );

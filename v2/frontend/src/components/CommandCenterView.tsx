@@ -22,11 +22,14 @@ import {
 import { ContextualAiDrawer } from './ContextualAiDrawer';
 import type { ContextualAiPayload } from './ContextualAiDrawer';
 
+import { Search } from 'lucide-react';
+
 interface CommandCenterViewProps {
   onNavigateToModule: (view: string, loomId?: number) => void;
+  onOpenWhyModal?: () => void;
 }
 
-export function CommandCenterView({ onNavigateToModule }: CommandCenterViewProps) {
+export function CommandCenterView({ onNavigateToModule, onOpenWhyModal }: CommandCenterViewProps) {
   const [date, setDate] = useState<string>('2026-07-31');
   const [unit] = useState<string>('ATM');
   const [viewMode, setViewMode] = useState<'OWNER' | 'OPERATIONS'>('OWNER');
@@ -76,7 +79,21 @@ export function CommandCenterView({ onNavigateToModule }: CommandCenterViewProps
   // Honest Empty / Unavailable State (DATA TRUST)
   if (!data.data_available) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: TOKENS.spacing[4], paddingBottom: TOKENS.spacing[6] }}>
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '1440px',
+          margin: '0 auto',
+          padding: '24px 32px 64px',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          background: '#f8fafc',
+          color: '#0f172a',
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '24px',
+        }}
+      >
         <PageHeader
           title="Executive Decision Console"
           subtitle="Owner's daily operational decision screen."
@@ -129,7 +146,21 @@ export function CommandCenterView({ onNavigateToModule }: CommandCenterViewProps
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: TOKENS.spacing[4], paddingBottom: TOKENS.spacing[6] }}>
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '1440px',
+        margin: '0 auto',
+        padding: '24px 32px 64px',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        background: '#f8fafc',
+        color: '#0f172a',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+      }}
+    >
       {/* ── Top Header with Date Selection, Owner/Ops Toggle, and Freshness ─ */}
       <PageHeader
         title={viewMode === 'OWNER' ? 'Owner Decision Console' : 'Plant Operations Monitor'}
@@ -224,6 +255,31 @@ export function CommandCenterView({ onNavigateToModule }: CommandCenterViewProps
                 </span>
               )}
             </button>
+
+            {/* Universal Why is production low? Button */}
+            {onOpenWhyModal && (
+              <button
+                onClick={onOpenWhyModal}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  padding: '5px 12px',
+                  borderRadius: '6px',
+                  background: '#FEF2F2',
+                  border: '1.5px solid #F87171',
+                  color: '#B91C1C',
+                  fontSize: '11.5px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: '0 1px 2px rgba(220, 38, 38, 0.1)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <Search size={13} color="#DC2626" />
+                <span>Why is production low?</span>
+              </button>
+            )}
 
             {/* Date Picker */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -328,34 +384,59 @@ export function CommandCenterView({ onNavigateToModule }: CommandCenterViewProps
           </div>
         </div>
 
-        <button
-          onClick={() =>
-            handleOpenDrawer({
-              title: `Dominant Stoppage Issue: Loom ${v.dominant_problem_loom}`,
-              category: 'CRITICAL_BREAKDOWN',
-              loomNo: v.dominant_problem_loom,
-              issueDescription: v.headline,
-              impactInr: v.revenue_exposure_rs,
-              probableCause: 'Voltage fluctuations and inverter thermal trip on main drive.',
-              recommendedAction: 'Direct shift electrician to inspect sub-panel voltage stability.',
-              confidence: 'HIGH',
-              sourceIds: ['prod_log_20260731', 'stopevent_20260731'],
-            })
-          }
-          style={{
-            padding: '6px 12px',
-            fontSize: '12px',
-            fontWeight: 600,
-            background: '#FFFFFF',
-            border: `1px solid ${v.severity === 'CRITICAL' ? '#F87171' : TOKENS.colors.surface.border}`,
-            borderRadius: '4px',
-            color: v.severity === 'CRITICAL' ? '#B91C1C' : TOKENS.colors.brand[700],
-            cursor: 'pointer',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          Explain & Evidence
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {onOpenWhyModal && (
+            <button
+              onClick={onOpenWhyModal}
+              style={{
+                padding: '6px 12px',
+                fontSize: '12px',
+                fontWeight: 700,
+                background: '#FEF2F2',
+                border: '1.5px solid #F87171',
+                borderRadius: '4px',
+                color: '#B91C1C',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <Search size={13} color="#DC2626" />
+              <span>Why is production low?</span>
+            </button>
+          )}
+
+          <button
+            onClick={() =>
+              handleOpenDrawer({
+                title: `Dominant Stoppage Issue: Loom ${v.dominant_problem_loom}`,
+                category: 'CRITICAL_BREAKDOWN',
+                loomNo: v.dominant_problem_loom,
+                issueDescription: v.headline,
+                impactInr: v.revenue_exposure_rs,
+                probableCause: 'Voltage fluctuations and inverter thermal trip on main drive.',
+                recommendedAction: 'Direct shift electrician to inspect sub-panel voltage stability.',
+                confidence: 'HIGH',
+                sourceIds: ['prod_log_20260731', 'stopevent_20260731'],
+              })
+            }
+            style={{
+              padding: '6px 12px',
+              fontSize: '12px',
+              fontWeight: 600,
+              background: '#FFFFFF',
+              border: `1px solid ${v.severity === 'CRITICAL' ? '#F87171' : TOKENS.colors.surface.border}`,
+              borderRadius: '4px',
+              color: v.severity === 'CRITICAL' ? '#B91C1C' : TOKENS.colors.brand[700],
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Explain & Evidence
+          </button>
+        </div>
       </div>
 
       {/* ── ACT NOW: Top 3 Prioritized Management Actions ──────────────── */}

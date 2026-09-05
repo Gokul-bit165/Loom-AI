@@ -37,38 +37,38 @@ export function KpiCard({
     <div
       onClick={onClick}
       style={{
-        background: TOKENS.colors.surface.card,
-        border: `1px solid ${TOKENS.colors.surface.border}`,
-        borderRadius: TOKENS.radius.md,
-        padding: '12px 14px',
+        background: '#ffffff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '8px',
+        padding: '16px 20px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         cursor: onClick ? 'pointer' : 'default',
-        boxShadow: TOKENS.shadows.card,
-        transition: 'border-color 0.12s ease, box-shadow 0.12s ease',
-        minHeight: '102px',
+        boxShadow: '0 1px 2px 0 rgba(15, 23, 42, 0.04)',
+        transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
+        minHeight: '108px',
       }}
       onMouseEnter={(e) => {
         if (onClick) {
-          e.currentTarget.style.borderColor = TOKENS.colors.brand[500];
-          e.currentTarget.style.boxShadow = TOKENS.shadows.elevated;
+          e.currentTarget.style.borderColor = '#2563eb';
+          e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(15, 23, 42, 0.06)';
         }
       }}
       onMouseLeave={(e) => {
         if (onClick) {
-          e.currentTarget.style.borderColor = TOKENS.colors.surface.border;
-          e.currentTarget.style.boxShadow = TOKENS.shadows.card;
+          e.currentTarget.style.borderColor = '#e2e8f0';
+          e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(15, 23, 42, 0.04)';
         }
       }}
     >
       {/* Top Strip: Label + Provenance */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
         <span
           style={{
-            fontSize: TOKENS.typography.sizes.metadata,
+            fontSize: '11.5px',
             fontWeight: 600,
-            color: TOKENS.colors.text.muted,
+            color: '#64748b',
             textTransform: 'uppercase',
             letterSpacing: '0.04em',
           }}
@@ -79,20 +79,21 @@ export function KpiCard({
       </div>
 
       {/* Main Metric Value */}
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px', margin: '2px 0 4px 0' }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', margin: '2px 0 6px 0' }}>
         <span
           style={{
-            fontSize: TOKENS.typography.sizes.kpiPrimary,
-            fontWeight: 800,
-            fontFamily: TOKENS.typography.fontMono,
-            color: TOKENS.colors.text.primary,
+            fontSize: '26px',
+            fontWeight: 600,
+            fontVariantNumeric: 'tabular-nums',
+            color: '#0f172a',
             lineHeight: 1.1,
+            letterSpacing: '-0.02em',
           }}
         >
           {value}
         </span>
         {unit && (
-          <span style={{ fontSize: TOKENS.typography.sizes.bodySmall, color: TOKENS.colors.text.secondary, fontWeight: 500 }}>
+          <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 500 }}>
             {unit}
           </span>
         )}

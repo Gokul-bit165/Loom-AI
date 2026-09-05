@@ -1,0 +1,11 @@
+{
+  "name": "loom-ai-workspace",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Loom AI — Textile Mill Decision Intelligence Platform",
+  "scripts": {
+    "build": "npm --prefix v2/frontend run build",
+    "dev": "npm --prefix v2/frontend run dev",
+    "install:all": "npm --prefix v2/frontend install"
+  }
+}

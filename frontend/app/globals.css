@@ -246,3 +246,102 @@ body { min-height: 100vh; }
 /* ── Utility ─────────────────────────────────────────────────────────────────── */
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
 .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── Revenue-Themed Uniform Layout & Metric Tokens ───────────────────────────── */
+.page-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 0 60px;
+}
+
+.provenance-bar {
+  padding: 8px 16px;
+  background: var(--ink-100);
+  border-bottom: 1px solid var(--atm-border);
+  display: flex;
+  justifyContent: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.section-hero {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--atm-border);
+}
+
+.section-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  color: var(--ink-500);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.metric-strip {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--atm-border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: #ffffff;
+  margin-bottom: 14px;
+}
+
+.metric-cell {
+  flex: 1;
+  padding: 12px 14px;
+  border-right: 1px solid var(--atm-border);
+  min-width: 120px;
+}
+
+.metric-cell:last-child {
+  border-right: none;
+}
+
+.metric-label {
+  font-size: 0.6875rem;
+  color: var(--ink-500);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.metric-val {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.metric-note {
+  font-size: 0.6875rem;
+  color: var(--ink-500);
+  margin-top: 2px;
+}
+
+.split-card {
+  display: flex;
+  border-top: 1px solid var(--atm-border);
+  border-bottom: 1px solid var(--atm-border);
+}
+
+.split-cell {
+  flex: 1;
+  padding: 10px 16px;
+}
+
+.data-footer-note {
+  padding: 10px 16px;
+  font-size: 0.6875rem;
+  color: var(--ink-500);
+  border-top: 1px solid var(--atm-border);
+  background: var(--ink-100);
+}
+
+.panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 0;
+}

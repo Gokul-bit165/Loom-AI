@@ -115,49 +115,102 @@ export default function OperationsPage() {
   );
 
   return (
-    <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 0 60px' }}>
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 0 60px' }}>
 
       {/* Provenance */}
       <div style={{ padding: '8px 16px', background: 'var(--ink-100)', borderBottom: '1px solid var(--atm-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-        <DataStamp asOf={generatedAt} isDemo={isDemo} rows={data?.evidence?.production_log_ids?.length} source="CSV import" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <DataStamp asOf={generatedAt} isDemo={isDemo} rows={data?.evidence?.production_log_ids?.length} source="CSV import" />
+          <span style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', fontWeight: 600 }}>
+            Loom Operations & Telemetry · ATM
+          </span>
+        </div>
         <button className="btn btn-ghost" style={{ fontSize: '0.75rem', minHeight: 28, padding: '0 8px' }} onClick={load}>↻ Refresh</button>
       </div>
 
-      {/* Summary row */}
+      {/* Hero Header & Connected Metric Strip */}
       {data?.summary && (
-        <div style={{ display: 'flex', borderBottom: '1px solid var(--atm-border)', overflowX: 'auto' }}>
-          {[
-            { label: 'Avg Efficiency', value: pct(data.summary.average_efficiency), status: statusFromEff(data.summary.average_efficiency) },
-            { label: 'Total Actual', value: inr(data.summary.total_actual), status: 'nodata' as const },
-            { label: 'Total Target', value: inr(data.summary.total_target), status: 'nodata' as const },
-            { label: 'Variance', value: `${data.summary.variance_qty >= 0 ? '+' : ''}${inr(data.summary.variance_qty)}`, status: data.summary.variance_qty >= 0 ? 'ok' : 'critical' as any },
-          ].map((item, i) => (
-            <div key={i} style={{ flex: '1 1 120px', padding: '10px 16px', borderRight: i < 3 ? '1px solid var(--atm-border)' : 'none' }}>
-              <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 3 }}>{item.label}</div>
-              <div className="num" style={{ fontSize: '1.25rem', fontWeight: 700, color: item.status === 'ok' ? 'var(--ok)' : item.status === 'critical' ? 'var(--critical)' : 'var(--ink-900)' }}>
-                {item.value}
+        <div style={{ padding: '20px 16px 14px', borderBottom: '1px solid var(--atm-border)' }}>
+          <div style={{ fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.07em', color: 'var(--ink-500)', marginBottom: 8, textTransform: 'uppercase' }}>
+            Operations · {data.summary.date ? fmtDate(data.summary.date) : 'Today'} · All Looms · ATM
+          </div>
+
+          <div style={{ display: 'flex', gap: 0, border: '1px solid var(--atm-border)', borderRadius: 4, overflow: 'hidden', background: '#fff' }}>
+            {[
+              {
+                label: 'Avg Efficiency',
+                value: pct(data.summary.average_efficiency),
+                note: data.summary.average_efficiency >= 90 ? 'Within target range' : 'Below 90% benchmark',
+                status: statusFromEff(data.summary.average_efficiency),
+              },
+              {
+                label: 'Total Output',
+                value: inr(data.summary.total_actual),
+                note: `actual meters produced`,
+                status: 'nodata' as const,
+              },
+              {
+                label: 'Production Target',
+                value: inr(data.summary.total_target),
+                note: `standard mill quota`,
+                status: 'nodata' as const,
+              },
+              {
+                label: 'Net Variance',
+                value: `${data.summary.variance_qty >= 0 ? '+' : ''}${inr(data.summary.variance_qty)}`,
+                note: `${data.summary.variance_pct.toFixed(1)}% vs target`,
+                status: data.summary.variance_qty >= 0 ? 'ok' : 'critical' as any,
+                isStatus: true,
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                style={{
+                  flex: 1,
+                  padding: '12px 14px',
+                  borderRight: i < 3 ? '1px solid var(--atm-border)' : 'none',
+                  background: item.isStatus && data.summary.variance_qty < 0 ? 'var(--critical-bg)' : '#fff',
+                }}
+              >
+                <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>
+                  {item.label}
+                </div>
+                <div
+                  className="num"
+                  style={{
+                    fontSize: '1.25rem',
+                    fontWeight: 700,
+                    color: item.status === 'ok' ? 'var(--ok)' : item.status === 'critical' ? 'var(--critical)' : 'var(--ink-900)',
+                  }}
+                >
+                  {item.value}
+                </div>
+                {item.note && <div style={{ fontSize: '0.6875rem', color: 'var(--ink-500)', marginTop: 2 }}>{item.note}</div>}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 
-      {/* Shift scorecard */}
+      {/* Shift Scorecard */}
       {data?.shift_performance && <ShiftScorecard shifts={data.shift_performance} />}
 
-      {/* Filter */}
-      <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--atm-border)', background: '#fff' }}>
+      {/* Filter & Toolbar */}
+      <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--atm-border)', background: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
         <input
           type="search"
-          placeholder="Filter by loom ID or type…"
+          placeholder="Filter by loom ID, model, or type…"
           value={filter}
           onChange={e => setFilter(e.target.value)}
-          style={{ padding: '7px 10px', border: '1px solid var(--atm-border)', borderRadius: 3, fontSize: '0.875rem', width: '100%', maxWidth: 280, outline: 'none', color: 'var(--ink-900)' }}
+          style={{ padding: '7px 12px', border: '1px solid var(--atm-border)', borderRadius: 4, fontSize: '0.875rem', width: '100%', maxWidth: 320, outline: 'none', color: 'var(--ink-900)' }}
           id="operations-filter"
         />
+        <div style={{ fontSize: '0.75rem', color: 'var(--ink-500)' }}>
+          Showing <strong>{machines.length}</strong> of <strong>{data?.machine_performance?.length ?? 0}</strong> looms
+        </div>
       </div>
 
-      {/* Loom table */}
+      {/* Loom Performance Table */}
       <div className="table-scroll" style={{ background: '#fff' }}>
         <table className="data-table" id="operations-table">
           <thead>
@@ -165,22 +218,22 @@ export default function OperationsPage() {
               <th style={{ textAlign: 'left' }}>
                 Loom <SortBtn col="machine_id" />
               </th>
-              <th style={{ textAlign: 'left' }}>Type / Dept</th>
+              <th style={{ textAlign: 'left' }}>Model / Dept</th>
               <th>Actual <SortBtn col="actual" /></th>
               <th>Target</th>
               <th>Efficiency <SortBtn col="efficiency" /></th>
               <th>Variance <SortBtn col="variance" /></th>
-              <th>Status</th>
+              <th style={{ textAlign: 'center' }}>Status</th>
             </tr>
           </thead>
           <tbody>
             {machines.length === 0 ? (
               <tr>
-                <td colSpan={7} style={{ textAlign: 'center', padding: '24px', color: 'var(--nodata)' }}>
+                <td colSpan={7} style={{ textAlign: 'center', padding: '32px', color: 'var(--nodata)' }}>
                   {filter ? `No looms match "${filter}"` : 'No production data for this date'}
                 </td>
               </tr>
-            ) : machines.map((m, i) => {
+            ) : machines.map((m) => {
               const status = statusFromEff(m.efficiency);
               return (
                 <tr key={m.machine_id} className={`row-${status}`}>
@@ -208,25 +261,34 @@ export default function OperationsPage() {
         </table>
       </div>
 
-      {/* Best / worst callout */}
+      {/* Best / Worst Split Callout matching Revenue page */}
       {(data?.best_machine || data?.worst_machine) && (
         <div style={{ display: 'flex', gap: 0, borderTop: '1px solid var(--atm-border)', borderBottom: '1px solid var(--atm-border)' }}>
           {data.best_machine && (
-            <div style={{ flex: 1, padding: '10px 16px', background: 'var(--ok-bg)', borderRight: '1px solid var(--atm-border)' }}>
-              <div style={{ fontSize: '0.6875rem', color: 'var(--ok)', fontWeight: 600, textTransform: 'uppercase', marginBottom: 2 }}>Best loom</div>
-              <div style={{ fontWeight: 700 }}>{data.best_machine.machine_id}</div>
-              <div className="num" style={{ color: 'var(--ok)', fontWeight: 600 }}>{pct(data.best_machine.efficiency)}</div>
+            <div style={{ flex: 1, padding: '12px 16px', background: 'var(--ok-bg)', borderRight: '1px solid var(--atm-border)' }}>
+              <div style={{ fontSize: '0.6875rem', color: 'var(--ok)', fontWeight: 600, textTransform: 'uppercase', marginBottom: 2 }}>
+                Best Performing Loom
+              </div>
+              <div style={{ fontWeight: 700, fontSize: '0.9375rem' }}>{data.best_machine.machine_id}</div>
+              <div className="num" style={{ color: 'var(--ok)', fontWeight: 700 }}>{pct(data.best_machine.efficiency)} efficiency</div>
             </div>
           )}
           {data.worst_machine && (
-            <div style={{ flex: 1, padding: '10px 16px', background: 'var(--critical-bg)' }}>
-              <div style={{ fontSize: '0.6875rem', color: 'var(--critical)', fontWeight: 600, textTransform: 'uppercase', marginBottom: 2 }}>Worst loom</div>
-              <div style={{ fontWeight: 700 }}>{data.worst_machine.machine_id}</div>
-              <div className="num" style={{ color: 'var(--critical)', fontWeight: 600 }}>{pct(data.worst_machine.efficiency)}</div>
+            <div style={{ flex: 1, padding: '12px 16px', background: 'var(--critical-bg)' }}>
+              <div style={{ fontSize: '0.6875rem', color: 'var(--critical)', fontWeight: 600, textTransform: 'uppercase', marginBottom: 2 }}>
+                Lowest Performing Loom (Action Required)
+              </div>
+              <div style={{ fontWeight: 700, fontSize: '0.9375rem' }}>{data.worst_machine.machine_id}</div>
+              <div className="num" style={{ color: 'var(--critical)', fontWeight: 700 }}>{pct(data.worst_machine.efficiency)} efficiency</div>
             </div>
           )}
         </div>
       )}
+
+      {/* Data footer note matching Revenue page */}
+      <div style={{ padding: '10px 16px', fontSize: '0.6875rem', color: 'var(--ink-500)', background: 'var(--ink-100)' }}>
+        ⓘ Operations telemetry computed from shift machine counters. Target baseline: 93.0% standard weaving efficiency.
+      </div>
     </div>
   );
 }
