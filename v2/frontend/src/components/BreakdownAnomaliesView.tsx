@@ -214,37 +214,92 @@ export function BreakdownAnomaliesView({
           </span>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(9, 1fr)', gap: 8 }}>
-          {timeline.map((slot, idx) => (
-            <div
-              key={idx}
-              style={{
-                background: '#FFFFFF',
-                border: '1px solid #E2E8F0',
-                borderRadius: 6,
-                padding: '10px 8px',
-                textAlign: 'center',
-              }}
-            >
-              <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748B' }}>
-                {slot.time_slot}
-              </div>
-              <div style={{
-                fontSize: '16px',
-                fontWeight: 800,
-                color: '#0F172A',
-                marginTop: 4,
-                fontVariantNumeric: 'tabular-nums',
-              }}>
-                {slot.count > 0 ? `${slot.count} Anom` : '—'}
-              </div>
-              {slot.anomalies.length > 0 && (
-                <div style={{ marginTop: 4, fontSize: '10px', color: slot.has_critical ? '#B91C1C' : '#475569', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {slot.anomalies.map((a) => a.loom).join(', ')}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(9, minmax(0, 1fr))',
+          gap: '8px',
+          width: '100%',
+        }}>
+          {timeline.map((slot, idx) => {
+            const uniqueLooms = Array.from(new Set(slot.anomalies.map((a) => a.loom)));
+            const isCritical = slot.has_critical;
+            const hasAnomalies = slot.count > 0;
+
+            let loomSummary = '';
+            if (uniqueLooms.length === 1) {
+              loomSummary = uniqueLooms[0];
+            } else if (uniqueLooms.length === 2) {
+              loomSummary = uniqueLooms.join(', ');
+            } else if (uniqueLooms.length > 2) {
+              loomSummary = `${uniqueLooms.slice(0, 2).join(', ')} +${uniqueLooms.length - 2}`;
+            }
+
+            const tooltipText = hasAnomalies
+              ? `${slot.time_slot}: ${slot.count} anomal${slot.count === 1 ? 'y' : 'ies'} across ${uniqueLooms.length} loom(s) (${uniqueLooms.join(', ')})`
+              : `${slot.time_slot}: Normal operation (0 anomalies)`;
+
+            return (
+              <div
+                key={idx}
+                title={tooltipText}
+                style={{
+                  minWidth: 0,
+                  overflow: 'hidden',
+                  background: isCritical ? '#FEF2F2' : (hasAnomalies ? '#FFFBEB' : '#FFFFFF'),
+                  border: isCritical ? '1px solid #FECACA' : (hasAnomalies ? '1px solid #FDE68A' : '1px solid #E2E8F0'),
+                  borderRadius: 6,
+                  padding: '10px 6px',
+                  textAlign: 'center',
+                  boxSizing: 'border-box',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                <div style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: isCritical ? '#991B1B' : (hasAnomalies ? '#92400E' : '#64748B'),
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {slot.time_slot}
                 </div>
-              )}
-            </div>
-          ))}
+                <div style={{
+                  fontSize: '15px',
+                  fontWeight: 800,
+                  color: isCritical ? '#DC2626' : (hasAnomalies ? '#D97706' : '#94A3B8'),
+                  marginTop: 3,
+                  fontVariantNumeric: 'tabular-nums',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {hasAnomalies ? `${slot.count} Anom` : '—'}
+                </div>
+                {hasAnomalies ? (
+                  <div
+                    style={{
+                      marginTop: 4,
+                      fontSize: '10px',
+                      color: isCritical ? '#B91C1C' : '#78350F',
+                      fontWeight: 600,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      width: '100%',
+                      boxSizing: 'border-box',
+                    }}
+                  >
+                    {loomSummary}
+                  </div>
+                ) : (
+                  <div style={{ marginTop: 4, fontSize: '10px', color: '#94A3B8', fontWeight: 500 }}>
+                    Normal
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
