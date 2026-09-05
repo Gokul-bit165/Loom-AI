@@ -186,9 +186,13 @@ def get_revenue_analytics(
     energy_power_cost = round(base_revenue_for_profit * Decimal("0.11"), 2) # ~11% power tariff
     direct_labour_cost = round(Decimal("85000.00") * Decimal(days_in_period), 2)  # payroll
     maint_spares_cost = round(Decimal("14500.00") * Decimal(days_in_period), 2)   # maintenance spares
+    transport_cost = round(Decimal("38500.00") * Decimal(days_in_period), 2)     # freight & dispatch logistics
+    outsource_packaging_cost = round(Decimal("54200.00") * Decimal(days_in_period), 2) # external job-work packaging
 
     total_direct_costs = yarn_cost + energy_power_cost + direct_labour_cost + maint_spares_cost
+    total_operating_costs = total_direct_costs + transport_cost + outsource_packaging_cost
     contribution_profit = base_revenue_for_profit - total_direct_costs
+    net_operating_income = base_revenue_for_profit - total_operating_costs
     profit_margin_pct = round(
         (contribution_profit / max(base_revenue_for_profit, Decimal("1.0"))) * Decimal("100.0"), 1
     )
@@ -628,9 +632,25 @@ def get_revenue_analytics(
             "power_energy_cost_inr": float(energy_power_cost),
             "direct_labour_cost_inr": float(direct_labour_cost),
             "maintenance_spares_inr": float(maint_spares_cost),
+            "transport_cost_inr": float(transport_cost),
+            "outsource_packaging_cost_inr": float(outsource_packaging_cost),
             "total_direct_costs_inr": float(total_direct_costs),
+            "total_operating_costs_inr": float(total_operating_costs),
             "contribution_profit_inr": float(contribution_profit),
+            "net_operating_income_inr": float(net_operating_income),
             "profit_margin_pct": float(profit_margin_pct),
+            "transport_details": {
+                "route": "Mill Shed → Bhiwandi Hub / JNPT Port",
+                "vehicle_trips": 3 * days_in_period,
+                "rate_per_metre": 0.85,
+                "status": "ON SCHEDULE",
+            },
+            "outsource_packaging_details": {
+                "vendor": "Apex Packagers Ltd",
+                "batch_code": "PKG-JUL31-A",
+                "clearance_pct": 99.6,
+                "package_type": "Export roll baling & moisture poly-wrap",
+            },
         },
         "loss_attribution_waterfall": waterfall,
         "period_summary": period_summary,

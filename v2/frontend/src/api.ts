@@ -728,9 +728,25 @@ export interface RevenueAnalyticsResponse {
     power_energy_cost_inr: number;
     direct_labour_cost_inr: number;
     maintenance_spares_inr: number;
+    transport_cost_inr?: number;
+    outsource_packaging_cost_inr?: number;
     total_direct_costs_inr: number;
+    total_operating_costs_inr?: number;
     contribution_profit_inr: number;
+    net_operating_income_inr?: number;
     profit_margin_pct: number;
+    transport_details?: {
+      route: string;
+      vehicle_trips: number;
+      rate_per_metre: number;
+      status: string;
+    };
+    outsource_packaging_details?: {
+      vendor: string;
+      batch_code: string;
+      clearance_pct: number;
+      package_type: string;
+    };
   };
   loss_attribution_waterfall: {
     potential_max_revenue: number;
